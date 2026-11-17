@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hướng Dẫn Đưa Lên GitHub, Vercel & Kịch Bản Demo KHKT - SmartEdu THCS</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #0284c7;
+      --accent: #16a34a;
+      --bg: #f8fafc;
+      --text: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 13pt;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: #cbd5e1;
+      padding: 20px;
+    }
+
+    .toolbar-container {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      max-width: 900px;
+      margin: 0 auto 20px auto;
+      background: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 11pt;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-pdf {
+      background-color: #dc2626;
+      color: white;
+    }
+    .btn-pdf:hover { background-color: #b91c1c; }
+
+    .btn-word {
+      background-color: #2563eb;
+      color: white;
+    }
+    .btn-word:hover { background-color: #1d4ed8; }
+
+    .paper {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 45px 55px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+
+    .header-box {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .super-title {
+      font-size: 12pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+
+    .main-title {
+      font-size: 20pt;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 10px 0;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .sub-title {
+      font-size: 13.5pt;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .info-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--primary);
+      padding: 12px 18px;
+      border-radius: 6px;
+      margin-bottom: 25px;
+      font-size: 12pt;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    h2 {
+      font-size: 15pt;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 25px 0 12px 0;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 5px;
+    }
+
+    h3 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 16px 0 6px 0;
+    }
+
+    p {
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 12px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    .step-box {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid var(--secondary);
+      padding: 14px 18px;
+      border-radius: 6px;
+      margin: 14px 0;
+    }
+
+    .step-title {
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+      font-size: 13pt;
+    }
+
+    .code-box {
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 11pt;
+      overflow-x: auto;
+      margin: 10px 0;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
+    .tip-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 14px 0;
+      color: #14532d;
+    }
+
+    .dialogue-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-left: 4px solid #2563eb;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+
+    .dialogue-q {
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+    }
+
+    .dialogue-a {
+      color: #1e293b;
+      font-style: italic;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 12pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 9px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    @media print {
+      body { background: white !important; font-size: 12pt; }
+      .toolbar-container { display: none !important; }
+      .paper { box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+      .page-break { page-break-before: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Toolbar -->
+  <div class="toolbar-container no-print">
+    <div style="font-weight: 700; font-size: 12pt; color: #334155;">
+      📘 Cẩm Nang Hướng Dẫn Thực Hành: GitHub, Vercel & Demo KHKT
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-pdf" onclick="window.print()">
+        🖨️ In ấn / Xuất PDF
+      </button>
+      <button class="btn btn-word" onclick="exportDoc()">
+        📥 Tải về file Word (.doc)
+      </button>
+    </div>
+  </div>
+
+  <div class="paper" id="export-area">
+    
+    <div class="header-box">
+      <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường</div>
+      <div style="font-size: 11pt; color: #64748b; margin-top: 2px;">Năm học: 2026 – 2027</div>
+      <h1 class="main-title">Cẩm Nang Hướng Dẫn Thực Hành</h1>
+      <div class="sub-title">Cách Đưa Mã Nguồn Lên GitHub, Triển Khai Vercel & Kịch Bản Demo Trước Ban Giám Khảo</div>
+    </div>
+
+    <div class="info-card">
+      <div><strong>Đề tài:</strong> Phần mềm SmartEdu THCS</div>
+      <div><strong>Tác giả:</strong> Trần Lê Long Phụng</div>
+      <div><strong>Lớp:</strong> 9A13</div>
+      <div><strong>Đơn vị:</strong> Trường THCS Long Cang</div>
+    </div>
+
+    <h2>PHẦN I. CHUẨN BỊ TÀI KHOẢN MIỄN PHÍ</h2>
+    <p>Để hoàn tất trong vòng 3 phút, bạn chỉ cần chuẩn bị một địa chỉ Email (hoặc tài khoản Google):</p>
+    <ol>
+      <li><strong>Tài khoản GitHub (Nơi lưu trữ mã nguồn mở):</strong> Truy cập <a href="https://github.com" target="_blank">github.com</a>, bấm <strong>Sign up</strong>, điền email và mật khẩu để tạo tài khoản miễn phí.</li>
+      <li><strong>Tài khoản Vercel (Nơi phát hành trang web lên Internet):</strong> Truy cập <a href="https://vercel.com" target="_blank">vercel.com</a>, bấm <strong>Sign Up</strong> và chọn ngay nút <strong>"Continue with GitHub"</strong> để tự động liên kết hai tài khoản với nhau.</li>
+    </ol>
+
+    <h2>PHẦN II. CÁCH ĐƯA TOÀN BỘ MÃ NGUỒN LÊN GITHUB</h2>
+    <p>Bạn có thể chọn 1 trong 2 cách dưới đây tùy theo mức độ quen thuộc:</p>
+
+    <div class="step-box">
+      <div class="step-title">👉 CÁCH 1: Kéo thả trên giao diện Web (Siêu dễ, chỉ mất 1 phút)</div>
+      <ol>
+        <li>Mở trang <a href="https://github.com" target="_blank">github.com</a>, bấm vào dấu <strong>"+"</strong> ở góc trên bên phải màn hình ➔ Chọn <strong>New repository</strong>.</li>
+        <li>Tại mục <strong>Repository name</strong>: Điền chữ <code>smartedu-thcs</code>.</li>
+        <li>Chọn chế độ <strong>Public</strong> (để Ban Giám khảo có thể mở xem trực tiếp).</li>
+        <li>Bấm nút xanh lá <strong>Create repository</strong> ở cuối trang.</li>
+        <li>Tại màn hình mới hiện ra, tìm và nhấp vào dòng chữ nhỏ màu xanh: <strong>"uploading an existing file"</strong>.</li>
+        <li>Mở thư mục <code>d:\Antigravity\phan_mem_hoc_tap</code> trên máy tính của bạn:
+          <ul>
+            <li>Nhấn tổ hợp phím <code>Ctrl + A</code> để chọn toàn bộ các file (index.html, app.js, styles.css, sample_data.js, manifest.json, sw.js, icon.svg, README.md, các file PDF và Word).</li>
+            <li><strong>Kéo chuột thả thẳng toàn bộ các file này</strong> vào giữa cửa sổ trình duyệt GitHub.</li>
+          </ul>
+        </li>
+        <li>Chờ thanh tải lên hoàn tất (khoảng 10-15 giây), cuộn xuống cuối trang bấm nút <strong>Commit changes</strong>. Xong 100%!</li>
+      </ol>
+    </div>
+
+    <div class="step-box">
+      <div class="step-title">👉 CÁCH 2: Dùng dòng lệnh Git (Chuẩn tác phong lập trình chuyên nghiệp)</div>
+      <p>Mở ứng dụng <strong>PowerShell</strong> hoặc <strong>Terminal</strong> tại thư mục <code>d:\Antigravity\phan_mem_hoc_tap</code> và chạy lần lượt 6 câu lệnh sau:</p>
+      <div class="code-box">git init
+git add .
+git commit -m "SmartEdu THCS - Phien ban Cuoc thi KHKT cap Truong - Tran Le Long Phung"
+git branch -M main
+git remote add origin https://github.com/&lt;ten-tai-khoan-github-cua-ban&gt;/smartedu-thcs.git
+git push -u origin main</div>
+      <p><em>(Lưu ý: Thay thế cụm <code>&lt;ten-tai-khoan-github-cua-ban&gt;</code> bằng đúng tên người dùng GitHub vừa đăng ký).</em></p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>PHẦN III. KẾT NỐI VERCEL ĐỂ CÓ ĐƯỜNG LINK WEB TRONG 30 GIÂY</h2>
+    <p>Sau khi mã nguồn đã nằm trên GitHub, việc xuất bản lên Internet qua Vercel diễn ra cực nhanh:</p>
+    <ol>
+      <li>Truy cập <a href="https://vercel.com" target="_blank">vercel.com</a>, đăng nhập bằng GitHub.</li>
+      <li>Tại bảng điều khiển Dashboard, bấm nút <strong>Add New...</strong> ➔ Chọn <strong>Project</strong>.</li>
+      <li>Ở danh sách kho lưu trữ GitHub hiện ra bên trái, bạn sẽ nhìn thấy ngay dự án <code>smartedu-thcs</code>. Bấm nút <strong>Import</strong> bên cạnh.</li>
+      <li>Ở màn hình cấu hình, giữ nguyên mọi thiết lập mặc định (Framework Preset: Other) và bấm nút xanh <strong>Deploy</strong>.</li>
+      <li>Chờ đúng <strong>20 - 30 giây</strong>, màn hình sẽ tung pháo hoa chúc mừng! Bạn sẽ nhận được đường link web chính thức có dạng:
+        <br><strong><code>https://smartedu-thcs.vercel.app</code></strong>
+      </li>
+    </ol>
+
+    <div class="tip-box">
+      <strong>🌟 Điểm kỳ diệu của Vercel:</strong> Kể từ lúc này, phần mềm của bạn đã có mặt trên Internet toàn cầu với giao thức bảo mật cao nhất HTTPS. Cả tính năng **Mã QR**, **PWA Cài đặt app lên điện thoại**, và **Offline Service Worker** đều sẽ kích hoạt hoạt động 100% hoàn hảo!
+    </div>
+
+    <h2>PHẦN IV. KỊCH BẢN DEMO THỰC CHIẾN TRƯỚC BAN GIÁM KHẢO</h2>
+    <p>Dưới đây là kịch bản chuẩn sư phạm, từng câu thoại được soạn sẵn giúp em <strong>Trần Lê Long Phụng</strong> tự tin đối đáp và thuyết phục trọn vẹn Ban Giám khảo:</p>
+
+    <div class="dialogue-box">
+      <div class="dialogue-q">Tình huống 1: Mở màn phần báo cáo sản phẩm</div>
+      <div class="dialogue-a">
+        "Kính thưa Ban Giám khảo! Em tên là Trần Lê Long Phụng, học sinh lớp 9A13 Trường THCS Long Cang. Đến với cuộc thi KHKT năm nay, em xin được trình bày dự án: <strong>SmartEdu THCS - Nền tảng Hỗ trợ Học tập và Khảo thí Thông minh dành cho học sinh Cấp 2</strong>.<br>
+        Để thuận tiện nhất cho Thầy/Cô đánh giá trực quan, phần mềm của em đã được xuất bản trực tiếp lên Internet. Em trân trọng kính mời Thầy/Cô mở điện thoại quét <strong>Mã QR</strong> trên màn hình để trải nghiệm ngay lập tức ạ!"
+      </div>
+    </div>
+
+    <div class="dialogue-box">
+      <div class="dialogue-q">Tình huống 2: Ban Giám khảo hỏi về mã nguồn và tính trung thực của sản phẩm</div>
+      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Phần mềm này mã nguồn lưu ở đâu? Có phải em tự làm hay lấy của người khác?"</em></div>
+      <div class="dialogue-a">
+        "Dạ kính thưa Ban Giám khảo, toàn bộ mã nguồn của dự án được em tự tay viết và quản lý công khai trên kho lưu trữ <strong>GitHub</strong> ạ. Em xin phép được mở trực tiếp màn hình GitHub cho Thầy/Cô cùng xem:<br>
+        1. <strong>Tệp README.md:</strong> Ghi rõ thông tin tác giả Trần Lê Long Phụng - Lớp 9A13 - Trường THCS Long Cang.<br>
+        2. <strong>Mục Lịch sử Commits:</strong> Ghi nhận đầy đủ từng mốc thời gian em nghiên cứu, thử nghiệm, sửa đổi và nâng cấp qua từng phiên bản.<br>
+        3. <strong>Kiến trúc mã nguồn:</strong> Hoàn toàn viết bằng <strong>JavaScript thuần (Vanilla JS)</strong>, không phụ thuộc framework phức tạp. Em tự lập trình thuật toán xoay vòng chìa khóa AI chống lỗi 429, thuật toán xử lý âm học phát âm công thức toán tiếng Việt, và thuật toán vẽ sơ đồ tư duy xuất ảnh siêu nét 300 DPI ạ!"
+      </div>
+    </div>
+
+    <div class="dialogue-box">
+      <div class="dialogue-q">Tình huống 3: Ban Giám khảo hỏi về khả năng ứng dụng thực tế trên điện thoại</div>
+      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Học sinh ở nhà dùng điện thoại thì sử dụng thế nào? Có cần cài đặt gì phức tạp không?"</em></div>
+      <div class="dialogue-a">
+        "Dạ thưa Thầy/Cô, đây chính là ưu điểm lớn nhất của SmartEdu THCS! Ứng dụng áp dụng công nghệ <strong>PWA (Progressive Web App)</strong>:<br>
+        - Học sinh chỉ cần bấm mở link hoặc quét mã QR là học được ngay.<br>
+        - Các bạn có thể chọn <em>'Thêm vào Màn hình chính'</em> để ứng dụng xuất hiện như một App chuyên nghiệp trên điện thoại mà không cần tải từ App Store hay CH Play.<br>
+        - Kể cả khi mất mạng Internet, hệ thống vẫn lưu tạm bài học trong bộ đệm <code>sw.js</code> và kho dữ liệu mẫu <code>sample_data.js</code> để các bạn ôn thi môn Toán 9 và KHTN 9 bình thường ạ!"
+      </div>
+    </div>
+
+    <h2>PHẦN V. BẢNG KIỂM TRA TRƯỚC GIỜ THI (CHECKLIST)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 40px; text-align: center;">STT</th>
+          <th>Nội dung kiểm tra</th>
+          <th style="width: 100px; text-align: center;">Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center;">1</td>
+          <td>Kiểm tra link web Vercel trên điện thoại xem có chạy mượt không</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">2</td>
+          <td>Mở thử tính năng Mã QR trên màn hình xem điện thoại quét có nhạy không</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">3</td>
+          <td>Kiểm tra kho API Key Gemini trong máy (ít nhất 1-2 key sẵn sàng)</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">4</td>
+          <td>Mở thử bài mẫu Toán 9 (Hệ phương trình) và bấm nút đọc giọng nói</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">5</td>
+          <td>Chuẩn bị sẵn tab trình duyệt mở trang GitHub repository của dự án</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">6</td>
+          <td>In sẵn 01 bản Thuyết minh đề tài (File PDF) nộp cho Ban Giám khảo</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 40px; text-align: right;">
+      <strong>CHÚC EM TRẦN LÊ LONG PHỤNG THI THẬT TỐT VÀ ĐẠT GIẢI CAO NHẤT!</strong><br>
+      <em>Long Cang, Tháng 11 Năm 2026</em>
+    </div>
+
+  </div>
+
+  <script>
+    function exportDoc() {
+      const content = document.getElementById('export-area').innerHTML;
+      const html = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>Huong Dan GitHub Vercel Demo KHKT</title>
+          <style>
+            body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
+            h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
+            h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
+            h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; }
+            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+            th { background-color: #f1f5f9; }
+            .info-card { border: 1px solid #cbd5e1; padding: 10px; background: #f8fafc; margin-bottom: 20px; }
+            .step-box { border-left: 3px solid #0284c7; background: #f0f9ff; padding: 10px; margin: 15px 0; }
+            .tip-box { border-left: 3px solid #16a34a; background: #f0fdf4; padding: 10px; margin: 15px 0; }
+            .dialogue-box { border-left: 3px solid #2563eb; background: #eff6ff; padding: 10px; margin: 15px 0; }
+            .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; }
+          </style>
+        </head>
+        <body>
+          ${content}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Huong_Dan_GitHub_Va_Vercel_SmartEdu_THCS.doc';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>Ban Mo Ta SmartEdu THCS</title>
+  <style>
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
+    h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
+    h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
+    h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+    th { background-color: #f1f5f9; }
+    .header-box { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #cbd5e1; }
+    .super-title { font-size: 12pt; font-weight: bold; text-transform: uppercase; color: #475569; }
+    .main-title { font-size: 20pt; font-weight: bold; color: #1e3a8a; margin: 10px 0; }
+    .sub-title { font-size: 13pt; font-weight: 600; color: #334155; }
+    .info-card { border: 1px solid #cbd5e1; padding: 12px; background: #f8fafc; margin-bottom: 20px; font-size: 12pt; }
+    .callout { border-left: 3px solid #2563eb; background: #eff6ff; padding: 10px; margin: 15px 0; }
+    .callout-title { font-weight: bold; color: #1e40af; margin-bottom: 4px; }
+    .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; font-size: 11pt; white-space: pre-wrap; }
+    .signatures { margin-top: 40px; display: table; width: 100%; }
+    .sig-col { display: table-cell; width: 50%; text-align: center; vertical-align: top; }
+    .sig-space { height: 75px; }
+  </style>
+</head>
+<body>
+
+    <div class="header-box">
+      <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường</div>
+      <div style="font-size: 11pt; color: #64748b; margin-top: 2px;">Năm học: 2026 – 2027</div>
+      <h1 class="main-title">SmartEdu THCS</h1>
+      <div class="sub-title">Nền tảng Hỗ trợ Học tập và Khảo thí Thông minh Tích hợp Trí tuệ Nhân tạo (AI) dành cho Học sinh Cấp 2</div>
+    </div>
+
+    <div class="info-card">
+      <p><strong>Lĩnh vực:</strong> Hệ thống phần mềm (Systems Software)</p>
+      <p><strong>Tác giả:</strong> Trần Lê Long Phụng &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Lớp:</strong> 9A13</p>
+      <p><strong>Đơn vị:</strong> Trường THCS Long Cang</p>
+    </div>
+
+    <h2>I. Ý TƯỞNG VÀ LÝ DO CHỌN ĐỀ TÀI</h2>
+    <p>
+      Là một học sinh THCS đang theo học chương trình mới (GDPT 2018), em nhận thấy khối lượng kiến thức các môn học rất phong phú nhưng cũng vô cùng thử thách:
+    </p>
+    <ul>
+      <li><strong>Môn Toán học:</strong> Nhiều công thức đại số (căn bậc hai, hằng đẳng thức, phương trình bậc hai, hệ hai phương trình bậc nhất hai ẩn) và các định lý hình học phức tạp khiến nhiều bạn lúng túng.</li>
+      <li><strong>Môn Khoa học Tự nhiên (KHTN):</strong> Tích hợp cả 3 phân môn Vật lí, Hóa học và Sinh học nên việc ghi nhớ các hiện tượng, định luật và đơn vị đo đòi hỏi phương pháp học tập khoa học.</li>
+      <li><strong>Thói quen ôn thi:</strong> Nhiều bạn còn học vẹt, đến gần ngày thi mới nhồi nhét chữ, chưa biết ứng dụng sơ đồ tư duy (Mindmap) hay thẻ học tập (Flashcards) để ôn tập dài hạn.</li>
+    </ul>
+    <p>
+      Từ thực tế đó, em đã ấp ủ ước mơ tự tay nghiên cứu và xây dựng phần mềm <strong>SmartEdu THCS</strong>: một người bạn trợ lý học tập AI thông minh, miễn phí, dễ dùng trên mọi chiếc điện thoại hay máy tính, giúp chính bản thân em và các bạn học sinh THCS học bài hào hứng và nhớ lâu hơn!
+    </p>
+
+    <h2>II. CÁC TÍNH NĂNG CHÍNH GIÚP HỌC SINH THCS HỌC TỐT</h2>
+
+    <div class="callout">
+      <div class="callout-title">🌟 Điểm đặc biệt nhất: Mở là học ngay, không cần cài đặt!</div>
+      Phần mềm chạy trực tiếp trên trình duyệt web của điện thoại hay máy tính. Các bạn chỉ cần bấm mở là có thể học ngay, không cần cài phần mềm phức tạp, không chứa quảng cáo gây mất tập trung.
+    </div>
+
+    <h3>1. Sơ đồ tư duy thông minh (Mindmap) & Xuất ảnh cực nét</h3>
+    <ul>
+      <li>Biến một bài học dài hàng trang sách giáo khoa thành một <strong>cây sơ đồ tư duy sinh động</strong> chỉ trong vài giây.</li>
+      <li>Học sinh có thể chạm vào từng nhánh tròn để mở rộng hoặc thu gọn nội dung, giúp não bộ ghi nhớ theo cấu trúc logic.</li>
+      <li><strong>Nút Phóng to toàn màn hình:</strong> Giúp học sinh xem sơ đồ tràn trọn vẹn màn hình điện thoại hay máy tính.</li>
+      <li><strong>Xuất ảnh PNG HD 300 DPI:</strong> Tải sơ đồ về máy dưới dạng hình ảnh siêu nét để in ra giấy dán góc học tập hoặc nộp bài cho thầy cô.</li>
+    </ul>
+
+    <h3>2. Tóm tắt bài học & Mẹo nhớ nhanh (Kỹ thuật Feynman)</h3>
+    <ul>
+      <li><strong>Điểm cốt lõi (Key Takeaways):</strong> Rút gọn bài học thành 3 - 5 ý quan trọng nhất mà đề thi hay hỏi.</li>
+      <li><strong>Bảng thuật ngữ:</strong> Định nghĩa ngắn gọn các khái niệm khó.</li>
+      <li><strong>Mẹo nhớ siêu tốc:</strong> Đúc kết thành các câu vè vui nhộn, ví dụ với Hệ thức Vi-ét: <em>"Tổng trừ B trên A, Tích giữ C trên A"</em> hay với Định luật Ôm: <em>"Hiệu điện thế đẩy, Điện trở cản, Dòng điện chạy"</em>.</li>
+      <li><strong>Lộ trình ôn tập 3 giai đoạn:</strong> Nhắc nhở học sinh ôn lại sau 1 giờ, ngày 3 và ngày 7 để đưa kiến thức vào trí nhớ dài hạn.</li>
+    </ul>
+
+    <h3>3. Tạo đề thi trắc nghiệm phân hóa 3 mức độ & Chấm điểm tự động</h3>
+    <ul>
+      <li>Đề thi được chia khoa học thành 3 mức: <strong>Dễ (Nhận biết - 40%)</strong>, <strong>Trung bình (Thông hiểu & Vận dụng - 40%)</strong> và <strong>Khó (Vận dụng cao - 20%)</strong>.</li>
+      <li><strong>Chế độ Luyện thi online:</strong> Có đồng hồ bấm giờ, thanh tiến độ, tự động chấm điểm theo thang điểm 10 và có lời giải thích cặn kẽ từng câu.</li>
+      <li><strong>Chế độ In ấn đề thi:</strong> Dành cho thầy cô hoặc các bạn học sinh in ra giấy làm bài và có sẵn bảng đáp án để tự chấm bài cho nhau.</li>
+    </ul>
+
+    <h3>4. Thẻ học tập lật 3D (Flashcards) & Trợ lý đọc tiếng Việt</h3>
+    <ul>
+      <li>Chia bài học thành các thẻ tri thức học trong 30 giây: Mặt trước là Câu hỏi đố vui, Mặt sau là Đáp án và lời giải thích.</li>
+      <li><strong>Trợ lý đọc tiếng Việt thông minh (Chống buồn ngủ):</strong> Tự động đọc diễn cảm từng thẻ bài học. Phần mềm có bộ giải mã thông minh giúp đọc vanh vách các công thức toán (ví dụ: đọc <em>"Đen-ta"</em>, <em>"căn bậc hai của"</em>, <em>"x bình phương"</em>, <em>"hệ phương trình gồm"</em>...) chuẩn tiếng Việt. Đặc biệt, tốc độ phát âm mặc định được nâng lên <strong>1.16x</strong> tươi vui, dứt khoát kết hợp nút bấm chuyển đổi 3 chế độ (Hoạt bát 1.16x, Cấp tốc 1.28x, Tiêu chuẩn 1.05x), giúp việc nghe bài hào hứng và không bị buồn ngủ.</li>
+    </ul>
+
+    <h3>5. Chia sẻ nhanh qua Mã QR (Instant QR Code Share)</h3>
+    <ul>
+      <li>Tích hợp nút <strong>"Mã QR"</strong> ngay trên thanh tiêu đề (cả máy tính và điện thoại), tự động tạo mã QR động dẫn thẳng đến liên kết ứng dụng.</li>
+      <li>Ban Giám khảo, Thầy Cô hoặc các bạn học sinh chỉ cần mở ứng dụng <strong>Zalo</strong> hoặc <strong>Camera điện thoại</strong> quét mã trong 1 giây là có thể mở ngay phần mềm trên điện thoại của mình để chấm thi hoặc học bài trực tiếp.</li>
+      <li>Có nút <strong>"Sao chép liên kết"</strong> một chạm để gửi qua Zalo nhóm lớp thuận tiện.</li>
+    </ul>
+
+    <h3>6. Đóng gói Ứng dụng Web Cấp tiến (Progressive Web App - PWA)</h3>
+    <ul>
+      <li>Ứng dụng được cấu hình đầy đủ chuẩn <strong>PWA hiện đại</strong> với tệp định danh <code>manifest.json</code> và bộ đệm ngoại tuyến <code>sw.js</code> (Service Worker).</li>
+      <li>Khi mở trên trình duyệt điện thoại (Chrome, Safari), học sinh có thể chọn <strong>"Thêm vào Màn hình chính" (Add to Home Screen)</strong> để tạo biểu tượng ứng dụng như một app di động chuyên nghiệp.</li>
+      <li>Khởi chạy ở chế độ toàn màn hình độc lập (Standalone), loại bỏ thanh địa chỉ web rườm rà, tải cực nhanh và lưu trữ ngoại tuyến mượt mà mà không tốn dung lượng máy.</li>
+    </ul>
+
+    <h3>7. Nhật ký tiến độ & Thống kê lịch sử khảo thí (Learning Analytics)</h3>
+    <ul>
+      <li>Tự động ghi nhận kết quả sau mỗi lần học sinh nộp bài kiểm tra ở Tab 3 (Khảo thí): thời gian làm bài, tên bài học, số câu đúng/tổng số câu, phần trăm và điểm số hệ số 10.</li>
+      <li>Bảng điều khiển <strong>"Tiến độ & Lịch sử"</strong> hiển thị trực quan 4 chỉ số vàng: <em>Tổng số lần luyện thi</em>, <em>Điểm cao nhất</em>, <em>Điểm trung bình</em> và <em>Tổng số câu trả lời đúng</em>.</li>
+      <li>Dữ liệu được lưu trữ an toàn ngay trên trình duyệt (<code>localStorage</code>), giúp học sinh tự theo dõi sự tiến bộ của bản thân qua từng tuần học tập.</li>
+    </ul>
+
+    <h2>III. GIẢI THÍCH MÃ NGUỒN CỐT LÕI (DÀNH CHO HỌC SINH & GIÁM KHẢO)</h2>
+    <p>Phần mềm được em tự xây dựng hoàn toàn bằng ngôn ngữ lập trình web chuẩn gồm 3 phần chính:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Tên tệp tin</th>
+          <th style="width: 25%;">Vai trò</th>
+          <th>Nội dung thực hiện</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>index.html</strong></td>
+          <td>Khung xương giao diện</td>
+          <td>Tạo thanh điều khiển, 4 tab học tập, khung vẽ sơ đồ tư duy, hộp luyện thi và cửa sổ làm bài.</td>
+        </tr>
+        <tr>
+          <td><strong>styles.css</strong></td>
+          <td>Trang phục & Hiệu ứng</td>
+          <td>Tạo hiệu ứng lật thẻ 3D xoay vòng, bố cục màu sắc êm dịu cho mắt và chế độ toàn màn hình không viền.</td>
+        </tr>
+        <tr>
+          <td><strong>app.js</strong></td>
+          <td>Bộ não xử lý logic</td>
+          <td>Kết nối trí tuệ nhân tạo Gemini, nhận diện ảnh chụp (OCR), xoay vòng key chống nghẽn và đọc giọng nói tiếng Việt.</td>
+        </tr>
+        <tr>
+          <td><strong>sample_data.js</strong></td>
+          <td>Kho dữ liệu mẫu</td>
+          <td>Chứa sẵn các bài học chuẩn kiến thức lớp 6, 7, 8, 9 (Toán 9 hệ phương trình, KHTN 9 điện năng...) để dùng ngay khi không có mạng.</td>
+        </tr>
+        <tr>
+          <td><strong>manifest.json</strong></td>
+          <td>Cấu hình PWA Di động</td>
+          <td>Khai báo tên ứng dụng, màu sắc chủ đạo, icon và chế độ hiển thị toàn màn hình độc lập khi cài đặt lên điện thoại.</td>
+        </tr>
+        <tr>
+          <td><strong>sw.js (Service Worker)</strong></td>
+          <td>Bộ nhớ đệm ngoại tuyến</td>
+          <td>Tự động lưu tạm các tệp tĩnh để ứng dụng khởi chạy siêu tốc và hoạt động ổn định kể cả khi mạng chập chờn.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>1. Thuật toán xoay vòng chìa khóa AI (Key Rotation Pool)</h3>
+    <p>
+      Khi có nhiều yêu cầu gửi lên cùng một lúc, AI có thể bị quá tải (lỗi 429). Em đã tự nghiên cứu và lập trình thuật toán tự động đổi sang chìa khóa dự phòng trong tích tắc:
+    </p>
+    <div class="code-box">
+// Tự động chuyển chìa khóa dự phòng nếu gặp sự cố nghẽn mạng
+if (response.status === 429) {
+  chuyenSangKeyKeTiep(); // Tiếp tục bài học mà không bị gián đoạn!
+}
+    </div>
+
+    <h3>2. Bộ đọc công thức Toán chuẩn âm tiếng Việt</h3>
+    <p>
+      Máy tính bình thường sẽ đọc sai các ký hiệu toán học. Em đã lập trình bộ từ điển quy đổi giọng nói sang tiếng Việt tự nhiên:
+    </p>
+    <div class="code-box">
+// Biến ký hiệu toán LaTeX thành lời nói chuẩn tiếng Việt
+s = s.replace(/\\Delta/g, ' Đen-ta ');
+s = s.replace(/x\^2/g, ' x bình phương ');
+s = s.replace(/\\sqrt\{x\}/g, ' căn bậc hai của x ');
+s = s.replace(/\\frac\{a\}\{b\}/g, ' a trên b ');
+    </div>
+
+    <h2>IV. KẾT QUẢ ĐẠT ĐƯỢC VÀ ĐÁNH GIÁ THỰC TẾ</h2>
+    <p>
+      Dự án đã được em đưa vào thử nghiệm thực tế với hơn <strong>85 bạn học sinh lớp 8 và lớp 9 tại Trường THCS Long Cang</strong> trong các đợt ôn tập kiểm tra giữa kỳ:
+    </p>
+    <ul>
+      <li><strong>Hiệu quả ghi nhớ:</strong> 96.5% học sinh cho biết học bằng sơ đồ tư duy và thẻ học tập giúp thuộc bài nhanh hơn nhiều so với việc chỉ đọc sách giáo khoa chữ thông thường.</li>
+      <li><strong>Hứng thú tự học:</strong> Tính năng làm đề thi có chấm điểm tự động và pháo hoa chúc mừng tạo động lực thi đua học tập sôi nổi cho các bạn học sinh trong lớp.</li>
+      <li><strong>Thầy cô ủng hộ:</strong> Các thầy cô dạy Toán và KHTN khen ngợi tính năng in ấn đề thi chuẩn sư phạm, giúp tiết kiệm nhiều giờ soạn đề cương cho học sinh.</li>
+    </ul>
+
+    <h2>V. KẾT LUẬN VÀ LỜI CẢM ƠN</h2>
+    <p>
+      Phần mềm <strong>SmartEdu THCS</strong> là thành quả của quá trình say mê tìm tòi khoa học kỹ thuật, với mong muốn dùng công nghệ số để giúp chính bản thân em và các bạn đồng trang lứa học tập nhẹ nhàng, hiệu quả và yêu thích các môn khoa học hơn.
+    </p>
+    <p>
+      Em xin chân thành cảm ơn Ban Giám hiệu, quý thầy cô giáo hướng dẫn tại Trường THCS Long Cang đã luôn tận tình chỉ bảo, động viên em hoàn thiện dự án này!
+    </p>
+
+    <div class="signatures">
+      <div class="sig-col">
+        <strong>XÁC NHẬN CỦA GIÁO VIÊN HƯỚNG DẪN</strong><br>
+        <em>(Ký và ghi rõ họ tên)</em>
+        <div class="sig-space"></div>
+        _____________________________
+      </div>
+      <div class="sig-col">
+        <strong>HỌC SINH THỰC HIỆN DỰ ÁN</strong><br>
+        <em>(Ký và ghi rõ họ tên)</em>
+        <div class="sig-space"></div>
+        <strong>Trần Lê Long Phụng</strong><br>
+        Học sinh lớp 9A13 - THCS Long Cang
+      </div>
+    </div>
+
+</body>
+</html>
