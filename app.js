@@ -1074,22 +1074,22 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
 
     const nodeHeight = 36;
     const verticalGap = 16;
-    const levelSpacing = 240;
+    const levelSpacing = 250;
     let curY = 40;
 
     function layoutNode(node, depth, branchIdx) {
       node.depth = depth;
       node.branchIdx = branchIdx;
       const textLen = (node.content || '').length;
-      node.width = Math.min(360, Math.max(90, textLen * 9.5 + 28));
-      node.height = nodeHeight;
+      node.width = Math.min(380, Math.max(90, textLen * 9.5 + 30));
+      node.height = depth === 0 ? 42 : nodeHeight;
 
       const isCollapsed = svgMindmapState.collapsed.has(node);
       const hasChildren = node.children && node.children.length > 0 && !isCollapsed;
 
       if (!hasChildren) {
         node.y = curY;
-        curY += nodeHeight + verticalGap;
+        curY += node.height + verticalGap;
       } else {
         node.children.forEach((child, idx) => {
           const bIdx = depth === 0 ? idx : branchIdx;
@@ -1134,10 +1134,10 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
           const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
           path.setAttribute('stroke', colorObj.stroke);
-          path.setAttribute('stroke-width', node.depth === 0 ? '3' : '2.2');
+          path.setAttribute('stroke-width', node.depth === 0 ? '3.2' : '2.4');
           path.setAttribute('fill', 'none');
           path.setAttribute('stroke-linecap', 'round');
-          path.setAttribute('opacity', '0.85');
+          path.setAttribute('opacity', '0.88');
           rootG.appendChild(path);
 
           drawLinks(child);
@@ -1159,16 +1159,17 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.setAttribute('width', node.width);
       rect.setAttribute('height', node.height);
-      rect.setAttribute('rx', node.depth === 0 ? '10' : '8');
+      rect.setAttribute('rx', node.depth === 0 ? '12' : '8');
       rect.setAttribute('fill', node.depth === 0 ? colorObj.bg : (node.depth === 1 ? colorObj.bg : '#ffffff'));
       rect.setAttribute('stroke', colorObj.stroke);
-      rect.setAttribute('stroke-width', node.depth === 0 ? '2' : (node.depth === 1 ? '2' : '1.5'));
+      rect.setAttribute('stroke-width', node.depth === 0 ? '2.5' : (node.depth === 1 ? '2' : '1.5'));
       rect.setAttribute('filter', 'url(#svg-node-shadow)');
       g.appendChild(rect);
 
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       text.setAttribute('x', 14);
-      text.setAttribute('y', node.height / 2 + 4.5);
+      text.setAttribute('y', node.height / 2);
+      text.setAttribute('dominant-baseline', 'central');
       text.setAttribute('fill', node.depth === 0 ? '#ffffff' : (node.depth === 1 ? colorObj.text : '#1e293b'));
       text.setAttribute('font-size', node.depth === 0 ? '14px' : (node.depth === 1 ? '13px' : '12px'));
       text.setAttribute('font-weight', node.depth <= 1 ? '700' : '600');
@@ -1180,7 +1181,7 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
         const toggleCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         toggleCircle.setAttribute('cx', node.width);
         toggleCircle.setAttribute('cy', node.height / 2);
-        toggleCircle.setAttribute('r', '6');
+        toggleCircle.setAttribute('r', '6.5');
         toggleCircle.setAttribute('fill', colorObj.stroke);
         toggleCircle.setAttribute('stroke', '#ffffff');
         toggleCircle.setAttribute('stroke-width', '2');
@@ -1210,18 +1211,28 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
       rootG.setAttribute('transform', `translate(${svgMindmapState.panX}, ${svgMindmapState.panY}) scale(${svgMindmapState.zoom})`);
     }
 
-    function fitView() {
-      const bbox = rootG.getBBox();
-      const svgRect = svgEl.getBoundingClientRect();
-      const svgW = svgRect.width || 900;
-      const svgH = svgRect.height || 580;
+    // Đặt vị trí ban đầu an toàn ngay lập tức
+    svgMindmapState.zoom = 0.9;
+    svgMindmapState.panX = 40;
+    svgMindmapState.panY = 50;
+    updateTransform();
 
-      if (bbox.width > 0 && bbox.height > 0) {
-        const scaleX = (svgW - 80) / bbox.width;
-        const scaleY = (svgH - 80) / bbox.height;
-        svgMindmapState.zoom = Math.min(1.1, Math.max(0.45, Math.min(scaleX, scaleY)));
-        svgMindmapState.panX = (svgW - bbox.width * svgMindmapState.zoom) / 2 - bbox.x * svgMindmapState.zoom;
-        svgMindmapState.panY = (svgH - bbox.height * svgMindmapState.zoom) / 2 - bbox.y * svgMindmapState.zoom;
+    function fitView() {
+      try {
+        const bbox = rootG.getBBox();
+        const svgRect = svgEl.getBoundingClientRect();
+        const svgW = svgRect.width || 900;
+        const svgH = svgRect.height || 580;
+
+        if (bbox && bbox.width > 0 && bbox.height > 0) {
+          const scaleX = (svgW - 80) / bbox.width;
+          const scaleY = (svgH - 80) / bbox.height;
+          svgMindmapState.zoom = Math.min(1.05, Math.max(0.4, Math.min(scaleX, scaleY)));
+          svgMindmapState.panX = Math.max(20, (svgW - bbox.width * svgMindmapState.zoom) / 2 - bbox.x * svgMindmapState.zoom);
+          svgMindmapState.panY = Math.max(20, (svgH - bbox.height * svgMindmapState.zoom) / 2 - bbox.y * svgMindmapState.zoom);
+          updateTransform();
+        }
+      } catch (err) {
         updateTransform();
       }
     }
@@ -1236,8 +1247,8 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
     };
 
     fitView();
-    setTimeout(fitView, 60);
-    setTimeout(fitView, 250);
+    setTimeout(fitView, 50);
+    setTimeout(fitView, 200);
 
     svgEl.onmousedown = (e) => {
       svgMindmapState.isDragging = true;
@@ -1274,66 +1285,54 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
     // Luôn ẩn hộp rỗng khi có nội dung sơ đồ tư duy
     if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
 
-    const markmapObj = window.markmap?.Markmap ? window.markmap : (window.Markmap ? { Markmap: window.Markmap } : null);
+    let markmapDrawn = false;
 
-    // Ưu tiên vẽ bằng Markmap nếu thư viện đã sẵn sàng
-    if (markmapObj && markmapObj.Markmap) {
+    // Chỉ dùng Markmap ngoài NẾU CẢ Transformer VÀ Markmap ĐỀU TỒN TẠI VÀ CHUYỂN ĐỔI THÀNH CÔNG
+    if (window.markmap && window.markmap.Transformer && (window.markmap.Markmap || window.Markmap)) {
       try {
-        let root = null;
-        if (window.markmap && window.markmap.Transformer) {
-          try {
-            const transformer = new window.markmap.Transformer();
-            root = transformer.transform(markdown).root;
-          } catch (transErr) {
-            root = markdownToMarkmapTree(markdown);
+        const MarkmapClass = window.markmap.Markmap || window.Markmap;
+        const transformer = new window.markmap.Transformer();
+        const res = transformer.transform(markdown);
+        if (res && res.root) {
+          const modernPalette = ['#4f46e5', '#0284c7', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#ea580c'];
+          const options = {
+            duration: 300,
+            colorFreezeLevel: 2,
+            paddingX: 20,
+            spacingHorizontal: 65,
+            spacingVertical: 14,
+            color: (node) => {
+              if (node.depth === 0) return '#4f46e5';
+              const idx = (node.order || 0) % modernPalette.length;
+              return modernPalette[idx];
+            }
+          };
+
+          if (!state.markmapInstance || !state.markmapInstance.setData) {
+            state.markmapInstance = MarkmapClass.create(dom.markmapSvg, options, res.root);
+          } else {
+            state.markmapInstance.setData(res.root);
           }
-        } else {
-          root = markdownToMarkmapTree(markdown);
+
+          if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
+
+          [50, 150, 300, 600, 1000].forEach(delay => {
+            setTimeout(() => {
+              if (state.markmapInstance && state.markmapInstance.fit) state.markmapInstance.fit();
+            }, delay);
+          });
+          markmapDrawn = true;
         }
-
-        const modernPalette = ['#4f46e5', '#0284c7', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#ea580c'];
-        const options = {
-          duration: 300,
-          colorFreezeLevel: 2,
-          paddingX: 20,
-          spacingHorizontal: 65,
-          spacingVertical: 14,
-          color: (node) => {
-            if (node.depth === 0) return '#4f46e5';
-            const idx = (node.order || 0) % modernPalette.length;
-            return modernPalette[idx];
-          }
-        };
-
-        if (!state.markmapInstance || !state.markmapInstance.setData) {
-          state.markmapInstance = markmapObj.Markmap.create(dom.markmapSvg, options, root);
-        } else {
-          state.markmapInstance.setData(root);
-        }
-
-        if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
-
-        [50, 150, 300, 600, 1000].forEach(delay => {
-          setTimeout(() => {
-            if (state.markmapInstance && state.markmapInstance.fit) state.markmapInstance.fit();
-          }, delay);
-        });
-        return;
       } catch (e) {
-        console.warn('Lỗi khi vẽ qua Markmap, tự động dùng Pure-SVG renderer:', e);
+        console.warn('Lỗi khi vẽ qua Markmap library:', e);
       }
     }
 
-    // Nếu thư viện ngoài chưa tải xong (offline hoặc CDN chậm), VẼ NGAY BẰNG PURE SVG
-    const tree = markdownToMarkmapTree(markdown);
-    renderBuiltInSvgMindmap(tree, dom.markmapSvg);
-    if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
-
-    // Thử nâng cấp lên Markmap sau 400ms nếu CDN tải xong
-    if (!markmapObj && retryCount < 5) {
-      setTimeout(() => {
-        if (window.markmap?.Markmap) renderMindmap(markdown, retryCount + 1);
-      }, 400);
+    // NẾU MARKMAP CHƯA RENDER ĐƯỢC -> DÙNG NGAY BỘ VẼ PURE-SVG TỰ THÂN ĐẢM BẢO 100% HIỂN THỊ!
+    if (!markmapDrawn) {
+      const tree = markdownToMarkmapTree(markdown);
+      renderBuiltInSvgMindmap(tree, dom.markmapSvg);
+      if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
     }
   }
 
