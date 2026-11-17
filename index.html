@@ -50,7 +50,8 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
   <script>
-    tailwind.config = {
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
       theme: {
         extend: {
           colors: {
@@ -64,7 +65,7 @@
           }
         }
       }
-    }
+    };
   </script>
   <script>
     if ('scrollRestoration' in history) {

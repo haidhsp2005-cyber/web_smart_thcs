@@ -2363,12 +2363,6 @@ ${state.currentDoc.text}`;
       });
     }
   }
-    if (voice) {
-      speakWithWebSpeech(chunks, voice, 'en-US', activeMode.speed, 1.0, onDone);
-    } else {
-      playOnlineAudioStream(chunks, 'en', onDone);
-    }
-  }
 
   const playVietnameseText = playSmartSpeech; // Alias tương thích ngược
 
