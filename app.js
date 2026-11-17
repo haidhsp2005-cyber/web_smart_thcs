@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // API Key Rotation Pool
     apiKeys: [], // [{ key: string, status: 'ready'|'rate_limited'|'error', successCount: number }]
     currentKeyIndex: 0,
-    selectedModel: 'gemini-1.5-flash',
+    selectedModel: 'gemini-3.5-flash-lite',
 
     // Document Data
     currentDoc: {
@@ -273,10 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= API KEY ROTATION POOL LOGIC =================
-  // Chỉ giữ đúng 2 mô hình đã kiểm nghiệm thực tế thành công 100% với key của bạn
+  // Đưa Gemini 3.5 Flash Lite lên số 1: Tối ưu thông lượng cao nhất, tạo đề thi & trích xuất siêu nhanh
   const CASCADE_MODELS = [
-    'gemini-flash-lite-latest', // Ưu tiên số 1: Siêu Tốc 1-2 giây, phản hồi tức thì
-    'gemini-3.5-flash-lite'     // Dự phòng cấp 1: Hoạt động 100%, bảo hiểm khi mạng nghẽn
+    'gemini-3.5-flash-lite',    // Ưu tiên số 1: Tạo đề nhanh nhất, chuẩn xác nhất, thông lượng cao
+    'gemini-flash-lite-latest' // Dự phòng cấp 1: Bản cập nhật flash-lite mới nhất
   ];
 
   function getModelCandidates(preferred) {
@@ -1651,20 +1651,43 @@ ${state.currentDoc.text}`;
         tierScores[tierKey].correct++;
       }
 
-      // Highlight options on card
+      // Highlight options on card & bảo lưu nút radio chấm tròn của người dùng
       const card = document.getElementById(`quiz-card-${q.id}`);
       if (card) {
         const labels = card.querySelectorAll('.quiz-option-label');
         labels.forEach((lbl, idx) => {
-          // Disable further clicking
+          // Khóa không cho đổi đáp án sau khi nộp
           lbl.style.pointerEvents = 'none';
           
+          const radio = lbl.querySelector('input[type="radio"]');
+          if (radio) {
+            radio.disabled = true;
+            // Bắt buộc giữ dấu check chấm tròn cho đáp án mà học sinh đã chọn
+            if (idx === userChoice) {
+              radio.checked = true;
+            } else {
+              radio.checked = false;
+            }
+          }
+
           if (idx === q.correctIndex) {
             lbl.className = 'quiz-option-label flex items-start gap-3 p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/80 text-xs sm:text-sm font-semibold text-emerald-900';
-            lbl.innerHTML += `<span class="ml-auto text-emerald-600 font-bold"><i class="fa-solid fa-check"></i> Đúng</span>`;
+            if (!lbl.querySelector('.quiz-result-badge')) {
+              const badge = document.createElement('span');
+              badge.className = 'quiz-result-badge ml-auto text-emerald-600 font-bold shrink-0';
+              badge.innerHTML = `<i class="fa-solid fa-check"></i> ${idx === userChoice ? 'Đúng' : 'Đáp án đúng'}`;
+              lbl.appendChild(badge);
+            }
           } else if (idx === userChoice && !isCorrect) {
             lbl.className = 'quiz-option-label flex items-start gap-3 p-3 rounded-xl border-2 border-rose-500 bg-rose-50/80 text-xs sm:text-sm text-rose-900';
-            lbl.innerHTML += `<span class="ml-auto text-rose-600 font-bold"><i class="fa-solid fa-xmark"></i> Sai</span>`;
+            if (!lbl.querySelector('.quiz-result-badge')) {
+              const badge = document.createElement('span');
+              badge.className = 'quiz-result-badge ml-auto text-rose-600 font-bold shrink-0';
+              badge.innerHTML = `<i class="fa-solid fa-xmark"></i> Bạn đã chọn (Sai)`;
+              lbl.appendChild(badge);
+            }
+          } else {
+            lbl.className = 'quiz-option-label flex items-start gap-3 p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-500 opacity-60';
           }
         });
 
@@ -1789,12 +1812,12 @@ Trả về dữ liệu dưới dạng JSON thuần túy (KHÔNG có văn bản n
       "D. Lựa chọn 4"
     ],
     "correctIndex": 0,
-    "explanation": "Giải thích chi tiết ngắn gọn vì sao đáp án này đúng và các đáp án khác sai để học sinh cấp 2 hiểu thấu đáo..."
+    "explanation": "Giải thích ngắn gọn 1-2 câu trọng tâm vì sao đáp án này đúng để học sinh cấp 2 hiểu ngay."
   }
 ]
 
 NỘI DUNG BÀI HỌC CẤP 2:
-${state.currentDoc.text}`;
+${state.currentDoc.text.slice(0, 8000)}`;
 
     try {
       // Tối ưu hóa siêu tốc: Không gửi lại ảnh base64 nặng nếu văn bản bài học đã có sẵn
