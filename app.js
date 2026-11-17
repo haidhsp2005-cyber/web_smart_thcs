@@ -1933,10 +1933,12 @@ ${state.currentDoc.text}`;
     if (!text) return '';
     let s = text;
 
-    // 1. Loại bỏ các block code, cú pháp markdown, thẻ HTML
+    // 1. Loại bỏ các block code, cú pháp markdown, thẻ HTML, tên file & đuôi mở rộng file
     s = s.replace(/```[\s\S]*?```/g, '');
     s = s.replace(/<[^>]+>/g, ' ');
     s = s.replace(/`[^`]+`/g, ' ');
+    s = s.replace(/\b[a-zA-Z0-9_\-]+\.(docx|pdf|png|jpg|jpeg|txt|pptx|xlsx)\b/gi, ' ');
+    s = s.replace(/\b(tên file|tập tin|file name|document):\s*/gi, ' ');
 
     // 2. LOẠI BỎ TRIỆT ĐỂ TẤT CẢ EMOJI & BIỂU TƯỢNG UNICODE (tránh việc TTS đọc "biểu tượng bóng đèn", "tia chớp"...)
     s = s.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{FE00}-\u{FE0F}]/gu, ' ');
@@ -2171,6 +2173,8 @@ ${state.currentDoc.text}`;
     s = s.replace(/```[\s\S]*?```/g, '');
     s = s.replace(/<[^>]+>/g, ' ');
     s = s.replace(/`[^`]+`/g, ' ');
+    s = s.replace(/\b[a-zA-Z0-9_\-]+\.(docx|pdf|png|jpg|jpeg|txt|pptx|xlsx)\b/gi, ' ');
+    s = s.replace(/\b(file name|document):\s*/gi, ' ');
 
     // Loại bỏ emoji & symbols
     s = s.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{FE00}-\u{FE0F}]/gu, ' ');
@@ -2384,7 +2388,8 @@ ${state.currentDoc.text}`;
     if (dom.btnStopTts) dom.btnStopTts.classList.remove('hidden');
     if (dom.btnStopTtsSummary) dom.btnStopTtsSummary.classList.remove('hidden');
 
-    const rawText = `${title}. ${content}`;
+    // Tuyệt đối không đọc tên file hay tiêu đề tài liệu, chỉ đọc thẳng vào nội dung cốt lõi
+    const rawText = content ? content.trim() : (title || '');
     const isEn = isTextEnglish(rawText);
     const lang = isEn ? 'en' : 'vi';
 
@@ -2631,13 +2636,13 @@ ${state.currentDoc.text}`;
         const terms = (state.summaryData.terms || []).map(t => `${t.term}: ${t.definition}`).join('. ');
         const strategy = state.summaryData.studyStrategy ? 
           (state.summaryData.studyStrategy.feynmanTechnique ? `Mẹo ghi nhớ: ${state.summaryData.studyStrategy.feynmanTechnique}. ` : '') : '';
-        textToRead = `Tóm tắt kiến thức cốt lõi bài học ${title}. Điểm trọng tâm: ${takeaways}. Thuật ngữ quan trọng: ${terms}. ${strategy}`;
+        textToRead = `Điểm trọng tâm: ${takeaways}. Thuật ngữ quan trọng: ${terms}. ${strategy}`;
       } 
       // 2. Ưu tiên 2: Nếu chưa có tóm tắt nhưng có Thẻ học tập (Flashcards) AI
       else if (state.beamData && state.beamData.length > 0) {
         readType = 'flashcards';
-        textToRead = `Kiến thức cốt lõi qua bộ thẻ học tập bài học ${title}. ` + state.beamData.map((b, i) => 
-          `Thẻ ${i + 1}, ${b.title}: Câu hỏi: ${b.frontQuestion}. Trả lời: ${b.backAnswer}. ${b.takeaway ? 'Ghi nhớ nhanh: ' + b.takeaway : ''}`
+        textToRead = state.beamData.map((b, i) => 
+          `Thẻ ${i + 1}: Câu hỏi: ${b.frontQuestion}. Trả lời: ${b.backAnswer}. ${b.takeaway ? 'Ghi nhớ nhanh: ' + b.takeaway : ''}`
         ).join('. ');
       } 
       // 3. Ưu tiên 3: Nếu chưa có tóm tắt hay thẻ học tập, đọc nội dung bài học
@@ -3315,7 +3320,7 @@ ${state.currentDoc.text}`;
       let speechContent = '';
 
       if (isEn) {
-        speechContent = `Summary for lesson: ${title}. `;
+        speechContent = '';
         if (state.summaryData.coreTakeaways && state.summaryData.coreTakeaways.length > 0) {
           speechContent += `Core Takeaways. ${state.summaryData.coreTakeaways.join('. ')}. `;
         }
@@ -3331,7 +3336,7 @@ ${state.currentDoc.text}`;
           }
         }
       } else {
-        speechContent = `Tóm tắt bài học: ${title}. `;
+        speechContent = '';
         if (state.summaryData.coreTakeaways && state.summaryData.coreTakeaways.length > 0) {
           speechContent += `Điểm cốt lõi: ${state.summaryData.coreTakeaways.join('. ')}. `;
         }
@@ -3472,7 +3477,7 @@ ${state.currentDoc.text}`;
         const b = state.beamData[currentIdx];
         currentIdx++;
         showToast(`🔊 Đang đọc Thẻ ${currentIdx}/${state.beamData.length}: ${b.title}`, 'info');
-        const text = `Thẻ số ${currentIdx}: ${b.title}. Câu hỏi: ${b.frontQuestion}. Lời giải: ${b.backAnswer}.`;
+        const text = `Thẻ số ${currentIdx}: Câu hỏi: ${b.frontQuestion}. Lời giải: ${b.backAnswer}. ${b.takeaway ? 'Trọng tâm ba mươi giây: ' + b.takeaway : ''}`;
         playVietnameseText(`Thẻ ${currentIdx}`, text, () => {
           setTimeout(() => {
             if (isSpeaking) playNextBeam();
