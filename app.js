@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnEnterLesson: document.getElementById('btn-enter-lesson'),
     btnOcrImage: document.getElementById('btn-ocr-image'),
     btnViewExtracted: document.getElementById('btn-view-extracted'),
+    btnReadDoc: document.getElementById('btn-read-doc'),
     btnClearDoc: document.getElementById('btn-clear-doc'),
 
     // Tabs
@@ -728,18 +729,31 @@ document.addEventListener('DOMContentLoaded', () => {
     return str.trim().split(/\s+/).filter(Boolean).length;
   }
 
-  function setActiveDocument(title, text, type, imageBase64 = null) {
+  function setActiveDocument(title, text, type, imageBase64 = null, isSample = false) {
     state.currentDoc.title = title;
     state.currentDoc.text = text;
     state.currentDoc.type = type;
     state.currentDoc.imageBase64 = imageBase64;
     state.currentDoc.wordCount = countWords(text);
 
+    // Dừng âm thanh đang phát cũ nếu có
+    stopAllSpeech();
+
+    // Nếu người dùng tải file bài học mới vào (không phải bài mẫu do hệ thống tự load):
+    // Reset dữ liệu tóm tắt cũ để khi bấm "Nghe đọc tóm tắt" hệ thống sẽ đọc bài mới của học sinh!
+    if (!isSample) {
+      state.summaryData = null;
+      if (dom.summaryEmptyState) dom.summaryEmptyState.classList.remove('hidden');
+      if (dom.sectionTakeaways) dom.sectionTakeaways.classList.add('hidden');
+      if (dom.sectionTerms) dom.sectionTerms.classList.add('hidden');
+      if (dom.sectionStrategies) dom.sectionStrategies.classList.add('hidden');
+    }
+
     // Update UI
     dom.docPreviewCard.classList.remove('hidden');
     dom.docTitle.textContent = title;
     dom.docBadgeType.textContent = type.toUpperCase();
-    dom.docStats.textContent = `${state.currentDoc.wordCount} từ • Sẵn sàng phân tích`;
+    dom.docStats.textContent = `${state.currentDoc.wordCount} từ • Sẵn sàng phân tích & nghe đọc`;
 
     const iconMap = {
       word: 'fa-file-word bg-blue-600',
@@ -2223,6 +2237,42 @@ ${state.currentDoc.text}`;
     dom.extractedTextModal.classList.remove('hidden');
   });
 
+  // Nghe đọc trực tiếp tài liệu vừa tải lên
+  if (dom.btnReadDoc) {
+    dom.btnReadDoc.addEventListener('click', () => {
+      if (isSpeaking) {
+        stopAllSpeech();
+        showToast('Đã dừng phát âm tài liệu.', 'info');
+        return;
+      }
+      if (!state.currentDoc.text || !state.currentDoc.text.trim()) {
+        if (state.currentDoc.type === 'image') {
+          showToast('Tài liệu là ảnh. Hãy bấm "Nhận diện OCR" trước để trích xuất văn bản trước khi nghe đọc!', 'warning');
+        } else {
+          showToast('Chưa có nội dung văn bản để đọc!', 'warning');
+        }
+        return;
+      }
+
+      const title = state.currentDoc.title || 'Tài liệu học tập';
+      // Lấy đoạn văn bản thích hợp để đọc mượt mà
+      const textToRead = state.currentDoc.text.slice(0, 3000);
+      dom.btnReadDoc.classList.add('bg-indigo-600', 'text-white');
+      dom.btnReadDoc.classList.remove('bg-indigo-50', 'text-indigo-700');
+      const icon = dom.btnReadDoc.querySelector('i');
+      if (icon) icon.className = 'fa-solid fa-volume-high text-white animate-bounce';
+
+      playSmartSpeech(title, textToRead, () => {
+        if (dom.btnReadDoc) {
+          dom.btnReadDoc.classList.remove('bg-indigo-600', 'text-white');
+          dom.btnReadDoc.classList.add('bg-indigo-50', 'text-indigo-700');
+          const ic = dom.btnReadDoc.querySelector('i');
+          if (ic) ic.className = 'fa-solid fa-volume-high text-indigo-600';
+        }
+      });
+    });
+  }
+
   dom.btnCloseExtractedModal.addEventListener('click', () => dom.extractedTextModal.classList.add('hidden'));
   dom.btnSaveExtractedText.addEventListener('click', () => {
     const newText = dom.extractedTextArea.value;
@@ -3146,7 +3196,7 @@ ${state.currentDoc.text}`;
       return;
     }
 
-    setActiveDocument(demo.title, demo.rawContent, 'text');
+    setActiveDocument(demo.title, demo.rawContent, 'text', null, true);
 
     // Load sample Mindmap
     renderMindmap(demo.mindmapMarkdown);
