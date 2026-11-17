@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return list;
   }
 
-  // BỘ PHÂN TÍCH & TỰ ĐỘNG SỬA LỖI JSON AN TOÀN CHO CÔNG THỨC TOÁN LATEX
+  // BỘ PHÂN TÍCH & TỰ ĐỘNG SỬA LỖI JSON AN TOÀN CHO CÔNG THỨC TOÁN LATEX & DỮ LIỆU CẮT DỞ
   function safeParseJson(rawStr) {
     if (!rawStr) throw new Error("Dữ liệu phản hồi từ AI rỗng.");
     
@@ -305,20 +305,50 @@ document.addEventListener('DOMContentLoaded', () => {
       // Tiếp tục tự động sửa lỗi
     }
 
-    // 3. Tự động sửa lỗi Bad Escaped Characters do ký hiệu LaTeX Toán/KHTN (\Delta, \sqrt, \pm, \frac, \le, \ge, v.v.)
+    // 3. Hàm chuẩn hóa và sửa chữa toàn diện ký tự Escape đặc thù của LaTeX & Tiếng Việt
+    function fixJsonEscapes(str) {
+      if (!str) return '';
+      // Loại bỏ các ký tự điều khiển ẩn (trừ \t \n \r)
+      let s = str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, ' ');
+
+      // Xử lý triệt để ký tự gạch chéo ngược \:
+      // - Giữ nguyên: \" (escaped quote), \\ (escaped backslash), \/ (escaped slash)
+      // - Giữ nguyên unicode chuẩn: \u[0-9a-fA-F]{4}
+      // - Giữ nguyên escape ký tự điều khiển chuẩn đơn lẻ: \n, \r, \t
+      // - Tất cả các từ LaTeX (\frac, \sqrt, \Delta, \times, \right, \text, \begin, \underline, \Omega, \pm, \cdot, v.v.):
+      //   BẮT BUỘC biến thành \\ (double backslash) để JSON.parse hợp lệ 100%!
+      s = s.replace(/\\(?:([a-zA-Z]+)|([^"\\/]))/g, (match, word, char) => {
+        if (word) {
+          if (/^u[0-9a-fA-F]{4}$/.test(word)) {
+            return '\\' + word;
+          }
+          if (word === 'n' || word === 'r' || word === 't') {
+            return '\\' + word;
+          }
+          return '\\\\' + word;
+        }
+        if (char) {
+          return '\\\\' + char;
+        }
+        return match;
+      });
+
+      return s;
+    }
+
+    // 4. Thử parse sau khi đã sửa chữa escape
     try {
-      const repaired = cleaned.replace(/\\(?!["\\/bfnrtu]|u[0-9a-fA-F]{4})/g, '\\\\');
+      const repaired = fixJsonEscapes(cleaned);
       return JSON.parse(repaired);
     } catch (e2) {}
 
-    // 4. Trích xuất substring giữa mảng [ ... ] hoặc object { ... }
+    // 5. Trích xuất substring giữa mảng [ ... ] hoặc object { ... }
     const firstBracket = cleaned.indexOf('[');
     const lastBracket = cleaned.lastIndexOf(']');
     if (firstBracket !== -1 && lastBracket > firstBracket) {
       const arraySub = cleaned.substring(firstBracket, lastBracket + 1);
       try {
-        const repaired = arraySub.replace(/\\(?!["\\/bfnrtu]|u[0-9a-fA-F]{4})/g, '\\\\');
-        return JSON.parse(repaired);
+        return JSON.parse(fixJsonEscapes(arraySub));
       } catch (e3) {}
     }
 
@@ -327,15 +357,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (firstBrace !== -1 && lastBrace > firstBrace) {
       const objSub = cleaned.substring(firstBrace, lastBrace + 1);
       try {
-        const repaired = objSub.replace(/\\(?!["\\/bfnrtu]|u[0-9a-fA-F]{4})/g, '\\\\');
-        return JSON.parse(repaired);
+        return JSON.parse(fixJsonEscapes(objSub));
       } catch (e4) {}
     }
 
-    // 5. Cứu nguy cuối cùng: làm sạch ký tự điều khiển ẩn
-    const superCleaned = cleaned
-      .replace(/[\u0000-\u001F]+/g, ' ')
-      .replace(/\\(?!["\\/bfnrtu]|u[0-9a-fA-F]{4})/g, '\\\\');
+    // 6. Cứu hộ trường hợp JSON mảng bị cắt ngang ở câu cuối (Truncated JSON do giới hạn token)
+    if (firstBracket !== -1) {
+      let partial = cleaned.substring(firstBracket);
+      const lastObjClose = partial.lastIndexOf('}');
+      if (lastObjClose !== -1) {
+        partial = partial.substring(0, lastObjClose + 1) + ']';
+        try {
+          const res = JSON.parse(fixJsonEscapes(partial));
+          if (Array.isArray(res) && res.length > 0) {
+            console.warn(`JSON đã được giải cứu từ phản hồi dở dang (${res.length} câu hoàn chỉnh).`);
+            return res;
+          }
+        } catch (e5) {}
+      }
+    }
+
+    // 7. Cứu nguy cuối cùng: làm sạch ký tự điều khiển và parse
+    const superCleaned = fixJsonEscapes(cleaned);
     return JSON.parse(superCleaned);
   }
 
@@ -1730,6 +1773,7 @@ Dựa trên tài liệu bài học cấp 2 sau, hãy tạo một bộ đề thi 
 - ${hardCount} câu mức Khó (tier: "hard" - Vận dụng cao, tư duy logic, câu hỏi bẫy, bài toán hoặc thí nghiệm thực tế cấp 2).
 
 QUAN TRỌNG VỀ CÔNG THỨC TOÁN & KHOA HỌC: Bắt buộc viết các công thức toán, lý, hóa trong câu hỏi, đáp án và giải thích dưới dạng LaTeX kẹp giữa dấu $ (ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$, $P = U \\cdot I$, $Q = I^2 R t$).
+LƯU Ý KỸ THUẬT VỀ ĐỊNH DẠNG JSON: Mọi công thức LaTeX trong chuỗi JSON PHẢI dùng 2 dấu gạch chéo ngược \\\\ (ví dụ \\\\frac{U}{R}, \\\\sqrt{x}, \\\\Delta, \\\\cdot, \\\\Omega, \\\\pm) để đảm bảo chuỗi JSON hợp lệ 100%.
 Mỗi câu hỏi có 4 đáp án (A, B, C, D) với đúng 1 đáp án chính xác.
 Trả về dữ liệu dưới dạng JSON thuần túy (KHÔNG có văn bản nào ngoài JSON) theo cấu trúc mảng sau:
 [
@@ -1757,7 +1801,8 @@ ${state.currentDoc.text}`;
       const imgToSend = state.currentDoc.text ? null : state.currentDoc.imageBase64;
       const rawRes = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: true,
-        maxTokens: count > 10 ? 3000 : 2000,
+        maxTokens: count >= 15 ? 8192 : (count >= 10 ? 6000 : 3500),
+        timeoutMs: 45000,
         taskName: `Đang tạo bộ đề thi ${count} câu AI...`
       });
       const parsed = safeParseJson(rawRes);
@@ -1887,14 +1932,20 @@ ${state.currentDoc.text}`;
   function cleanVietnameseForSpeech(text) {
     if (!text) return '';
     let s = text;
-    // 1. Loại bỏ các block code, cú pháp markdown
+
+    // 1. Loại bỏ các block code, cú pháp markdown, thẻ HTML
     s = s.replace(/```[\s\S]*?```/g, '');
-    s = s.replace(/[#*_`~>|]/g, ' ');
+    s = s.replace(/<[^>]+>/g, ' ');
+    s = s.replace(/`[^`]+`/g, ' ');
 
-    // 2. Loại bỏ dấu gạch đầu dòng (bullet points) để tuyệt đối không bị đọc thành từ "trừ"
-    s = s.replace(/(^|\n|\.\s*)[-–—•*]\s+/g, '$1 ');
+    // 2. LOẠI BỎ TRIỆT ĐỂ TẤT CẢ EMOJI & BIỂU TƯỢNG UNICODE (tránh việc TTS đọc "biểu tượng bóng đèn", "tia chớp"...)
+    s = s.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{FE00}-\u{FE0F}]/gu, ' ');
 
-    // 3. Chuẩn hóa tên môn học & cấp học THCS
+    // 3. Loại bỏ ký hiệu đầu dòng (bullet points) để tuyệt đối không bị đọc thành "trừ", "chấm", "gạch", "sao"
+    s = s.replace(/(^|\n|\.\s*)[-–—•*+◦▪▫►▶✓✔✕✖★☆]\s+/g, '$1 ');
+    s = s.replace(/[-–—•◦▪▫►▶✓✔✕✖★☆]/g, ' ');
+
+    // 4. Chuẩn hóa tên môn học & cấp học THCS
     s = s.replace(/Toán\s*9/gi, 'Toán chín');
     s = s.replace(/Toán\s*8/gi, 'Toán tám');
     s = s.replace(/Toán\s*7/gi, 'Toán bảy');
@@ -1903,9 +1954,9 @@ ${state.currentDoc.text}`;
     s = s.replace(/KHTN\s*8/gi, 'Khoa học tự nhiên tám');
     s = s.replace(/KHTN\s*7/gi, 'Khoa học tự nhiên bảy');
     s = s.replace(/KHTN\s*6/gi, 'Khoa học tự nhiên sáu');
-    s = s.replace(/THCS/gi, 'Trung học cơ sở');
+    s = s.replace(/\bTHCS\b/gi, 'Trung học cơ sở');
 
-    // 4. XỬ LÝ CÔNG THỨC TOÁN HỌC & LATEX CHUYÊN SÂU THCS
+    // 5. XỬ LÝ CÔNG THỨC TOÁN HỌC & KHOA HỌC TỰ NHIÊN THCS THÀNH LỜI ĐỌC TỰ NHIÊN
     // Hệ phương trình: \begin{cases} ... \end{cases}
     s = s.replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/gi, (m, content) => {
       const equations = content.split(/\\\\/).map(eq => eq.trim()).filter(Boolean);
@@ -1917,7 +1968,7 @@ ${state.currentDoc.text}`;
     s = s.replace(/Δ'/g, ' Đen-ta phẩy ');
     s = s.replace(/Δ/g, ' Đen-ta ');
 
-    // Ký hiệu góc hình học THCS: \widehat{ABC}, \angle ABC, ^\circ
+    // Ký hiệu góc hình học: \widehat{ABC}, \angle ABC, ^\circ
     s = s.replace(/\\widehat\{([a-zA-Z0-9]+)\}/g, ' góc $1 ');
     s = s.replace(/\\angle\s*([a-zA-Z0-9]+)/g, ' góc $1 ');
     s = s.replace(/(\d+)\^\\circ|(\d+)\s*°/g, '$1 độ');
@@ -1931,7 +1982,7 @@ ${state.currentDoc.text}`;
     s = s.replace(/\\parallel|\\\/\\\//g, ' song song với ');
     s = s.replace(/\\sim\b/g, ' đồng dạng với ');
 
-    // Ký hiệu tập hợp (Toán 6, 9): \in, \notin, \subset, \cup, \cap, \emptyset
+    // Ký hiệu tập hợp: \in, \notin, \subset, \cup, \cap, \emptyset
     s = s.replace(/\\notin/g, ' không thuộc ');
     s = s.replace(/\\in\b/g, ' thuộc ');
     s = s.replace(/\\subset/g, ' là tập con của ');
@@ -1971,11 +2022,12 @@ ${state.currentDoc.text}`;
     s = s.replace(/\\neq|≠/g, ' khác ');
     s = s.replace(/\\ge(q)?|≥/g, ' lớn hơn hoặc bằng ');
     s = s.replace(/\\le(q)?|≤/g, ' nhỏ hơn hoặc bằng ');
+    s = s.replace(/\\approx|≈/g, ' xấp xỉ ');
     s = s.replace(/\\Leftrightarrow|⇔/g, ' tương đương ');
     s = s.replace(/\\Rightarrow|⇒/g, ' suy ra ');
     s = s.replace(/\\cdot|\\times/g, ' nhân ');
 
-    // Đơn vị khoa học phổ biến
+    // Đơn vị khoa học KHTN
     s = s.replace(/1\s*kWh/gi, ' một ki-lô-oát giờ ');
     s = s.replace(/kWh/gi, ' ki-lô-oát giờ ');
     s = s.replace(/(\d+)\s*kW\b/gi, '$1 ki-lô-oát');
@@ -1986,14 +2038,29 @@ ${state.currentDoc.text}`;
     s = s.replace(/(\d+)\s*W\b/g, '$1 Oát');
     s = s.replace(/(\d+)\s*J\b/g, '$1 Jun');
 
-    // Dấu phép tính (chỉ đọc phép tính khi nằm giữa các con số/ký tự toán)
+    // Ký hiệu phép tính số học giữa các đại lượng
     s = s.replace(/(\d+|[a-zA-Z\)])\s*\+\s*(\d+|[a-zA-Z\(])/g, '$1 cộng $2');
     s = s.replace(/(\d+|[a-zA-Z\)])\s*-\s*(\d+|[a-zA-Z\(])/g, '$1 trừ $2');
     s = s.replace(/(\d+|[a-zA-Z\)])\s*=\s*(\d+|[a-zA-Z\(])/g, '$1 bằng $2');
 
-    // Dọn dẹp các ký tự LaTeX còn sót lại
-    s = s.replace(/[\$\\{\}\[\]]/g, ' ');
-    s = s.replace(/[-–—]/g, ', ');
+    // 6. LOẠI BỎ TOÀN BỘ KÝ TỰ ĐẶC BIỆT CÒN LẠI ĐỂ CHỈ ĐỌC NỘI DUNG VĂN BẢN THUẦN TÚY:
+    // - Dấu ngoặc đơn, ngoặc vuông, ngoặc nhọn: thay bằng dấu phẩy để giọng đọc ngắt câu tự nhiên thay vì phát âm "mở ngoặc", "đóng ngoặc"
+    s = s.replace(/[\(\)\[\]\{\}]/g, ', ');
+    // - Dấu gạch chéo /, \: thay bằng khoảng trắng
+    s = s.replace(/[\/\\]/g, ' ');
+    // - Các ký tự Markdown & đặc biệt: #, *, _, ~, >, |, @, $, ^, &, %, +, =, <, >
+    s = s.replace(/[%]/g, ' phần trăm ');
+    s = s.replace(/[&]/g, ' và ');
+    s = s.replace(/[#*_`~>|@$^+=<>]/g, ' ');
+    // - Dấu ngoặc kép, nháy đơn
+    s = s.replace(/["'“”‘’«»]/g, ' ');
+    // - Dấu chấm lửng ...
+    s = s.replace(/\.{2,}/g, '. ');
+
+    // 7. Làm sạch các dấu phẩy, chấm lặp và khoảng trắng dư thừa
+    s = s.replace(/,\s*,+/g, ',');
+    s = s.replace(/\.\s*\.+/g, '.');
+    s = s.replace(/,\s*\./g, '.');
     s = s.replace(/\s+/g, ' ');
     return s.trim();
   }
@@ -2102,7 +2169,16 @@ ${state.currentDoc.text}`;
     if (!text) return '';
     let s = text;
     s = s.replace(/```[\s\S]*?```/g, '');
-    s = s.replace(/[#*_`~>|]/g, ' ');
+    s = s.replace(/<[^>]+>/g, ' ');
+    s = s.replace(/`[^`]+`/g, ' ');
+
+    // Loại bỏ emoji & symbols
+    s = s.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{FE00}-\u{FE0F}]/gu, ' ');
+
+    // Loại bỏ bullets
+    s = s.replace(/(^|\n|\.\s*)[-–—•*+◦▪▫►▶✓✔✕✖★☆]\s+/g, '$1 ');
+    s = s.replace(/[-–—•◦▪▫►▶✓✔✕✖★☆]/g, ' ');
+
     s = s.replace(/\bQ(\d+)\b/gi, 'Question $1');
     s = s.replace(/\bQuestion\s*(\d+)[\.:]/gi, 'Question $1. ');
     s = s.replace(/\bA\.\s*/g, 'Option A: ');
@@ -2110,7 +2186,16 @@ ${state.currentDoc.text}`;
     s = s.replace(/\bC\.\s*/g, 'Option C: ');
     s = s.replace(/\bD\.\s*/g, 'Option D: ');
     s = s.replace(/\bvs\.\b/gi, 'versus');
-    s = s.replace(/[\$\\{\}]/g, ' ');
+    s = s.replace(/%/g, ' percent ');
+    s = s.replace(/&/g, ' and ');
+
+    s = s.replace(/[\(\)\[\]\{\}]/g, ', ');
+    s = s.replace(/[\/\\]/g, ' ');
+    s = s.replace(/[#*_`~>|@$^+=<>]/g, ' ');
+    s = s.replace(/["'“”‘’«»]/g, ' ');
+    s = s.replace(/\.{2,}/g, '. ');
+
+    s = s.replace(/,\s*,+/g, ',');
     s = s.replace(/\s+/g, ' ');
     return s.trim();
   }
@@ -2526,30 +2611,60 @@ ${state.currentDoc.text}`;
     dom.extractedTextModal.classList.remove('hidden');
   });
 
-  // Nghe đọc trực tiếp tài liệu vừa tải lên
+  // Nghe đọc thông minh: Ưu tiên Bản tóm tắt kiến thức AI hoặc Thẻ học tập theo yêu cầu học sinh
   if (dom.btnReadDoc) {
     dom.btnReadDoc.addEventListener('click', () => {
       if (isSpeaking) {
         stopAllSpeech();
-        showToast('Đã dừng phát âm tài liệu.', 'info');
-        return;
-      }
-      if (!state.currentDoc.text || !state.currentDoc.text.trim()) {
-        if (state.currentDoc.type === 'image') {
-          showToast('Tài liệu là ảnh. Hãy bấm "Nhận diện OCR" trước để trích xuất văn bản trước khi nghe đọc!', 'warning');
-        } else {
-          showToast('Chưa có nội dung văn bản để đọc!', 'warning');
-        }
+        showToast('Đã dừng phát âm.', 'info');
         return;
       }
 
       const title = state.currentDoc.title || 'Tài liệu học tập';
-      // Lấy đoạn văn bản thích hợp để đọc mượt mà
-      const textToRead = state.currentDoc.text.slice(0, 3000);
+      let textToRead = '';
+      let readType = 'summary';
+
+      // 1. Ưu tiên 1: Đọc theo Bản tóm tắt kiến thức cốt lõi AI
+      if (state.summaryData && ((state.summaryData.coreTakeaways && state.summaryData.coreTakeaways.length > 0) || (state.summaryData.terms && state.summaryData.terms.length > 0))) {
+        readType = 'summary';
+        const takeaways = (state.summaryData.coreTakeaways || []).join('. ');
+        const terms = (state.summaryData.terms || []).map(t => `${t.term}: ${t.definition}`).join('. ');
+        const strategy = state.summaryData.studyStrategy ? 
+          (state.summaryData.studyStrategy.feynmanTechnique ? `Mẹo ghi nhớ: ${state.summaryData.studyStrategy.feynmanTechnique}. ` : '') : '';
+        textToRead = `Tóm tắt kiến thức cốt lõi bài học ${title}. Điểm trọng tâm: ${takeaways}. Thuật ngữ quan trọng: ${terms}. ${strategy}`;
+      } 
+      // 2. Ưu tiên 2: Nếu chưa có tóm tắt nhưng có Thẻ học tập (Flashcards) AI
+      else if (state.beamData && state.beamData.length > 0) {
+        readType = 'flashcards';
+        textToRead = `Kiến thức cốt lõi qua bộ thẻ học tập bài học ${title}. ` + state.beamData.map((b, i) => 
+          `Thẻ ${i + 1}, ${b.title}: Câu hỏi: ${b.frontQuestion}. Trả lời: ${b.backAnswer}. ${b.takeaway ? 'Ghi nhớ nhanh: ' + b.takeaway : ''}`
+        ).join('. ');
+      } 
+      // 3. Ưu tiên 3: Nếu chưa có tóm tắt hay thẻ học tập, đọc nội dung bài học
+      else if (state.currentDoc.text && state.currentDoc.text.trim()) {
+        readType = 'doc';
+        textToRead = state.currentDoc.text.slice(0, 3000);
+      } else {
+        if (state.currentDoc.type === 'image') {
+          showToast('Tài liệu là ảnh. Hãy bấm "Nhận diện OCR" trước để trích xuất văn bản trước khi nghe đọc!', 'warning');
+        } else {
+          showToast('Chưa có nội dung văn bản để nghe đọc!', 'warning');
+        }
+        return;
+      }
+
       dom.btnReadDoc.classList.add('bg-indigo-600', 'text-white');
       dom.btnReadDoc.classList.remove('bg-indigo-50', 'text-indigo-700');
       const icon = dom.btnReadDoc.querySelector('i');
       if (icon) icon.className = 'fa-solid fa-volume-high text-white animate-bounce';
+
+      if (readType === 'summary') {
+        showToast(`🔊 Đang nghe đọc: Bản tóm tắt cốt lõi bài "${title.slice(0, 30)}..."`, 'info');
+      } else if (readType === 'flashcards') {
+        showToast(`🔊 Đang nghe đọc: Bộ thẻ học tập bài "${title.slice(0, 30)}..."`, 'info');
+      } else {
+        showToast(`🔊 Đang nghe đọc nội dung bài "${title.slice(0, 30)}..."`, 'info');
+      }
 
       playSmartSpeech(title, textToRead, () => {
         if (dom.btnReadDoc) {
