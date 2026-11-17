@@ -163,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Tab 4: Beams
     generateBeamsBtn: document.getElementById('generate-beams-btn'),
+    btnExportBeamsPdf: document.getElementById('btn-export-beams-pdf'),
     btnToggleTts: document.getElementById('btn-toggle-tts'),
     btnStopTts: document.getElementById('btn-stop-tts'),
     beamMasteryCount: document.getElementById('beam-mastery-count'),
@@ -3441,6 +3442,179 @@ ${state.currentDoc.text}`;
 
   // Tab 4 Beams Controls
   dom.generateBeamsBtn.addEventListener('click', generateBeamsWithAi);
+
+  // Xuất toàn bộ thẻ học tập Flashcards thành file PDF / Bản in A4 chuẩn
+  function exportBeamsAsPdf() {
+    if (!state.beamData || state.beamData.length === 0) {
+      showToast('Chưa có thẻ học tập nào để xuất PDF!', 'warning');
+      return;
+    }
+
+    const title = state.currentDoc.title || 'Bộ Thẻ Học Tập THCS';
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+
+    const cardsHtml = state.beamData.map((beam, i) => `
+      <div class="beam-print-card">
+        <div class="beam-print-header">
+          <span class="beam-badge">Thẻ #${i + 1} • ${beam.badge || 'Trọng tâm'}</span>
+          <span class="beam-title">${beam.title || ''}</span>
+        </div>
+        <div class="beam-print-body">
+          <div class="beam-q-box">
+            <strong style="color: #1e1b4b; font-size: 11px;">❓ Câu hỏi / Khái niệm:</strong>
+            <div>${beam.frontQuestion || ''}</div>
+          </div>
+          <div class="beam-a-box">
+            <strong style="color: #166534; font-size: 11px;">💡 Lời giải / Trọng tâm:</strong>
+            <div>${beam.backAnswer || ''}</div>
+          </div>
+          ${beam.takeaway ? `<div class="beam-takeaway">⚡ <strong>Ghi nhớ 30s:</strong> ${beam.takeaway}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="vi">
+      <head>
+        <meta charset="utf-8">
+        <title>Thẻ Học Tập - ${title}</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+        <style>
+          @page { size: A4; margin: 12mm; }
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #fff;
+            margin: 0;
+            padding: 10px;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+          }
+          .header h1 {
+            font-size: 17px;
+            color: #1e1b4b;
+            margin: 0 0 4px 0;
+            text-transform: uppercase;
+          }
+          .header p {
+            font-size: 11px;
+            color: #64748b;
+            margin: 0;
+          }
+          .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+          }
+          .beam-print-card {
+            border: 1.5px dashed #6366f1;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafafa;
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .beam-print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+          }
+          .beam-badge {
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: bold;
+          }
+          .beam-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #0f172a;
+          }
+          .beam-q-box {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            line-height: 1.45;
+          }
+          .beam-a-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #166534;
+          }
+          .beam-takeaway {
+            background: #fefce8;
+            border: 1px solid #fef08a;
+            border-radius: 6px;
+            padding: 6px;
+            font-size: 10.5px;
+            color: #854d0e;
+            line-height: 1.4;
+          }
+          @media print {
+            body { padding: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>BỘ THẺ HỌC TẬP THÔNG MINH (FLASHCARDS) - ${title}</h1>
+          <p>Nền tảng Học tập Thông minh SmartEdu THCS • Cuộc thi KHKT • Hỗ trợ in giấy & cắt rời ôn thi</p>
+        </div>
+        <div class="grid">
+          ${cardsHtml}
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"><\/script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"><\/script>
+        <script>
+          window.addEventListener('DOMContentLoaded', () => {
+            if (window.renderMathInElement) {
+              renderMathInElement(document.body, {
+                delimiters: [
+                  {left: '$$', right: '$$', display: true},
+                  {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+              });
+            }
+            setTimeout(() => {
+              window.print();
+            }, 300);
+          });
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+
+  if (dom.btnExportBeamsPdf) {
+    dom.btnExportBeamsPdf.addEventListener('click', exportBeamsAsPdf);
+  }
   
   dom.btnBeamFocus.addEventListener('click', () => openFocusMode(0));
   dom.btnCloseFocus.addEventListener('click', () => dom.beamFocusModal.classList.add('hidden'));
