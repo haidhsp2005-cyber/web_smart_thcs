@@ -947,23 +947,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const prompt = `Bạn là chuyên gia nhận diện văn bản (OCR) và phiên giải tài liệu học tập, ĐẶC BIỆT LÀ TOÁN HỌC & KHOA HỌC TỰ NHIÊN CẤP 2 (THCS: Lớp 6, 7, 8, 9).
-Hãy đọc cẩn thận bức ảnh này và trích xuất TOÀN BỘ nội dung bài học ra văn bản tiếng Việt rõ ràng, giữ nguyên tiêu đề, các phần đánh số (I, II, 1, 2, a, b):
+      const prompt = `Bạn là chuyên gia nhận diện văn bản (OCR) và phiên giải tài liệu học tập, ĐẶC BIỆT LÀ TOÁN HỌC, VẬT LÝ, HÓA HỌC & KHOA HỌC TỰ NHIÊN (Cả Cấp 2 THCS & Cấp 3 THPT).
+Hãy đọc cẩn thận tài liệu/bức ảnh này và trích xuất TOÀN BỘ nội dung bài học ra văn bản tiếng Việt rõ ràng, giữ nguyên tiêu đề, các phần đánh số (I, II, 1, 2, a, b):
 
-QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
-1. Chuyển TẤT CẢ công thức Toán, biểu thức đại số, hình học sang định dạng LaTeX/KaTeX kẹp giữa dấu $ (công thức trong dòng $...$) hoặc $$ (công thức riêng dòng $$...$$).
-2. Phân số: Viết dạng \\frac{a}{b} hoặc \\frac{x + 1}{x - 2}.
-3. Căn thức: Viết dạng \\sqrt{A} hoặc \\sqrt[3]{A}.
-4. Lũy thừa, chỉ số: Viết dạng x^2, x_1, x_2, (a+b)^2.
-5. Hệ phương trình: Viết dạng \\begin{cases} ax + by = c \\\\ a'x + b'y = c' \\end{cases}.
-6. Ký hiệu hình học THCS: Góc (\\widehat{ABC} hoặc \\angle ABC), tam giác (\\triangle ABC), vuông góc (\\perp), song song (// hoặc \\parallel), đồng dạng (\\sim), độ (^\\circ).
-7. Ký hiệu logic & toán tử: \\Delta, \\Delta', \\pm, \\neq, \\ge, \\le, \\Leftrightarrow, \\Rightarrow, \\in, \\notin.
-8. Giữ nguyên cấu trúc bảng biểu, hình vẽ mô tả nếu có. Chỉ trả về nội dung đã nhận diện, không kèm lời chào.`;
+QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN, LÝ, HÓA CHUẨN XÁC:
+1. Chuyển TẤT CẢ công thức Toán, biểu thức đại số, hình học, công thức Vật lý, phương trình Hóa học sang định dạng LaTeX/KaTeX kẹp giữa dấu $ (công thức trong dòng $...$) hoặc $$ (công thức riêng dòng $$...$$).
+2. Phân số & căn thức: \\frac{a}{b}, \\frac{x + 1}{x - 2}, \\sqrt{A}, \\sqrt[n]{A}.
+3. Lũy thừa, chỉ số: x^2, x_1, x_2, (a+b)^2, \\log_a b, e^x.
+4. Hệ phương trình & ngoặc: \\begin{cases} ax + by = c \\\\ a'x + b'y = c' \\end{cases}.
+5. Giải tích & hình học THCS/THPT: \\int_a^b f(x)dx, \\lim_{x \\to x_0}, f'(x), \\vec{u}(x;y;z), \\triangle ABC, \\widehat{ABC}, \\perp, \\parallel, \\sim, ^\\circ.
+6. Vật lý: \\vec{F}, I = \\frac{U}{R}, P = U \\cdot I, x = A\\cos(\\omega t + \\varphi), \\lambda = \\frac{v}{f}, \\Omega, \\mu.
+7. Hóa học: Phương trình phản ứng (dùng \\rightarrow hoặc \\rightleftharpoons), điều kiện nhiệt độ (\\xrightarrow{t^\\circ}), ion (\\text{SO}_4^{2-}, \\text{Fe}^{3+}), kết tủa (\\downarrow), bay hơi (\\uparrow), công thức hữu cơ (\\text{CH}_3\\text{COOH}).
+8. Ký hiệu logic & toán tử: \\Delta, \\Delta', \\pm, \\mp, \\neq, \\ge, \\le, \\Leftrightarrow, \\Rightarrow, \\in, \\notin, \\forall, \\exists.
+9. Giữ nguyên cấu trúc bảng biểu, hình vẽ mô tả nếu có. Chỉ trả về nội dung đã nhận diện, không kèm lời chào.`;
 
       const extracted = await callGeminiWithRotation(prompt, state.currentDoc.imageBase64, {
         isJson: false,
         maxTokens: 3000,
-        taskName: 'Đang trích xuất chữ & công thức Toán qua AI (OCR)...'
+        taskName: 'Đang trích xuất chữ & công thức Toán - Lý - Hóa qua AI (OCR)...'
       });
       state.currentDoc.text = extracted;
       state.currentDoc.wordCount = countWords(extracted);

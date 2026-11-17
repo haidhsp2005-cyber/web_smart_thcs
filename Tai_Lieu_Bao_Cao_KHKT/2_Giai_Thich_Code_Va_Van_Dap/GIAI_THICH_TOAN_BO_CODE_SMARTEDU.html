@@ -363,7 +363,25 @@
       Trong hàm <code>submitQuizAnswers</code>, mỗi lần học sinh hoàn thành bài kiểm tra, hệ thống tự động ghi một bản ghi <code>historyRecord</code> gồm: thời gian thực hiện, tên bài học, số câu đúng/tổng số câu, tỷ lệ phần trăm và điểm số vào <code>localStorage</code>. Bảng thống kê tính toán tự động 4 đại lượng: <em>Tổng số lần làm bài</em>, <em>Điểm cao nhất</em>, <em>Điểm trung bình</em> và <em>Tổng số câu đúng</em> để học sinh theo dõi tiến bộ học tập mỗi ngày.
     </p>
 
-    <h2>V. BỘ 12 CÂU HỎI VẤN ĐÁP CỦA BAN GIÁM KHẢO VÀ CÂU TRẢ LỜI MẪU</h2>
+    <h3>Module 12: Kiến trúc đồ họa kép (Hybrid Mindmap Engine) & Thư viện sơ đồ cá nhân</h3>
+    <p>
+      Để đảm bảo sơ đồ tư duy không bao giờ bị lỗi hiển thị khi mất mạng, em đã lập trình <strong>hai tầng đồ họa song song</strong>:
+      <br>- <em>Tầng 1 (Engine chính):</em> Sử dụng <code>Markmap</code> & <code>D3.js</code> để kết xuất cây đồ họa vector tương tác mượt mà.
+      <br>- <em>Tầng 2 (Engine tự thân độc lập):</em> Hàm <code>renderBuiltInSvgMindmap</code> được viết bằng Pure JavaScript và SVG DOM thuần túy, tự động kích hoạt khi thiết bị không tải được thư viện ngoài.
+      <br>Đồng thời, hàm <code>saveCurrentMindmapToLibrary</code> cho phép học sinh lưu trữ không giới hạn các sơ đồ vào <code>localStorage</code> để mở ôn tập lại bất kỳ lúc nào.
+    </p>
+
+    <h3>Module 13: Xử lý công thức Toán, Lý, Hóa (Cấp 2 & Cấp 3) và Bộ tự sửa lỗi JSON</h3>
+    <p>
+      Các công thức khoa học chứa nhiều ký tự gạch chéo ngược <code>\</code> (như <code>\frac</code>, <code>\sqrt</code>, <code>\Delta</code>, <code>\int</code>, <code>\vec</code>, <code>\rightarrow</code>) rất dễ làm vỡ cấu trúc chuỗi JSON từ AI. Em đã tự viết thuật toán <code>safeParseJsonWithRepair</code> với bộ lọc biểu thức chính quy (Regex) chuyên sâu để tự động phát hiện và nhân đôi ký tự escape (<code>\\</code>) trước khi parse. Kết hợp với thư viện <code>KaTeX</code> toàn cầu, hệ thống hiển thị hoàn hảo mọi công thức Toán, Lý, Hóa từ THCS (Lớp 6 - 9) cho tới THPT (Lớp 10 - 12).
+    </p>
+
+    <h3>Module 14: Xuất bản in PDF thẻ học tập A4 trực tiếp trên trang</h3>
+    <p>
+      Thay vì dùng <code>window.open</code> mở tab trắng mới gây khó chịu cho người dùng, hàm <code>exportBeamsAsPdf</code> kích hoạt lớp CSS <code>printing-beams-active</code> để hiển thị trực tiếp lưới thẻ học tập cắt rời ngay trên trang hiện tại, nạp công thức KaTeX và kích hoạt lệnh in chuẩn A4 của trình duyệt, sau đó tự động hoàn nguyên giao diện ban đầu.
+    </p>
+
+    <h2>V. BỘ 13 CÂU HỎI VẤN ĐÁP CỦA BAN GIÁM KHẢO VÀ CÂU TRẢ LỜI MẪU</h2>
 
     <div class="qa-box">
       <div class="qa-q">1. Em hãy giải thích quy trình từ lúc nạp ảnh chụp trang sách đến khi hiện ra sơ đồ tư duy?</div>
@@ -423,6 +441,14 @@
     <div class="qa-box">
       <div class="qa-q">12. Làm sao học sinh biết mình đã tiến bộ hay chưa sau nhiều lần tự ôn tập?</div>
       <div class="qa-a">Dạ, em đã xây dựng tính năng "Tiến độ & Lịch sử" ở Tab 3 Khảo thí. Mỗi lần nộp bài trắc nghiệm, hệ thống tự động lưu điểm số và phân tích 4 chỉ số: Tổng số lần luyện thi, Điểm cao nhất, Điểm trung bình và Tổng số câu đúng, giúp học sinh nhìn thấy rõ sự tiến bộ của mình qua từng ngày.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">13. Phần mềm có nhận diện và hiển thị tốt các công thức Toán, Lý, Hóa Cấp 2 và thậm chí cả Cấp 3 không?</div>
+      <div class="qa-a">Dạ hoàn toàn rất tốt ạ! Nhờ tích hợp mô hình Gemini Multimodal Vision kết hợp thư viện KaTeX chuẩn quốc tế:
+        <br>- <em>Toán Cấp 2 & Cấp 3:</em> Nhận diện chính xác từ phương trình bậc hai, hệ phương trình, định lý Vi-ét cho đến tích phân, đạo hàm, giới hạn lim, hình không gian Oxyz và số phức.
+        <br>- <em>Vật lý & Hóa học:</em> Xử lý mượt mà công thức định luật Ôm, dao động điều hòa, điện xoay chiều, phương trình phản ứng hóa học (mũi tên thuận nghịch, nhiệt độ), ion và hóa học hữu cơ.
+        <br>- Đồng thời hệ thống có thuật toán <code>safeParseJsonWithRepair</code> tự động bảo vệ chuỗi ký tự escape của LaTeX, không bao giờ bị lỗi hiển thị.</div>
     </div>
 
     <div style="margin-top: 50px; text-align: right;">
