@@ -33,10 +33,13 @@
     }
   </script>
   
+  <!-- Sample Lessons Data (Loaded Early in Head for Instant Access) -->
+  <script src="sample_data.js"></script>
+  
   <!-- D3.js and Markmap for Interactive Mindmap -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15.4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15.4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markmap-lib/dist/browser/index.iife.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markmap-view"></script>
   
   <!-- Canvas Confetti for Quiz Celebrations -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -112,6 +115,11 @@
       <div class="flex items-center justify-start lg:justify-end gap-1.5 sm:gap-2 w-full lg:w-auto overflow-x-auto no-scrollbar py-0.5 touch-scroll-x">
         <!-- Sample Lessons Buttons for Cấp 2 -->
         <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <button onclick="document.getElementById('file-input').click()" class="shrink-0 px-2 sm:px-2.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 border border-emerald-500 rounded-lg flex items-center justify-center gap-1 transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap" title="Tải tài liệu Word (.docx), PDF hoặc Ảnh bài học">
+            <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+            <span>Tải file</span>
+          </button>
+
           <button id="load-sample-toan9-btn" onclick="window.loadSpecificLessonById && window.loadSpecificLessonById('toan9')" class="shrink-0 px-2 sm:px-2.5 py-1.5 text-xs font-bold text-indigo-900 bg-indigo-100 hover:bg-indigo-200 border border-indigo-300 rounded-lg flex items-center justify-center gap-1 transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap" title="Nạp bài mẫu Toán 9: Hệ hai phương trình bậc nhất hai ẩn">
             <i class="fa-solid fa-square-root-variable text-indigo-700 text-xs"></i>
             <span>Mẫu Toán 9</span>
@@ -299,6 +307,18 @@
         <span>Thẻ học tập (Flashcards)</span>
       </button>
 
+      <!-- Quick Upload Button directly in Sticky Tabs Bar -->
+      <div class="ml-auto flex items-center gap-1.5 shrink-0 pl-2">
+        <button onclick="document.getElementById('file-input').click()" class="px-2.5 sm:px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg flex items-center gap-1.5 shrink-0 shadow-xs active:scale-95 cursor-pointer whitespace-nowrap transition-all" title="Tải file Word (.docx), PDF hoặc Ảnh bài học mới">
+          <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+          <span>Tải file mới</span>
+        </button>
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-2 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg flex items-center gap-1 shrink-0 shadow-xs active:scale-95 cursor-pointer whitespace-nowrap transition-all" title="Cuộn lên đầu trang (Khu vực Tải tài liệu)">
+          <i class="fa-solid fa-arrow-up text-xs"></i>
+          <span class="hidden md:inline text-[11px]">Đầu trang</span>
+        </button>
+      </div>
+
     </nav>
 
     <!-- ================= TAB CONTENT PANELS ================= -->
@@ -309,7 +329,11 @@
         <!-- Mindmap Control Toolbar -->
         <div class="bg-white p-2.5 sm:p-3.5 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 no-print">
           <div class="flex items-center justify-between sm:justify-start gap-2">
-            <button id="generate-mindmap-btn" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition-all">
+            <button onclick="document.getElementById('file-input').click()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95 whitespace-nowrap" title="Tải file Word (.docx), PDF hoặc Ảnh bài học từ thiết bị">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Tải file mới</span>
+            </button>
+            <button id="generate-mindmap-btn" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition-all whitespace-nowrap">
               <i class="fa-solid fa-wand-magic-sparkles"></i>
               <span>Tạo / Làm mới Sơ đồ AI</span>
             </button>
@@ -381,17 +405,21 @@
               </button>
             </div>
 
-            <div id="mindmap-empty-state" class="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-white/95 z-10">
+            <div id="mindmap-empty-state" class="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-white/95 z-10 hidden">
               <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-3xl mb-3 shadow-inner">
                 <i class="fa-solid fa-sitemap"></i>
               </div>
               <h3 class="text-base font-bold text-slate-800">Chưa tạo sơ đồ tư duy</h3>
               <p class="text-xs text-slate-500 max-w-md mt-1">Hãy chọn một bài mẫu cấp 2 dưới đây hoặc tải tài liệu của bạn lên để xem sơ đồ tư duy tương tác:</p>
               <div class="flex flex-wrap items-center justify-center gap-2 mt-3">
-                <button onclick="window.loadSpecificLessonById && window.loadSpecificLessonById('toan9')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer">
+                <button onclick="document.getElementById('file-input').click()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer flex items-center gap-1.5 active:scale-95" title="Chọn file Word, PDF hoặc Ảnh chụp bài học từ thiết bị">
+                  <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+                  <span>Tải lên File / Ảnh bài học</span>
+                </button>
+                <button onclick="window.loadSpecificLessonById && window.loadSpecificLessonById('toan9')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer active:scale-95">
                   <i class="fa-solid fa-square-root-variable mr-1"></i> Xem Mẫu Toán 9
                 </button>
-                <button onclick="window.loadSpecificLessonById && window.loadSpecificLessonById('khtn9')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer">
+                <button onclick="window.loadSpecificLessonById && window.loadSpecificLessonById('khtn9')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer active:scale-95">
                   <i class="fa-solid fa-bolt mr-1"></i> Xem Mẫu KHTN 9
                 </button>
               </div>
@@ -1192,8 +1220,7 @@
     </div>
   </footer>
 
-  <!-- Sample Data & Main App Scripts -->
-  <script src="sample_data.js"></script>
+  <!-- Main App Script -->
   <script src="app.js"></script>
 </body>
 </html>

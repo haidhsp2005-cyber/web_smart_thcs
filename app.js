@@ -993,58 +993,347 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN THCS CHUẨN XÁC:
   }
 
   // ================= TAB 1: SƠ ĐỒ TƯ DUY (MINDMAP) =================
+  // Bộ phân giải Markdown sang cây Markmap tự thân (Hoạt động 100% offline & không phụ thuộc Transformer ngoài)
+  function markdownToMarkmapTree(markdown) {
+    if (!markdown || typeof markdown !== 'string') return { content: 'Sơ đồ tư duy', children: [] };
+    const lines = markdown.split(/\r?\n/);
+    let root = null;
+    let stack = [];
+
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+
+      let level = 0;
+      let text = '';
+
+      const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+      if (headingMatch) {
+        level = headingMatch[1].length;
+        text = headingMatch[2].trim();
+      } else {
+        const listMatch = line.match(/^(\s*)[-*+]\s+(.*)$/);
+        if (listMatch) {
+          const indent = listMatch[1].length;
+          level = 7 + Math.floor(indent / 2);
+          text = listMatch[2].trim();
+        }
+      }
+
+      if (text) {
+        const node = { content: text, children: [] };
+        if (!root) {
+          root = node;
+          stack = [{ level: level, node: node }];
+          return;
+        }
+
+        while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+          stack.pop();
+        }
+
+        if (stack.length > 0) {
+          stack[stack.length - 1].node.children.push(node);
+          stack.push({ level: level, node: node });
+        } else {
+          root.children.push(node);
+          stack.push({ level: level, node: node });
+        }
+      }
+    });
+
+    return root || { content: 'Sơ đồ tư duy', children: [] };
+  }
+
+  // ================= FALLBACK: BỘ VẼ SƠ ĐỒ SVG THUẦN (100% OFFLINE & ĐỘC LẬP) =================
+  const svgMindmapState = {
+    zoom: 1,
+    panX: 40,
+    panY: 40,
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    tree: null,
+    collapsed: new Set()
+  };
+
+  function renderBuiltInSvgMindmap(tree, svgEl) {
+    if (!tree || !svgEl) return;
+    svgMindmapState.tree = tree;
+
+    const branchColors = [
+      { stroke: '#4f46e5', bg: '#eef2ff', text: '#312e81', border: '#818cf8' },
+      { stroke: '#0284c7', bg: '#f0f9ff', text: '#0c4a6e', border: '#38bdf8' },
+      { stroke: '#059669', bg: '#ecfdf5', text: '#064e3b', border: '#34d399' },
+      { stroke: '#d97706', bg: '#fffbeb', text: '#78350f', border: '#fbbf24' },
+      { stroke: '#dc2626', bg: '#fef2f2', text: '#7f1d1d', border: '#f87171' },
+      { stroke: '#7c3aed', bg: '#f5f3ff', text: '#4c1d95', border: '#a78bfa' },
+      { stroke: '#0891b2', bg: '#ecfeff', text: '#164e63', border: '#22d3ee' },
+      { stroke: '#ea580c', bg: '#fff7ed', text: '#7c2d12', border: '#fb923c' }
+    ];
+
+    const nodeHeight = 36;
+    const verticalGap = 16;
+    const levelSpacing = 240;
+    let curY = 40;
+
+    function layoutNode(node, depth, branchIdx) {
+      node.depth = depth;
+      node.branchIdx = branchIdx;
+      const textLen = (node.content || '').length;
+      node.width = Math.min(360, Math.max(90, textLen * 9.5 + 28));
+      node.height = nodeHeight;
+
+      const isCollapsed = svgMindmapState.collapsed.has(node);
+      const hasChildren = node.children && node.children.length > 0 && !isCollapsed;
+
+      if (!hasChildren) {
+        node.y = curY;
+        curY += nodeHeight + verticalGap;
+      } else {
+        node.children.forEach((child, idx) => {
+          const bIdx = depth === 0 ? idx : branchIdx;
+          layoutNode(child, depth + 1, bIdx);
+        });
+        const firstChild = node.children[0];
+        const lastChild = node.children[node.children.length - 1];
+        node.y = (firstChild.y + lastChild.y) / 2;
+      }
+      node.x = depth * levelSpacing + 40;
+    }
+
+    curY = 40;
+    layoutNode(tree, 0, 0);
+
+    svgEl.innerHTML = '';
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.innerHTML = `
+      <filter id="svg-node-shadow" x="-10%" y="-10%" width="125%" height="130%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+      </filter>
+    `;
+    svgEl.appendChild(defs);
+
+    const rootG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    rootG.id = 'builtin-svg-mindmap-root';
+    svgEl.appendChild(rootG);
+
+    // Vẽ đường nối cong (Cubic Bezier curves)
+    function drawLinks(node) {
+      const isCollapsed = svgMindmapState.collapsed.has(node);
+      if (node.children && node.children.length > 0 && !isCollapsed) {
+        node.children.forEach(child => {
+          const colorObj = branchColors[child.branchIdx % branchColors.length];
+          const x1 = node.x + node.width;
+          const y1 = node.y + node.height / 2;
+          const x2 = child.x;
+          const y2 = child.y + child.height / 2;
+          const dx = (x2 - x1) * 0.5;
+
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+          path.setAttribute('stroke', colorObj.stroke);
+          path.setAttribute('stroke-width', node.depth === 0 ? '3' : '2.2');
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke-linecap', 'round');
+          path.setAttribute('opacity', '0.85');
+          rootG.appendChild(path);
+
+          drawLinks(child);
+        });
+      }
+    }
+    drawLinks(tree);
+
+    // Vẽ các thẻ node
+    function drawNodes(node) {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('class', 'mindmap-node cursor-pointer');
+      g.setAttribute('transform', `translate(${node.x}, ${node.y})`);
+
+      const colorObj = node.depth === 0
+        ? { stroke: '#4f46e5', bg: '#4f46e5', text: '#ffffff', border: '#4338ca' }
+        : branchColors[node.branchIdx % branchColors.length];
+
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('width', node.width);
+      rect.setAttribute('height', node.height);
+      rect.setAttribute('rx', node.depth === 0 ? '10' : '8');
+      rect.setAttribute('fill', node.depth === 0 ? colorObj.bg : (node.depth === 1 ? colorObj.bg : '#ffffff'));
+      rect.setAttribute('stroke', colorObj.stroke);
+      rect.setAttribute('stroke-width', node.depth === 0 ? '2' : (node.depth === 1 ? '2' : '1.5'));
+      rect.setAttribute('filter', 'url(#svg-node-shadow)');
+      g.appendChild(rect);
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', 14);
+      text.setAttribute('y', node.height / 2 + 4.5);
+      text.setAttribute('fill', node.depth === 0 ? '#ffffff' : (node.depth === 1 ? colorObj.text : '#1e293b'));
+      text.setAttribute('font-size', node.depth === 0 ? '14px' : (node.depth === 1 ? '13px' : '12px'));
+      text.setAttribute('font-weight', node.depth <= 1 ? '700' : '600');
+      text.setAttribute('font-family', "'Be Vietnam Pro', system-ui, sans-serif");
+      text.textContent = node.content;
+      g.appendChild(text);
+
+      if (node.children && node.children.length > 0) {
+        const toggleCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        toggleCircle.setAttribute('cx', node.width);
+        toggleCircle.setAttribute('cy', node.height / 2);
+        toggleCircle.setAttribute('r', '6');
+        toggleCircle.setAttribute('fill', colorObj.stroke);
+        toggleCircle.setAttribute('stroke', '#ffffff');
+        toggleCircle.setAttribute('stroke-width', '2');
+        g.appendChild(toggleCircle);
+
+        g.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (svgMindmapState.collapsed.has(node)) {
+            svgMindmapState.collapsed.delete(node);
+          } else {
+            svgMindmapState.collapsed.add(node);
+          }
+          renderBuiltInSvgMindmap(svgMindmapState.tree, svgEl);
+        });
+      }
+
+      rootG.appendChild(g);
+
+      const isCollapsed = svgMindmapState.collapsed.has(node);
+      if (node.children && node.children.length > 0 && !isCollapsed) {
+        node.children.forEach(child => drawNodes(child));
+      }
+    }
+    drawNodes(tree);
+
+    function updateTransform() {
+      rootG.setAttribute('transform', `translate(${svgMindmapState.panX}, ${svgMindmapState.panY}) scale(${svgMindmapState.zoom})`);
+    }
+
+    function fitView() {
+      const bbox = rootG.getBBox();
+      const svgRect = svgEl.getBoundingClientRect();
+      const svgW = svgRect.width || 900;
+      const svgH = svgRect.height || 580;
+
+      if (bbox.width > 0 && bbox.height > 0) {
+        const scaleX = (svgW - 80) / bbox.width;
+        const scaleY = (svgH - 80) / bbox.height;
+        svgMindmapState.zoom = Math.min(1.1, Math.max(0.45, Math.min(scaleX, scaleY)));
+        svgMindmapState.panX = (svgW - bbox.width * svgMindmapState.zoom) / 2 - bbox.x * svgMindmapState.zoom;
+        svgMindmapState.panY = (svgH - bbox.height * svgMindmapState.zoom) / 2 - bbox.y * svgMindmapState.zoom;
+        updateTransform();
+      }
+    }
+
+    state.markmapInstance = {
+      fit: fitView,
+      setData: (newTree) => renderBuiltInSvgMindmap(newTree, svgEl),
+      rescale: (scale) => {
+        svgMindmapState.zoom = Math.max(0.2, Math.min(3, svgMindmapState.zoom * scale));
+        updateTransform();
+      }
+    };
+
+    fitView();
+    setTimeout(fitView, 60);
+    setTimeout(fitView, 250);
+
+    svgEl.onmousedown = (e) => {
+      svgMindmapState.isDragging = true;
+      svgMindmapState.startX = e.clientX - svgMindmapState.panX;
+      svgMindmapState.startY = e.clientY - svgMindmapState.panY;
+      svgEl.style.cursor = 'grabbing';
+    };
+
+    window.onmousemove = (e) => {
+      if (!svgMindmapState.isDragging) return;
+      svgMindmapState.panX = e.clientX - svgMindmapState.startX;
+      svgMindmapState.panY = e.clientY - svgMindmapState.startY;
+      updateTransform();
+    };
+
+    window.onmouseup = () => {
+      svgMindmapState.isDragging = false;
+      if (svgEl) svgEl.style.cursor = 'grab';
+    };
+
+    svgEl.onwheel = (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 1.1 : 0.9;
+      svgMindmapState.zoom = Math.max(0.2, Math.min(3, svgMindmapState.zoom * delta));
+      updateTransform();
+    };
+  }
+
   function renderMindmap(markdown, retryCount = 0) {
     if (!markdown) return;
     state.mindmapMarkdown = markdown;
     if (dom.markdownInput) dom.markdownInput.value = markdown;
+
+    // Luôn ẩn hộp rỗng khi có nội dung sơ đồ tư duy
     if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
 
-    // Cơ chế tự động thử lại nếu thư viện Markmap CDN đang tải về dở dang
-    if (!window.markmap || !window.markmap.Transformer || !window.markmap.Markmap) {
-      if (retryCount < 25) {
-        setTimeout(() => renderMindmap(markdown, retryCount + 1), 150);
-      } else {
-        console.warn('Markmap library CDN chưa tải xong sau nhiều lần thử');
-        if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.remove('hidden');
+    const markmapObj = window.markmap?.Markmap ? window.markmap : (window.Markmap ? { Markmap: window.Markmap } : null);
+
+    // Ưu tiên vẽ bằng Markmap nếu thư viện đã sẵn sàng
+    if (markmapObj && markmapObj.Markmap) {
+      try {
+        let root = null;
+        if (window.markmap && window.markmap.Transformer) {
+          try {
+            const transformer = new window.markmap.Transformer();
+            root = transformer.transform(markdown).root;
+          } catch (transErr) {
+            root = markdownToMarkmapTree(markdown);
+          }
+        } else {
+          root = markdownToMarkmapTree(markdown);
+        }
+
+        const modernPalette = ['#4f46e5', '#0284c7', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#ea580c'];
+        const options = {
+          duration: 300,
+          colorFreezeLevel: 2,
+          paddingX: 20,
+          spacingHorizontal: 65,
+          spacingVertical: 14,
+          color: (node) => {
+            if (node.depth === 0) return '#4f46e5';
+            const idx = (node.order || 0) % modernPalette.length;
+            return modernPalette[idx];
+          }
+        };
+
+        if (!state.markmapInstance || !state.markmapInstance.setData) {
+          state.markmapInstance = markmapObj.Markmap.create(dom.markmapSvg, options, root);
+        } else {
+          state.markmapInstance.setData(root);
+        }
+
+        if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
+
+        [50, 150, 300, 600, 1000].forEach(delay => {
+          setTimeout(() => {
+            if (state.markmapInstance && state.markmapInstance.fit) state.markmapInstance.fit();
+          }, delay);
+        });
+        return;
+      } catch (e) {
+        console.warn('Lỗi khi vẽ qua Markmap, tự động dùng Pure-SVG renderer:', e);
       }
-      return;
     }
 
-    try {
-      const transformer = new window.markmap.Transformer();
-      const { root } = transformer.transform(markdown);
+    // Nếu thư viện ngoài chưa tải xong (offline hoặc CDN chậm), VẼ NGAY BẰNG PURE SVG
+    const tree = markdownToMarkmapTree(markdown);
+    renderBuiltInSvgMindmap(tree, dom.markmapSvg);
+    if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
 
-      const modernPalette = ['#4f46e5', '#0284c7', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#ea580c'];
-      const options = {
-        duration: 350,
-        colorFreezeLevel: 2,
-        paddingX: 20,
-        spacingHorizontal: 65, // Dãn cách các nhánh ngang thông thoáng
-        spacingVertical: 14,   // Dãn cách các nhánh dọc cân đối, thanh lịch
-        color: (node) => {
-          if (node.depth === 0) return '#4f46e5';
-          const idx = (node.order || 0) % modernPalette.length;
-          return modernPalette[idx];
-        }
-      };
-
-      if (!state.markmapInstance) {
-        state.markmapInstance = window.markmap.Markmap.create(dom.markmapSvg, options, root);
-      } else {
-        state.markmapInstance.setData(root);
-      }
-
-      // Đảm bảo ẩn hộp rỗng và căn giữa sơ đồ vừa vặn
-      if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
-
-      [80, 250, 500, 900].forEach(delay => {
-        setTimeout(() => {
-          if (state.markmapInstance) state.markmapInstance.fit();
-        }, delay);
-      });
-    } catch (e) {
-      console.error('Markmap render error:', e);
-      if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.remove('hidden');
+    // Thử nâng cấp lên Markmap sau 400ms nếu CDN tải xong
+    if (!markmapObj && retryCount < 5) {
+      setTimeout(() => {
+        if (window.markmap?.Markmap) renderMindmap(markdown, retryCount + 1);
+      }, 400);
     }
   }
 
@@ -3475,24 +3764,23 @@ ${state.currentDoc.text}`;
   }
   fetchKeyFromVercelEnv();
 
-  // Kiểm tra nếu người dùng đã bấm nút trước khi DOM load xong
+  // Tự động nạp ngay bài học mẫu cấp 2 tiêu biểu (Toán 9) khi mở trang
+  const triggerDefaultLesson = () => {
+    if (!state.currentDoc.text) {
+      const defaultLesson = window.SAMPLE_LESSONS?.toan9 || window.SAMPLE_LESSONS?.khtn9 || window.SAMPLE_LESSON;
+      if (defaultLesson) {
+        loadSpecificLesson(defaultLesson, 'Toán 9 (THCS)', false, false);
+      }
+    }
+  };
+
   if (window._pendingLessonKey && window.SAMPLE_LESSONS?.[window._pendingLessonKey]) {
     loadSpecificLesson(window.SAMPLE_LESSONS[window._pendingLessonKey], window._pendingLessonKey.toUpperCase(), false, true);
     window._pendingLessonKey = null;
   } else {
-    // Tự động nạp bài học mẫu cấp 2 tiêu biểu (Toán 9 - Hệ hai phương trình bậc nhất hai ẩn) khi mở trang
-    const triggerDefaultLesson = () => {
-      if (!state.currentDoc.text) {
-        const defaultLesson = window.SAMPLE_LESSONS?.toan9 || window.SAMPLE_LESSONS?.khtn9 || window.SAMPLE_LESSON;
-        if (defaultLesson) {
-          loadSpecificLesson(defaultLesson, 'Toán 9 (THCS)', false, false);
-        }
-      }
-      window.scrollTo(0, 0);
-    };
-
-    setTimeout(triggerDefaultLesson, 80);
-    setTimeout(triggerDefaultLesson, 400);
+    triggerDefaultLesson();
+    setTimeout(triggerDefaultLesson, 60);
+    setTimeout(triggerDefaultLesson, 300);
   }
 
 });
