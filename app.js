@@ -164,6 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tab 4: Beams
     generateBeamsBtn: document.getElementById('generate-beams-btn'),
     btnExportBeamsPdf: document.getElementById('btn-export-beams-pdf'),
+    printableBeamsContainer: document.getElementById('printable-beams-container'),
+    printBeamsTitle: document.getElementById('print-beams-title'),
+    printableBeamsGrid: document.getElementById('printable-beams-grid'),
     btnToggleTts: document.getElementById('btn-toggle-tts'),
     btnStopTts: document.getElementById('btn-stop-tts'),
     beamMasteryCount: document.getElementById('beam-mastery-count'),
@@ -3443,7 +3446,7 @@ ${state.currentDoc.text}`;
   // Tab 4 Beams Controls
   dom.generateBeamsBtn.addEventListener('click', generateBeamsWithAi);
 
-  // Xuất toàn bộ thẻ học tập Flashcards thành file PDF / Bản in A4 chuẩn
+  // Xuất toàn bộ thẻ học tập Flashcards thành file PDF / Bản in A4 chuẩn TRỰC TIẾP TRÊN TRANG (Không mở tab mới)
   function exportBeamsAsPdf() {
     if (!state.beamData || state.beamData.length === 0) {
       showToast('Chưa có thẻ học tập nào để xuất PDF!', 'warning');
@@ -3451,165 +3454,59 @@ ${state.currentDoc.text}`;
     }
 
     const title = state.currentDoc.title || 'Bộ Thẻ Học Tập THCS';
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      window.print();
-      return;
+    if (dom.printBeamsTitle) dom.printBeamsTitle.textContent = `Thẻ Học Tập: ${title}`;
+
+    if (dom.printableBeamsGrid) {
+      dom.printableBeamsGrid.innerHTML = state.beamData.map((beam, i) => `
+        <div class="beam-cut-card p-3 rounded-xl border-2 border-dashed border-indigo-300 bg-white shadow-xs space-y-2">
+          <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              Thẻ #${i + 1} • ${beam.badge || 'Trọng tâm'}
+            </span>
+            <span class="text-xs font-bold text-slate-900">${beam.title || ''}</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+            <span class="font-bold text-slate-800 block text-[11px] mb-0.5">❓ Câu hỏi / Khái niệm:</span>
+            <div class="text-slate-700 leading-relaxed">${beam.frontQuestion || ''}</div>
+          </div>
+          <div class="p-2 rounded-lg bg-emerald-50/70 border border-emerald-200 text-xs">
+            <span class="font-bold text-emerald-900 block text-[11px] mb-0.5">💡 Lời giải / Trọng tâm:</span>
+            <div class="text-emerald-800 leading-relaxed">${beam.backAnswer || ''}</div>
+          </div>
+          ${beam.takeaway ? `
+            <div class="p-1.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-relaxed">
+              ⚡ <strong>Ghi nhớ 30s:</strong> ${beam.takeaway}
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
     }
 
-    const cardsHtml = state.beamData.map((beam, i) => `
-      <div class="beam-print-card">
-        <div class="beam-print-header">
-          <span class="beam-badge">Thẻ #${i + 1} • ${beam.badge || 'Trọng tâm'}</span>
-          <span class="beam-title">${beam.title || ''}</span>
-        </div>
-        <div class="beam-print-body">
-          <div class="beam-q-box">
-            <strong style="color: #1e1b4b; font-size: 11px;">❓ Câu hỏi / Khái niệm:</strong>
-            <div>${beam.frontQuestion || ''}</div>
-          </div>
-          <div class="beam-a-box">
-            <strong style="color: #166534; font-size: 11px;">💡 Lời giải / Trọng tâm:</strong>
-            <div>${beam.backAnswer || ''}</div>
-          </div>
-          ${beam.takeaway ? `<div class="beam-takeaway">⚡ <strong>Ghi nhớ 30s:</strong> ${beam.takeaway}</div>` : ''}
-        </div>
-      </div>
-    `).join('');
+    // Kích hoạt chế độ in trực tiếp trên trang hiện tại, KHÔNG mở tab mới
+    document.body.classList.add('printing-beams-active');
+    if (dom.printableBeamsContainer) dom.printableBeamsContainer.classList.remove('hidden');
+    if (dom.beamCardsGrid) dom.beamCardsGrid.classList.add('hidden');
 
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html lang="vi">
-      <head>
-        <meta charset="utf-8">
-        <title>Thẻ Học Tập - ${title}</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-        <style>
-          @page { size: A4; margin: 12mm; }
-          * { box-sizing: border-box; }
-          body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: #1e293b;
-            background: #fff;
-            margin: 0;
-            padding: 10px;
-          }
-          .header {
-            text-align: center;
-            border-bottom: 2px solid #4f46e5;
-            padding-bottom: 8px;
-            margin-bottom: 16px;
-          }
-          .header h1 {
-            font-size: 17px;
-            color: #1e1b4b;
-            margin: 0 0 4px 0;
-            text-transform: uppercase;
-          }
-          .header p {
-            font-size: 11px;
-            color: #64748b;
-            margin: 0;
-          }
-          .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-          }
-          .beam-print-card {
-            border: 1.5px dashed #6366f1;
-            border-radius: 8px;
-            padding: 10px;
-            background: #fafafa;
-            page-break-inside: avoid;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-          }
-          .beam-print-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 6px;
-            margin-bottom: 8px;
-          }
-          .beam-badge {
-            background: #eef2ff;
-            color: #4338ca;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: bold;
-          }
-          .beam-title {
-            font-size: 11px;
-            font-weight: bold;
-            color: #0f172a;
-          }
-          .beam-q-box {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 8px;
-            margin-bottom: 6px;
-            font-size: 11px;
-            line-height: 1.45;
-          }
-          .beam-a-box {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 6px;
-            padding: 8px;
-            margin-bottom: 6px;
-            font-size: 11px;
-            line-height: 1.45;
-            color: #166534;
-          }
-          .beam-takeaway {
-            background: #fefce8;
-            border: 1px solid #fef08a;
-            border-radius: 6px;
-            padding: 6px;
-            font-size: 10.5px;
-            color: #854d0e;
-            line-height: 1.4;
-          }
-          @media print {
-            body { padding: 0; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>BỘ THẺ HỌC TẬP THÔNG MINH (FLASHCARDS) - ${title}</h1>
-          <p>Nền tảng Học tập Thông minh SmartEdu THCS • Cuộc thi KHKT • Hỗ trợ in giấy & cắt rời ôn thi</p>
-        </div>
-        <div class="grid">
-          ${cardsHtml}
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"><\/script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"><\/script>
-        <script>
-          window.addEventListener('DOMContentLoaded', () => {
-            if (window.renderMathInElement) {
-              renderMathInElement(document.body, {
-                delimiters: [
-                  {left: '$$', right: '$$', display: true},
-                  {left: '$', right: '$', display: false}
-                ],
-                throwOnError: false
-              });
-            }
-            setTimeout(() => {
-              window.print();
-            }, 300);
-          });
-        <\/script>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
+    if (dom.printableBeamsContainer) {
+      renderAllMath(dom.printableBeamsContainer);
+    }
+
+    showToast('📄 Đang mở hộp thoại lưu PDF / in thẻ học tập...', 'info');
+
+    const cleanUpPrintBeams = () => {
+      document.body.classList.remove('printing-beams-active');
+      if (dom.printableBeamsContainer) dom.printableBeamsContainer.classList.add('hidden');
+      if (dom.beamCardsGrid) dom.beamCardsGrid.classList.remove('hidden');
+      window.removeEventListener('afterprint', cleanUpPrintBeams);
+    };
+
+    window.addEventListener('afterprint', cleanUpPrintBeams);
+
+    setTimeout(() => {
+      window.print();
+      // Khôi phục dự phòng sau khi in hoặc đóng hộp thoại
+      setTimeout(cleanUpPrintBeams, 600);
+    }, 250);
   }
 
   if (dom.btnExportBeamsPdf) {
@@ -3895,6 +3792,111 @@ ${state.currentDoc.text}`;
         });
     });
   }
+
+  // ================= PWA INSTALLATION (BEFOREINSTALLPROMPT & MOBILE BANNER & IOS) =================
+  let deferredInstallPrompt = null;
+  const btnInstallPwa = document.getElementById('btn-install-pwa');
+  const btnInstallPwaMobile = document.getElementById('btn-install-pwa-mobile');
+  const pwaInstallBanner = document.getElementById('pwa-install-banner');
+  const btnPwaBannerInstall = document.getElementById('btn-pwa-banner-install');
+  const btnPwaBannerDismiss = document.getElementById('btn-pwa-banner-dismiss');
+  const iosInstallModal = document.getElementById('ios-install-modal');
+  const btnCloseIosModal = document.getElementById('btn-close-ios-modal');
+
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  function showInstallUi() {
+    if (isStandalone) return;
+    if (btnInstallPwa) {
+      btnInstallPwa.classList.remove('hidden');
+      btnInstallPwa.classList.add('flex');
+    }
+    if (btnInstallPwaMobile) {
+      btnInstallPwaMobile.classList.remove('hidden');
+      btnInstallPwaMobile.classList.add('flex');
+    }
+
+    // Gợi ý cài đặt dạng thanh banner nổi trên điện thoại nếu người dùng chưa bấm đóng trong phiên
+    if (isMobile && pwaInstallBanner && !sessionStorage.getItem('smartedu_pwa_banner_dismissed')) {
+      setTimeout(() => {
+        if (!isStandalone && pwaInstallBanner) {
+          pwaInstallBanner.classList.remove('hidden');
+        }
+      }, 1500);
+    }
+  }
+
+  // Khi trình duyệt (Chrome/Edge/Android) kích hoạt sự kiện cho phép cài đặt PWA
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showInstallUi();
+  });
+
+  // Đối với iOS hoặc các trình duyệt di động
+  if (!isStandalone) {
+    if (isIos || isMobile) {
+      showInstallUi();
+    }
+  }
+
+  async function handleInstallClick() {
+    if (deferredInstallPrompt) {
+      try {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast('Đang cài đặt SmartEdu THCS lên màn hình chính...', 'success');
+          if (btnInstallPwa) btnInstallPwa.classList.add('hidden');
+          if (btnInstallPwaMobile) btnInstallPwaMobile.classList.add('hidden');
+          if (pwaInstallBanner) pwaInstallBanner.classList.add('hidden');
+        }
+      } catch (err) {
+        console.warn('PWA install prompt error:', err);
+      }
+      deferredInstallPrompt = null;
+    } else if (isIos) {
+      // Hướng dẫn 3 bước trực quan trên Safari iOS
+      if (iosInstallModal) iosInstallModal.classList.remove('hidden');
+    } else {
+      // Thiết bị Android khi chưa có native prompt
+      showToast('Bấm nút menu (⋮) ở góc trên trình duyệt rồi chọn "Cài đặt ứng dụng" hoặc "Thêm vào MH chính"!', 'info');
+    }
+  }
+
+  if (btnInstallPwa) btnInstallPwa.addEventListener('click', handleInstallClick);
+  if (btnInstallPwaMobile) btnInstallPwaMobile.addEventListener('click', handleInstallClick);
+  if (btnPwaBannerInstall) btnPwaBannerInstall.addEventListener('click', handleInstallClick);
+
+  if (btnPwaBannerDismiss) {
+    btnPwaBannerDismiss.addEventListener('click', () => {
+      sessionStorage.setItem('smartedu_pwa_banner_dismissed', '1');
+      if (pwaInstallBanner) pwaInstallBanner.classList.add('hidden');
+    });
+  }
+
+  if (btnCloseIosModal && iosInstallModal) {
+    btnCloseIosModal.addEventListener('click', () => {
+      iosInstallModal.classList.add('hidden');
+    });
+  }
+
+  if (iosInstallModal) {
+    iosInstallModal.addEventListener('click', (e) => {
+      if (e.target === iosInstallModal) iosInstallModal.classList.add('hidden');
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    console.log('[SmartEdu PWA] Đã cài đặt PWA thành công');
+    showToast('🎉 Đã cài đặt SmartEdu THCS vào màn hình chính!', 'success');
+    if (btnInstallPwa) btnInstallPwa.classList.add('hidden');
+    if (btnInstallPwaMobile) btnInstallPwaMobile.classList.add('hidden');
+    if (pwaInstallBanner) pwaInstallBanner.classList.add('hidden');
+    deferredInstallPrompt = null;
+  });
 
   // ================= SHARE QR CODE MODAL =================
   const btnShareQr = document.getElementById('btn-share-qr');

@@ -319,6 +319,40 @@ code, pre, .font-mono {
     border: none !important;
   }
 
+  .beam-cut-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Khi xuất thẻ học tập PDF trực tiếp trong trang */
+  body.printing-beams-active header,
+  body.printing-beams-active nav,
+  body.printing-beams-active #key-manager-btn,
+  body.printing-beams-active #upload-section,
+  body.printing-beams-active .no-print,
+  body.printing-beams-active #toast-container,
+  body.printing-beams-active .tab-buttons-container,
+  body.printing-beams-active footer,
+  body.printing-beams-active #tab-mindmap,
+  body.printing-beams-active #tab-summary,
+  body.printing-beams-active #tab-quiz,
+  body.printing-beams-active #beam-cards-grid,
+  body.printing-beams-active #beam-empty-state {
+    display: none !important;
+  }
+
+  body.printing-beams-active #tab-beam {
+    display: block !important;
+  }
+
+  body.printing-beams-active #printable-beams-container {
+    display: block !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
   .page-break {
     page-break-before: always;
   }
