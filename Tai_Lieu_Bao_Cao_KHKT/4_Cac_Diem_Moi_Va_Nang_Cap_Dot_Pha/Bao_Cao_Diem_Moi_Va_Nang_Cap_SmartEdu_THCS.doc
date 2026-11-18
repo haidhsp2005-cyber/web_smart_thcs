@@ -1,4 +1,4 @@
-<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
   <meta charset='utf-8'>
   <title>Báo Cáo Điểm Mới & Tính Năng Đột Phá - SmartEdu THCS</title>
@@ -36,7 +36,7 @@
       <td style="font-weight: bold; background: #f8fafc;">Học sinh thực hiện:</td>
       <td>Trần Lê Long Phụng (Lớp 9A13)</td>
       <td style="font-weight: bold; background: #f8fafc;">Trải nghiệm trực tuyến:</td>
-      <td>https://websmartthcs.vercel.app/</td>
+      <td>https://smartedu-thcs.vercel.app/</td>
     </tr>
     <tr>
       <td style="font-weight: bold; background: #f8fafc;">Đơn vị dự thi:</td>

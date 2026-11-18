@@ -100,7 +100,7 @@ d:\Antigravity\phan_mem_hoc_tap\
 
 ## 🚀 Hướng Dẫn Chạy & Cài Đặt
 
-1. **Trải nghiệm ngay trên trình duyệt:** Truy cập [https://websmartthcs.vercel.app/](https://websmartthcs.vercel.app/)
+1. **Trải nghiệm ngay trên trình duyệt:** Truy cập [https://smartedu-thcs.vercel.app/](https://smartedu-thcs.vercel.app/)
 2. **Chạy cục bộ trên máy tính:**
    - Mở terminal tại thư mục dự án và chạy server nội bộ:
      ```powershell

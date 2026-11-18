@@ -36,7 +36,7 @@
       <div><strong>Tác giả:</strong> Trần Lê Long Phụng</div>
       <div><strong>Lớp:</strong> 9A13</div>
       <div><strong>Đơn vị:</strong> Trường THCS Long Cang</div>
-      <div><strong>Địa chỉ Web trực tuyến:</strong> <a href="https://websmartthcs.vercel.app/" target="_blank">websmartthcs.vercel.app</a></div>
+      <div><strong>Địa chỉ Web trực tuyến:</strong> <a href="https://smartedu-thcs.vercel.app/" target="_blank">smartedu-thcs.vercel.app</a></div>
       <div><strong>Mã nguồn GitHub:</strong> <a href="https://github.com/haidhsp2005-cyber/web_smart_thcs.git" target="_blank">haidhsp2005-cyber/web_smart_thcs</a></div>
     </div>
 
@@ -65,7 +65,7 @@ git push origin main:master</div>
     <h2>PHẦN III. KẾT NỐI VERCEL ĐỂ CÓ ĐƯỜNG LINK WEB TRONG 30 GIÂY</h2>
     <p>Dự án đã được triển khai tự động (Continuous Deployment) trên nền tảng Vercel với tên miền chính thức:</p>
     <div class="tip-box">
-      <strong>🌐 Địa chỉ Web chính thức:</strong> <a href="https://websmartthcs.vercel.app" target="_blank" style="font-weight: bold; color: #15803d; font-size: 14pt;">https://websmartthcs.vercel.app</a>
+      <strong>🌐 Địa chỉ Web chính thức:</strong> <a href="https://smartedu-thcs.vercel.app" target="_blank" style="font-weight: bold; color: #15803d; font-size: 14pt;">https://smartedu-thcs.vercel.app</a>
       <br>Mỗi khi đẩy code mới lên GitHub, hệ thống Vercel sẽ tự động build và cập nhật phiên bản mới nhất cho toàn bộ người dùng trên khắp thế giới trong vòng 20 giây!
     </div>
 
@@ -107,7 +107,7 @@ git push origin main:master</div>
       <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Nếu bài tập hình học có tam giác, đường tròn hay bài KHTN có mạch điện, bình thí nghiệm thì AI có hiểu được không?"</em></div>
       <div class="dialogue-a">
         "Dạ thưa Thầy/Cô, hệ thống tích hợp mô hình thị giác AI (Gemini Multimodal Vision) hiện đại nhất:<br>
-        - Khi nạp ảnh bài toán, AI sẽ quét toàn bộ các đường nét: nhận diện góc vuông, đường tròn nội tiếp, tam giác $\triangle ABC$ hoặc các điện trở mắc nối tiếp, song song trong mạch điện.<br>
+        - Khi nạp ảnh bài toán, AI sẽ quét toàn bộ các đường nét: nhận diện góc vuông, đường tròn nội tiếp, tam giác △ABC hoặc các điện trở mắc nối tiếp, song song trong mạch điện.<br>
         - Sau đó, hệ thống tự động bóc tách các giả thiết và công thức sang chuẩn KaTeX toán học và tạo ra sơ đồ tư duy cùng bộ đề thi tương ứng chuẩn xác ạ!"
       </div>
     </div>
@@ -132,7 +132,7 @@ git push origin main:master</div>
       <tbody>
         <tr>
           <td style="text-align: center;">1</td>
-          <td>Kiểm tra link web Vercel (websmartthcs.vercel.app) trên điện thoại xem có chạy mượt không</td>
+          <td>Kiểm tra link web Vercel (smartedu-thcs.vercel.app) trên điện thoại xem có chạy mượt không</td>
           <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
         <tr>
