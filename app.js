@@ -17,10 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     currentDoc: {
       title: '',
       text: '',
-      type: '', // 'word' | 'pdf' | 'image' | 'text'
+      type: '', // 'word' | 'pdf' | 'image' | 'text' | 'multiple'
       imageBase64: null,
+      images: [], // Danh sách ảnh base64 khi nạp nhiều ảnh
       wordCount: 0
     },
+    uploadedFiles: [], // Danh sách đa tài liệu [{ id, name, type, text, wordCount, size, imageBase64, isOcrDone }]
 
     // Tab Data
     mindmapMarkdown: '',
@@ -79,9 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
     docStats: document.getElementById('doc-stats'),
     btnEnterLesson: document.getElementById('btn-enter-lesson'),
     btnOcrImage: document.getElementById('btn-ocr-image'),
+    ocrBtnText: document.getElementById('ocr-btn-text'),
     btnViewExtracted: document.getElementById('btn-view-extracted'),
     btnReadDoc: document.getElementById('btn-read-doc'),
     btnClearDoc: document.getElementById('btn-clear-doc'),
+    uploadedFilesContainer: document.getElementById('uploaded-files-container'),
+    uploadedFilesCount: document.getElementById('uploaded-files-count'),
+    uploadedFilesItems: document.getElementById('uploaded-files-items'),
+    btnAddMoreFiles: document.getElementById('btn-add-more-files'),
+    btnAddMoreCamera: document.getElementById('btn-add-more-camera'),
 
     // Tabs
     tabButtons: document.querySelectorAll('.tab-btn'),
@@ -657,15 +665,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const contentsParts = [{ text: prompt }];
           if (inlineImageBase64) {
-            const match = inlineImageBase64.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
-            if (match) {
-              contentsParts.push({
-                inlineData: {
-                  mimeType: match[1],
-                  data: match[2]
+            const imgList = Array.isArray(inlineImageBase64) ? inlineImageBase64 : [inlineImageBase64];
+            imgList.forEach(img => {
+              if (typeof img === 'string') {
+                const match = img.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+                if (match) {
+                  contentsParts.push({
+                    inlineData: {
+                      mimeType: match[1],
+                      data: match[2]
+                    }
+                  });
                 }
-              });
-            }
+              }
+            });
           }
 
           const generationConfig = {
@@ -770,212 +783,377 @@ document.addEventListener('DOMContentLoaded', () => {
     throw new Error(`Không thể hoàn thành yêu cầu: ${lastErrorMessage || 'Tất cả các API Key hoặc Model trong bể xoay vòng đều bận'}`);
   }
 
-  // ================= FILE PARSING LOGIC =================
+  // ================= FILE PARSING LOGIC (HỖ TRỢ ĐA TÀI LIỆU WORD, PDF, NHIỀU ẢNH BÀI HỌC) =================
   function countWords(str) {
     if (!str) return 0;
     return str.trim().split(/\s+/).filter(Boolean).length;
   }
 
-  function setActiveDocument(title, text, type, imageBase64 = null, isSample = false) {
-    state.currentDoc.title = title;
-    state.currentDoc.text = text;
-    state.currentDoc.type = type;
-    state.currentDoc.imageBase64 = imageBase64;
-    state.currentDoc.wordCount = countWords(text);
+  // Tối ưu ảnh chụp bài học / camera tự động bằng Canvas (Độ phân giải chuẩn nét, dung lượng nhẹ)
+  function processImageFileToOptimizedBase64(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const rawDataUrl = e.target.result;
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1280; // Chuẩn nét sắc sảo cho OCR công thức Toán, Lý, Hóa & Hình vẽ
 
-    // Dừng âm thanh đang phát cũ nếu có
-    stopAllSpeech();
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
 
-    // Nếu người dùng tải file bài học mới vào (không phải bài mẫu do hệ thống tự load):
-    // Reset dữ liệu tóm tắt cũ để khi bấm "Nghe đọc tóm tắt" hệ thống sẽ đọc bài mới của học sinh!
-    if (!isSample) {
-      state.summaryData = null;
-      if (dom.summaryEmptyState) dom.summaryEmptyState.classList.remove('hidden');
-      if (dom.sectionTakeaways) dom.sectionTakeaways.classList.add('hidden');
-      if (dom.sectionTerms) dom.sectionTerms.classList.add('hidden');
-      if (dom.sectionStrategies) dom.sectionStrategies.classList.add('hidden');
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+          resolve(optimizedBase64);
+        };
+        img.onerror = () => resolve(rawDataUrl);
+        img.src = rawDataUrl;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Phân tích từng file đơn lẻ (Word, PDF, hoặc Ảnh)
+  async function parseSingleFile(file) {
+    const name = file.name || 'Tai_lieu';
+    const lowerName = name.toLowerCase();
+    const isImage = (file.type && file.type.startsWith('image/')) || /\.(jpg|jpeg|png|webp|gif|bmp|heic|svg|jfif)$/i.test(lowerName);
+
+    // 1. File Word (.docx / .doc)
+    if (lowerName.endsWith('.docx') || lowerName.endsWith('.doc')) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await window.mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+        const text = result.value ? result.value.trim() : '';
+        return {
+          id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          name: name,
+          type: 'word',
+          text: text || `[File Word: ${name} (Không có văn bản trích xuất được)]`,
+          wordCount: countWords(text),
+          size: file.size,
+          imageBase64: null,
+          isOcrDone: true
+        };
+      } catch (err) {
+        console.warn('Mammoth parse error:', err);
+        return {
+          id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          name: name,
+          type: 'word',
+          text: `[Lỗi đọc file Word: ${err.message}]`,
+          wordCount: 0,
+          size: file.size,
+          imageBase64: null,
+          isOcrDone: true
+        };
+      }
     }
 
-    // Update UI
-    dom.docPreviewCard.classList.remove('hidden');
-    dom.docTitle.textContent = title;
-    dom.docBadgeType.textContent = type.toUpperCase();
-    dom.docStats.textContent = `${state.currentDoc.wordCount} từ • Sẵn sàng phân tích & nghe đọc`;
+    // 2. File PDF
+    if (lowerName.endsWith('.pdf')) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageStrings = textContent.items.map(item => item.str);
+          fullText += `\n--- TRANG ${i} ---\n` + pageStrings.join(' ');
+        }
+        const cleanText = fullText.trim();
+        return {
+          id: 'pdf_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          name: name,
+          type: 'pdf',
+          text: cleanText || `[File PDF scan ảnh: ${name}]`,
+          wordCount: countWords(cleanText),
+          size: file.size,
+          imageBase64: null,
+          isOcrDone: true
+        };
+      } catch (err) {
+        console.warn('PDF.js parse error:', err);
+        return {
+          id: 'pdf_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          name: name,
+          type: 'pdf',
+          text: `[Lỗi đọc file PDF: ${err.message}]`,
+          wordCount: 0,
+          size: file.size,
+          imageBase64: null,
+          isOcrDone: true
+        };
+      }
+    }
 
+    // 3. Ảnh bài học / Chụp từ camera
+    if (isImage) {
+      const base64 = await processImageFileToOptimizedBase64(file);
+      const text = `[Ảnh chụp bài học: ${name}]\n(Ảnh đã được nạp thành công. Hãy bấm "Nhận diện OCR" để AI đọc chữ, công thức Toán - Lý - Hóa và phân tích hình vẽ, hoặc bấm trực tiếp Tạo Sơ đồ tư duy / Tóm tắt / Đề thi!)`;
+      return {
+        id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        name: name,
+        type: 'image',
+        text: text,
+        wordCount: countWords(text),
+        size: file.size,
+        imageBase64: base64,
+        isOcrDone: false
+      };
+    }
+
+    return null;
+  }
+
+  // Cập nhật và đồng bộ trạng thái khi có một hoặc nhiều tài liệu được tải lên
+  function refreshMultiDocumentsState() {
+    stopAllSpeech();
+
+    if (!state.uploadedFiles || state.uploadedFiles.length === 0) {
+      state.currentDoc = { title: '', text: '', type: '', imageBase64: null, images: [], wordCount: 0 };
+      if (dom.docPreviewCard) dom.docPreviewCard.classList.add('hidden');
+      if (dom.uploadedFilesContainer) dom.uploadedFilesContainer.classList.add('hidden');
+      return;
+    }
+
+    const totalFiles = state.uploadedFiles.length;
+    const allImages = state.uploadedFiles.filter(f => f.imageBase64).map(f => f.imageBase64);
+
+    if (totalFiles === 1) {
+      const single = state.uploadedFiles[0];
+      state.currentDoc.title = single.name;
+      state.currentDoc.text = single.text;
+      state.currentDoc.type = single.type;
+      state.currentDoc.imageBase64 = single.imageBase64;
+      state.currentDoc.images = single.imageBase64 ? [single.imageBase64] : [];
+      state.currentDoc.wordCount = single.wordCount;
+    } else {
+      // Gộp nội dung của tất cả các tài liệu / ảnh thành một bài học hoàn chỉnh
+      const combinedText = state.uploadedFiles.map((f, idx) => {
+        return `=== [TÀI LIỆU #${idx + 1}: ${f.name} (${f.type.toUpperCase()})] ===\n${f.text || ''}`;
+      }).join('\n\n');
+
+      state.currentDoc.title = `${totalFiles} tài liệu đã gộp (${state.uploadedFiles[0].name}...)`;
+      state.currentDoc.text = combinedText;
+      state.currentDoc.type = 'multiple';
+      state.currentDoc.images = allImages;
+      state.currentDoc.imageBase64 = allImages[0] || null;
+      state.currentDoc.wordCount = countWords(combinedText);
+    }
+
+    // Reset dữ liệu tóm tắt cũ để học sinh luôn làm việc với tài liệu mới
+    state.summaryData = null;
+    if (dom.summaryEmptyState) dom.summaryEmptyState.classList.remove('hidden');
+    if (dom.sectionTakeaways) dom.sectionTakeaways.classList.add('hidden');
+    if (dom.sectionTerms) dom.sectionTerms.classList.add('hidden');
+    if (dom.sectionStrategies) dom.sectionStrategies.classList.add('hidden');
+
+    // Cập nhật giao diện Preview Card
+    if (dom.docPreviewCard) dom.docPreviewCard.classList.remove('hidden');
+    if (dom.docTitle) dom.docTitle.textContent = state.currentDoc.title;
+    
+    if (dom.docBadgeType) {
+      dom.docBadgeType.textContent = totalFiles > 1 ? `GỘP ${totalFiles} FILE` : state.currentDoc.type.toUpperCase();
+    }
+
+    const imageCount = allImages.length;
+    const imageInfo = imageCount > 0 ? ` • ${imageCount} ảnh bài học` : '';
+    if (dom.docStats) {
+      dom.docStats.textContent = `${state.currentDoc.wordCount} từ${imageInfo} • Sẵn sàng phân tích & khảo thí`;
+    }
+
+    // Biểu tượng loại tài liệu
     const iconMap = {
       word: 'fa-file-word bg-blue-600',
       pdf: 'fa-file-pdf bg-red-600',
       image: 'fa-file-image bg-emerald-600',
+      multiple: 'fa-layer-group bg-indigo-600',
       text: 'fa-file-lines bg-indigo-600'
     };
-
-    dom.docIconBadge.className = `w-10 h-10 rounded-lg text-white flex items-center justify-center text-lg font-bold ${iconMap[type] || 'fa-file-lines bg-indigo-600'}`;
-    dom.docIconBadge.innerHTML = `<i class="fa-solid ${iconMap[type]?.split(' ')[0] || 'fa-file-lines'}"></i>`;
-
-    if (type === 'image') {
-      dom.btnOcrImage.classList.remove('hidden');
-    } else {
-      dom.btnOcrImage.classList.add('hidden');
+    if (dom.docIconBadge) {
+      const cls = iconMap[state.currentDoc.type] || iconMap.multiple;
+      dom.docIconBadge.className = `w-10 h-10 rounded-lg text-white flex items-center justify-center text-lg font-bold shrink-0 ${cls}`;
+      dom.docIconBadge.innerHTML = `<i class="fa-solid ${cls.split(' ')[0]}"></i>`;
     }
 
-    showToast(`Đã nạp tài liệu: ${title} (${state.currentDoc.wordCount} từ)`, 'success');
-  }
-
-  // 1. Word (.docx) Parsing using Mammoth
-  async function handleWordFile(file) {
-    showLoading('Đang đọc file Word...', file.name);
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const result = await window.mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-      hideLoading();
-      if (!result.value || result.value.trim().length === 0) {
-        showToast('File Word rỗng hoặc không chứa văn bản!', 'warning');
-        return;
-      }
-      setActiveDocument(file.name, result.value, 'word');
-    } catch (e) {
-      hideLoading();
-      console.error(e);
-      showToast('Lỗi khi đọc file Word: ' + e.message, 'error');
-    }
-  }
-
-  // 2. PDF Parsing using PDF.js
-  async function handlePdfFile(file) {
-    showLoading('Đang trích xuất nội dung PDF...', file.name);
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      let fullText = '';
-      
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageStrings = textContent.items.map(item => item.str);
-        fullText += `\n--- TRANG ${i} ---\n` + pageStrings.join(' ');
-      }
-
-      hideLoading();
-      if (!fullText.trim()) {
-        showToast('PDF scan hình ảnh hoặc không có văn bản chọn được!', 'warning');
-        return;
-      }
-      setActiveDocument(file.name, fullText.trim(), 'pdf');
-    } catch (e) {
-      hideLoading();
-      console.error(e);
-      showToast('Lỗi khi đọc file PDF: ' + e.message, 'error');
-    }
-  }
-
-  // 3. Image File & Camera Parsing with Automatic Mobile Compression
-  function handleImageFile(file) {
-    showLoading('Đang đọc ảnh bài học...', file.name);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const rawDataUrl = e.target.result;
-      
-      const img = new Image();
-      img.onload = () => {
-        let width = img.width;
-        let height = img.height;
-        const maxDim = 1200; // Tối ưu kích thước chuẩn nét cho OCR mà payload cực nhẹ
-
-        // Scale down if camera resolution is huge (e.g. 12MP/48MP)
-        if (width > maxDim || height > maxDim) {
-          if (width > height) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          } else {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
+    // Nút Nhận diện OCR: Hiện lên nếu có ít nhất 1 ảnh
+    if (dom.btnOcrImage) {
+      if (imageCount > 0) {
+        dom.btnOcrImage.classList.remove('hidden');
+        if (dom.ocrBtnText) {
+          const unOcrCount = state.uploadedFiles.filter(f => f.imageBase64 && !f.isOcrDone).length;
+          dom.ocrBtnText.textContent = unOcrCount > 0 
+            ? (totalFiles > 1 ? `Nhận diện OCR ${unOcrCount} ảnh bài học` : 'Nhận diện OCR ảnh & hình vẽ')
+            : 'Đã nhận diện OCR xong';
         }
+      } else {
+        dom.btnOcrImage.classList.add('hidden');
+      }
+    }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        // Nền trắng chuẩn giáo dục tránh lỗi nền trong suốt
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
+    // Hiển thị danh sách các tài liệu con đã gộp
+    if (dom.uploadedFilesContainer && dom.uploadedFilesItems) {
+      dom.uploadedFilesContainer.classList.remove('hidden');
+      if (dom.uploadedFilesCount) dom.uploadedFilesCount.textContent = totalFiles;
 
-        const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.80);
-        hideLoading();
-        const initialText = `[Ảnh chụp bài học: ${file.name}]\n(Đã nạp ảnh thành công. Hãy bấm "Nhận diện chữ qua AI (OCR)" hoặc bấm trực tiếp Tạo Sơ đồ tư duy / Tóm tắt / Đề thi / Thẻ học tập để AI phân tích ngay từ bức ảnh này!)`;
-        setActiveDocument(file.name, initialText, 'image', optimizedBase64);
-        showToast('Đã nạp và tối ưu ảnh bài học thành công!', 'success');
-      };
+      dom.uploadedFilesItems.innerHTML = state.uploadedFiles.map(item => {
+        const itemIcon = item.type === 'word' ? 'fa-file-word text-blue-600' :
+                         (item.type === 'pdf' ? 'fa-file-pdf text-red-600' : 'fa-image text-emerald-600');
+        const statusText = item.imageBase64 
+          ? (item.isOcrDone ? '<span class="text-emerald-600 font-bold">Đã OCR</span>' : '<span class="text-amber-600 font-semibold">Chờ OCR</span>')
+          : `<span class="text-slate-500">${item.wordCount} từ</span>`;
 
-      img.onerror = () => {
-        hideLoading();
-        setActiveDocument(file.name, `[Ảnh chụp: ${file.name}]`, 'image', rawDataUrl);
-      };
-
-      img.src = rawDataUrl;
-    };
-
-    reader.onerror = () => {
-      hideLoading();
-      showToast('Không đọc được file ảnh!', 'error');
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function routeUploadedFile(file) {
-    if (!file) return;
-    const name = file.name ? file.name.toLowerCase() : '';
-    const isImage = (file.type && file.type.startsWith('image/')) || /\.(jpg|jpeg|png|webp|gif|bmp|heic|svg|jfif)$/i.test(name);
-    
-    if (name.endsWith('.docx') || name.endsWith('.doc')) {
-      handleWordFile(file);
-    } else if (name.endsWith('.pdf')) {
-      handlePdfFile(file);
-    } else if (isImage) {
-      handleImageFile(file);
-    } else {
-      showToast('Định dạng file không được hỗ trợ. Vui lòng chọn Word (.docx), PDF hoặc Ảnh bài học!', 'warning');
+        return `
+          <div class="inline-flex items-center gap-2 px-2.5 py-1.5 bg-white border border-indigo-100 rounded-lg shadow-2xs text-xs max-w-full">
+            <i class="fa-solid ${itemIcon} shrink-0 text-sm"></i>
+            <span class="font-medium text-slate-800 truncate max-w-[130px] sm:max-w-[190px]" title="${item.name}">${item.name}</span>
+            <span class="text-[11px]">${statusText}</span>
+            <button onclick="window.removeUploadedFileItem('${item.id}')" class="text-slate-400 hover:text-rose-600 p-0.5 rounded cursor-pointer transition-colors" title="Xóa file này">
+              <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
     }
   }
 
-  // ================= OCR WITH GEMINI VISION =================
+  // Xóa 1 tài liệu con khỏi danh sách gộp
+  window.removeUploadedFileItem = function(id) {
+    state.uploadedFiles = state.uploadedFiles.filter(f => f.id !== id);
+    refreshMultiDocumentsState();
+    showToast('Đã bỏ bớt tài liệu khỏi danh sách gộp!', 'info');
+  };
+
+  // Hàm xử lý nạp nhiều file cùng một lúc (Word, PDF, Ảnh bài học)
+  async function handleMultipleUploadedFiles(fileList) {
+    if (!fileList || fileList.length === 0) return;
+    const files = Array.from(fileList);
+    showLoading(`Đang xử lý ${files.length} tài liệu...`, 'Đang phân tích cấu trúc & tối ưu hóa...');
+
+    let loadedCount = 0;
+    for (const file of files) {
+      try {
+        const parsed = await parseSingleFile(file);
+        if (parsed) {
+          state.uploadedFiles.push(parsed);
+          loadedCount++;
+        }
+      } catch (err) {
+        console.warn(`Lỗi khi đọc file ${file.name}:`, err);
+      }
+    }
+
+    hideLoading();
+
+    if (loadedCount > 0) {
+      refreshMultiDocumentsState();
+      showToast(`Đã nạp thành công ${loadedCount} tài liệu!`, 'success');
+    } else {
+      showToast('Không có file nào hợp lệ (.docx, .pdf hoặc ảnh)!', 'warning');
+    }
+  }
+
+  function setActiveDocument(title, text, type, imageBase64 = null, isSample = false) {
+    state.uploadedFiles = [{
+      id: 'doc_' + Date.now(),
+      name: title,
+      type: type,
+      text: text,
+      wordCount: countWords(text),
+      size: 0,
+      imageBase64: imageBase64,
+      isOcrDone: type !== 'image'
+    }];
+    refreshMultiDocumentsState();
+    if (isSample) {
+      showToast(`Đã mở bài mẫu: ${title}`, 'success');
+    }
+  }
+
+  // ================= OCR WITH GEMINI VISION (NHẬN DIỆN CÔNG THỨC TOÁN - LÝ - HÓA & HÌNH VẼ CHI TIẾT) =================
   async function runOcrOnCurrentImage() {
-    if (!state.currentDoc.imageBase64) {
-      showToast('Tài liệu hiện tại không phải là ảnh!', 'warning');
+    const unOcrImages = state.uploadedFiles.filter(f => f.imageBase64 && !f.isOcrDone);
+    const targetImages = unOcrImages.length > 0 ? unOcrImages : state.uploadedFiles.filter(f => f.imageBase64);
+
+    if (targetImages.length === 0 && !state.currentDoc.imageBase64) {
+      showToast('Không tìm thấy ảnh bài học nào để nhận diện OCR!', 'warning');
       return;
     }
 
+    const itemsToProcess = targetImages.length > 0 ? targetImages : [{
+      id: 'single_img',
+      name: state.currentDoc.title || 'Ảnh bài học',
+      imageBase64: state.currentDoc.imageBase64
+    }];
+
     try {
-      const prompt = `Bạn là chuyên gia nhận diện văn bản (OCR) và phiên giải tài liệu học tập, ĐẶC BIỆT LÀ TOÁN HỌC, VẬT LÝ, HÓA HỌC & KHOA HỌC TỰ NHIÊN (Cả Cấp 2 THCS & Cấp 3 THPT).
-Hãy đọc cẩn thận tài liệu/bức ảnh này và trích xuất TOÀN BỘ nội dung bài học ra văn bản tiếng Việt rõ ràng, giữ nguyên tiêu đề, các phần đánh số (I, II, 1, 2, a, b):
+      showLoading(`Đang nhận diện OCR qua AI...`, `Đang trích xuất công thức Toán - Lý - Hóa và phân tích hình vẽ từ ${itemsToProcess.length} ảnh bài học...`);
 
-QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN, LÝ, HÓA CHUẨN XÁC:
-1. Chuyển TẤT CẢ công thức Toán, biểu thức đại số, hình học, công thức Vật lý, phương trình Hóa học sang định dạng LaTeX/KaTeX kẹp giữa dấu $ (công thức trong dòng $...$) hoặc $$ (công thức riêng dòng $$...$$).
-2. Phân số & căn thức: \\frac{a}{b}, \\frac{x + 1}{x - 2}, \\sqrt{A}, \\sqrt[n]{A}.
-3. Lũy thừa, chỉ số: x^2, x_1, x_2, (a+b)^2, \\log_a b, e^x.
-4. Hệ phương trình & ngoặc: \\begin{cases} ax + by = c \\\\ a'x + b'y = c' \\end{cases}.
-5. Giải tích & hình học THCS/THPT: \\int_a^b f(x)dx, \\lim_{x \\to x_0}, f'(x), \\vec{u}(x;y;z), \\triangle ABC, \\widehat{ABC}, \\perp, \\parallel, \\sim, ^\\circ.
-6. Vật lý: \\vec{F}, I = \\frac{U}{R}, P = U \\cdot I, x = A\\cos(\\omega t + \\varphi), \\lambda = \\frac{v}{f}, \\Omega, \\mu.
-7. Hóa học: Phương trình phản ứng (dùng \\rightarrow hoặc \\rightleftharpoons), điều kiện nhiệt độ (\\xrightarrow{t^\\circ}), ion (\\text{SO}_4^{2-}, \\text{Fe}^{3+}), kết tủa (\\downarrow), bay hơi (\\uparrow), công thức hữu cơ (\\text{CH}_3\\text{COOH}).
-8. Ký hiệu logic & toán tử: \\Delta, \\Delta', \\pm, \\mp, \\neq, \\ge, \\le, \\Leftrightarrow, \\Rightarrow, \\in, \\notin, \\forall, \\exists.
-9. Giữ nguyên cấu trúc bảng biểu, hình vẽ mô tả nếu có. Chỉ trả về nội dung đã nhận diện, không kèm lời chào.`;
+      const prompt = `Bạn là chuyên gia nhận diện văn bản (OCR) và phiên giải tài liệu học tập ĐẶC BIỆT LÀ TOÁN HỌC, VẬT LÝ, HÓA HỌC & KHOA HỌC TỰ NHIÊN (Cả Cấp 2 THCS & Cấp 3 THPT).
+Hãy đọc cẩn thận bức ảnh bài học này và trích xuất TOÀN BỘ nội dung ra văn bản tiếng Việt rõ ràng, mạch lạc, giữ nguyên tiêu đề và cấu trúc bài học:
 
-      const extracted = await callGeminiWithRotation(prompt, state.currentDoc.imageBase64, {
-        isJson: false,
-        maxTokens: 3000,
-        taskName: 'Đang trích xuất chữ & công thức Toán - Lý - Hóa qua AI (OCR)...'
-      });
-      state.currentDoc.text = extracted;
-      state.currentDoc.wordCount = countWords(extracted);
-      dom.docStats.textContent = `${state.currentDoc.wordCount} từ (Đã nhận diện OCR) • Sẵn sàng phân tích`;
-      showToast(`Đã nhận diện xong chữ từ ảnh (${state.currentDoc.wordCount} từ)!`, 'success');
+1. QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN, LÝ, HÓA CHUẨN XÁC:
+- Chuyển TẤT CẢ công thức Toán, biểu thức đại số, hình học, công thức Vật lý, phương trình Hóa học sang định dạng LaTeX/KaTeX kẹp giữa dấu $ (công thức trong dòng $...$) hoặc $$ (công thức riêng dòng $$...$$).
+- Phân số & căn thức: \\frac{a}{b}, \\frac{x + 1}{x - 2}, \\sqrt{A}, \\sqrt[n]{A}.
+- Lũy thừa, chỉ số: x^2, x_1, x_2, (a+b)^2, \\log_a b, e^x.
+- Hệ phương trình & ngoặc: \\begin{cases} ax + by = c \\\\ a'x + b'y = c' \\end{cases}.
+- Hình học & Giải tích THCS/THPT: \\triangle ABC, \\widehat{ABC}, \\perp, \\parallel, \\sim, ^\\circ, \\vec{u}(x;y;z).
+- Vật lý: \\vec{F}, I = \\frac{U}{R}, P = U \\cdot I, Q = I^2 R t, x = A\\cos(\\omega t + \\varphi), \\lambda = \\frac{v}{f}, \\Omega, \\mu.
+- Hóa học: Phương trình phản ứng (\\rightarrow, \\rightleftharpoons), điều kiện nhiệt độ (\\xrightarrow{t^\\circ}), ion (\\text{SO}_4^{2-}, \\text{Fe}^{3+}), kết tủa (\\downarrow), bay hơi (\\uparrow), công thức hữu cơ (\\text{CH}_3\\text{COOH}).
+
+2. PHÂN TÍCH VÀ MÔ TẢ CHI TIẾT HÌNH VẼ, SƠ ĐỒ, ĐỒ THỊ, BẢNG BIỂU (RẤT QUAN TRỌNG):
+- Nếu bài học có HÌNH VẼ HÌNH HỌC (tam giác, đường tròn, góc, tiếp tuyến, đường cao): Mô tả chi tiết hình vẽ, các điểm, góc, cạnh bằng nhau, số đo và chuyển thành giả thiết toán học rõ ràng.
+- Nếu có SƠ ĐỒ MẠCH ĐIỆN VẬT LÝ (nguồn điện, ampe kế, vôn kế, các điện trở nối tiếp hay song song): Liệt kê chính xác sơ đồ mạch điện (ví dụ: (R1 // R2) nt R3) cùng các thông số ghi trên hình.
+- Nếu có HÌNH VẼ THÍ NGHIỆM HÓA HỌC / KHOA HỌC TỰ NHIÊN (bình tam giác, ống nghiệm, chất phản ứng, ngọn lửa đèn cồn, hiện tượng sủi bọt, kết tủa): Mô tả cụ thể dụng cụ, hóa chất tham gia, điều kiện và hiện tượng quan sát được.
+- Nếu có ĐỒ THỊ / BIỂU ĐỒ: Đọc rõ các trục tọa độ, xu hướng biến thiên và giá trị tại các điểm đặc biệt.
+
+Chỉ trả về nội dung bài học và phần phân tích hình vẽ đã nhận diện, không kèm lời chào.`;
+
+      for (let i = 0; i < itemsToProcess.length; i++) {
+        const item = itemsToProcess[i];
+        showLoading(`Đang nhận diện ảnh ${i + 1}/${itemsToProcess.length}...`, item.name);
+
+        const extracted = await callGeminiWithRotation(prompt, item.imageBase64, {
+          isJson: false,
+          maxTokens: 3500,
+          taskName: `Đang nhận diện OCR ảnh ${i + 1}/${itemsToProcess.length}: ${item.name}...`
+        });
+
+        item.text = extracted;
+        item.wordCount = countWords(extracted);
+        item.isOcrDone = true;
+      }
+
+      hideLoading();
+      refreshMultiDocumentsState();
 
       // Show in extracted text modal for verification
-      dom.extractedTextArea.value = extracted;
+      dom.extractedTextArea.value = state.currentDoc.text;
       dom.extractedWordCount.textContent = `${state.currentDoc.wordCount} từ`;
       dom.extractedTextModal.classList.remove('hidden');
+
+      showToast(`Đã nhận diện OCR thành công ${itemsToProcess.length} ảnh (${state.currentDoc.wordCount} từ)!`, 'success');
     } catch (e) {
+      hideLoading();
       showToast(e.message, 'error');
     }
   }
@@ -1384,8 +1562,21 @@ QUY TẮC NHẬN DẠNG CÔNG THỨC TOÁN, LÝ, HÓA CHUẨN XÁC:
     }
   }
 
+  // Helper lấy ảnh gửi AI Vision (hỗ trợ 1 ảnh hoặc mảng nhiều ảnh bài học) khi người dùng chưa chạy OCR
+  function getImagesToSend() {
+    const hasImages = (state.currentDoc.images && state.currentDoc.images.length > 0) || state.currentDoc.imageBase64;
+    const isPlaceholderText = !state.currentDoc.text || state.currentDoc.text.includes('[Ảnh chụp bài học:');
+    if (hasImages && isPlaceholderText) {
+      if (state.currentDoc.images && state.currentDoc.images.length > 0) {
+        return state.currentDoc.images;
+      }
+      return state.currentDoc.imageBase64 ? [state.currentDoc.imageBase64] : null;
+    }
+    return null;
+  }
+
   async function generateMindmapWithAi() {
-    if (!state.currentDoc.text && !state.currentDoc.imageBase64) {
+    if (!state.currentDoc.text && !state.currentDoc.imageBase64 && (!state.currentDoc.images || state.currentDoc.images.length === 0)) {
       showToast('Vui lòng tải lên tài liệu học tập trước!', 'warning');
       return;
     }
@@ -1397,15 +1588,15 @@ QUY TẮC THIẾT KẾ SƠ ĐỒ TƯ DUY HIỆN ĐẠI (CHỐNG DÀI DÒNG, TĂN
 1. BẮT BUỘC gắn Emoji sinh động trực quan ở ĐẦU MỖI NHÁNH (Ví dụ: # 📘 Tiêu đề chính, ## 🎯 I. Khái niệm cốt lõi, ### 💡 1. Đặc điểm nổi bật, - ⚡ Ý chính...).
 2. Từ khóa cô đọng súc tích: Mỗi gạch đầu dòng (-) chỉ ghi TỪ KHÓA NGẮN GỌN (từ 3 đến 8 từ), TUYỆT ĐỐI KHÔNG viết cả một câu văn dài lê thê làm chữ bị dính chùm vào đường kẻ. Dùng **in đậm** cho các từ khóa cốt lõi.
 3. Tỏa nhánh hình cây: Nếu có nhiều ý con, hãy tách thành các dấu gạch đầu dòng con lùi vào trong để sơ đồ bung rộng tỏa nhánh cân xứng, đẹp mắt.
-4. Viết công thức Toán/KHTN dưới dạng LaTeX kẹp giữa $ (Ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$).
-5. CHỈ TRẢ VỀ DUY NHẤT ĐOẠN MÃ MARKDOWN CỦA SƠ ĐỒ TƯ DUY, KHÔNG CÓ BẤT KỲ LỜI DẪN NÀO KHÁC.
+4. Viết công thức Toán/KHTN dưới dạng LaTeX kẹp giữa $ (Ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$).
+5. ĐẶC BIỆT LƯU Ý HÌNH VẼ & SƠ ĐỒ MINH HỌA: Nếu bài học có hình vẽ hình học, sơ đồ mạch điện, thí nghiệm hóa học hoặc đồ thị, hãy trích xuất và đưa các dữ kiện then chốt từ hình vẽ vào các nhánh kiến thức tương ứng.
+6. CHỈ TRẢ VỀ DUY NHẤT ĐOẠN MÃ MARKDOWN CỦA SƠ ĐỒ TƯ DUY, KHÔNG CÓ BẤT KỲ LỜI DẪN NÀO KHÁC.
 
 NỘI DUNG BÀI HỌC CẤP 2:
 ${state.currentDoc.text}`;
 
     try {
-      // Tối ưu hóa siêu tốc: Không gửi lại ảnh base64 nặng nếu văn bản bài học đã có sẵn
-      const imgToSend = state.currentDoc.text ? null : state.currentDoc.imageBase64;
+      const imgToSend = getImagesToSend();
       const aiResponse = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: false,
         maxTokens: 1500,
@@ -1473,7 +1664,7 @@ ${state.currentDoc.text}`;
   }
 
   async function generateSummaryWithAi() {
-    if (!state.currentDoc.text && !state.currentDoc.imageBase64) {
+    if (!state.currentDoc.text && !state.currentDoc.imageBase64 && (!state.currentDoc.images || state.currentDoc.images.length === 0)) {
       showToast('Vui lòng tải lên tài liệu học tập trước!', 'warning');
       return;
     }
@@ -1481,6 +1672,7 @@ ${state.currentDoc.text}`;
     const prompt = `Bạn là một cố vấn giáo dục và chuyên gia tối ưu hóa phương pháp học tập dành riêng cho HỌC SINH CẤP 2 (THCS: Lớp 6, 7, 8, 9, độ tuổi 11 - 15).
 Dựa vào bài học cấp 2 sau, hãy tạo bản tóm tắt nội dung cô đọng và gợi ý học tập thông minh, sinh động, dễ tiếp thu.
 QUAN TRỌNG VỀ CÔNG THỨC TOÁN & KHOA HỌC: Bắt buộc viết các công thức toán, lý, hóa dưới dạng LaTeX kẹp giữa dấu $ (ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$, $P = U \\cdot I$, $Q = I^2 R t$).
+ĐẶC BIỆT LƯU Ý HÌNH VẼ & SƠ ĐỒ MINH HỌA: Nếu bài học có hình vẽ hình học, sơ đồ mạch điện, dụng cụ thí nghiệm hóa học hoặc đồ thị, hãy giải thích và đưa vào phần tóm tắt cốt lõi.
 Trả về dữ liệu dưới dạng JSON thuần túy (không bọc text ngoài lề) theo đúng cấu trúc sau:
 {
   "coreTakeaways": [
@@ -1506,8 +1698,7 @@ NỘI DUNG BÀI HỌC CẤP 2:
 ${state.currentDoc.text}`;
 
     try {
-      // Tối ưu hóa siêu tốc: Không gửi lại ảnh base64 nặng nếu văn bản bài học đã có sẵn
-      const imgToSend = state.currentDoc.text ? null : state.currentDoc.imageBase64;
+      const imgToSend = getImagesToSend();
       const rawRes = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: true,
         maxTokens: 1500,
@@ -1782,7 +1973,7 @@ ${state.currentDoc.text}`;
   }
 
   async function generateQuizWithAi() {
-    if (!state.currentDoc.text && !state.currentDoc.imageBase64) {
+    if (!state.currentDoc.text && !state.currentDoc.imageBase64 && (!state.currentDoc.images || state.currentDoc.images.length === 0)) {
       showToast('Vui lòng tải lên tài liệu học tập trước!', 'warning');
       return;
     }
@@ -1802,6 +1993,7 @@ Dựa trên tài liệu bài học cấp 2 sau, hãy tạo một bộ đề thi 
 
 QUAN TRỌNG VỀ CÔNG THỨC TOÁN & KHOA HỌC: Bắt buộc viết các công thức toán, lý, hóa trong câu hỏi, đáp án và giải thích dưới dạng LaTeX kẹp giữa dấu $ (ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$, $P = U \\cdot I$, $Q = I^2 R t$).
 LƯU Ý KỸ THUẬT VỀ ĐỊNH DẠNG JSON: Mọi công thức LaTeX trong chuỗi JSON PHẢI dùng 2 dấu gạch chéo ngược \\\\ (ví dụ \\\\frac{U}{R}, \\\\sqrt{x}, \\\\Delta, \\\\cdot, \\\\Omega, \\\\pm) để đảm bảo chuỗi JSON hợp lệ 100%.
+ĐẶC BIỆT LƯU Ý HÌNH VẼ & SƠ ĐỒ MINH HỌA: Nếu bài học có hình vẽ hình học, sơ đồ mạch điện, thí nghiệm hóa học hoặc đồ thị, hãy sáng tạo ít nhất 2-3 câu hỏi khai thác trực tiếp từ các dữ kiện trên hình vẽ (ví dụ: "Dựa vào hình vẽ/sơ đồ mạch điện, hãy tính...", "Hiện tượng quan sát được trong thí nghiệm là...").
 Mỗi câu hỏi có 4 đáp án (A, B, C, D) với đúng 1 đáp án chính xác.
 Trả về dữ liệu dưới dạng JSON thuần túy (KHÔNG có văn bản nào ngoài JSON) theo cấu trúc mảng sau:
 [
@@ -1825,8 +2017,7 @@ NỘI DUNG BÀI HỌC CẤP 2:
 ${state.currentDoc.text.slice(0, 8000)}`;
 
     try {
-      // Tối ưu hóa siêu tốc: Không gửi lại ảnh base64 nặng nếu văn bản bài học đã có sẵn
-      const imgToSend = state.currentDoc.text ? null : state.currentDoc.imageBase64;
+      const imgToSend = getImagesToSend();
       const rawRes = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: true,
         maxTokens: count >= 15 ? 8192 : (count >= 10 ? 6000 : 3500),
@@ -2523,7 +2714,7 @@ ${state.currentDoc.text.slice(0, 8000)}`;
   }
 
   async function generateBeamsWithAi() {
-    if (!state.currentDoc.text && !state.currentDoc.imageBase64) {
+    if (!state.currentDoc.text && !state.currentDoc.imageBase64 && (!state.currentDoc.images || state.currentDoc.images.length === 0)) {
       showToast('Vui lòng tải lên tài liệu học tập trước!', 'warning');
       return;
     }
@@ -2533,6 +2724,7 @@ Hãy chia nhỏ toàn bộ nội dung bài học cấp 2 sau đây thành 5 đ�
 Mỗi Thẻ học tập gồm thẻ lật Flashcard 3D: Mặt trước là câu hỏi kích thích tư duy / tình huống thực tế đời sống, Mặt sau là câu trả lời cô đọng và điểm cốt lõi trong 30 giây dễ nhớ với học sinh cấp 2.
 
 QUAN TRỌNG VỀ CÔNG THỨC TOÁN & KHOA HỌC: Bắt buộc viết các công thức toán, lý, hóa dưới dạng LaTeX kẹp giữa dấu $ (ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$, $P = U \\cdot I$, $Q = I^2 R t$, $\\begin{cases} ax + by = c \\\\ a'x + b'y = c' \\end{cases}$).
+ĐẶC BIỆT LƯU Ý HÌNH VẼ & SƠ ĐỒ MINH HỌA: Nếu bài học có hình vẽ hình học, sơ đồ mạch điện, thí nghiệm hóa học hoặc đồ thị, hãy tạo ít nhất 1 thẻ học tập xoay quanh cách đọc và vận dụng dữ kiện từ hình vẽ đó.
 Trả về mảng JSON thuần túy theo cấu trúc:
 [
   {
@@ -2551,8 +2743,7 @@ NỘI DUNG BÀI HỌC CẤP 2:
 ${state.currentDoc.text}`;
 
     try {
-      // Tối ưu hóa siêu tốc: Không gửi lại ảnh base64 nặng nếu văn bản bài học đã có sẵn
-      const imgToSend = state.currentDoc.text ? null : state.currentDoc.imageBase64;
+      const imgToSend = getImagesToSend();
       const rawRes = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: true,
         maxTokens: 1800,
@@ -2584,7 +2775,7 @@ ${state.currentDoc.text}`;
     dom.dropZoneContainer.classList.add('hidden');
   });
 
-  // Drag & Drop
+  // Drag & Drop (Hỗ trợ kéo thả một hoặc nhiều file/ảnh cùng lúc)
   dom.dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dom.dropZone.classList.add('border-indigo-600', 'bg-indigo-50');
@@ -2597,23 +2788,30 @@ ${state.currentDoc.text}`;
   dom.dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
     dom.dropZone.classList.remove('border-indigo-600', 'bg-indigo-50');
-    if (e.dataTransfer.files.length > 0) {
-      routeUploadedFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleMultipleUploadedFiles(e.dataTransfer.files);
     }
   });
 
   dom.dropZone.addEventListener('click', () => dom.fileInput.click());
   dom.fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      routeUploadedFile(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      handleMultipleUploadedFiles(e.target.files);
     }
   });
 
   dom.cameraInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      routeUploadedFile(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      handleMultipleUploadedFiles(e.target.files);
     }
   });
+
+  if (dom.btnAddMoreFiles) {
+    dom.btnAddMoreFiles.addEventListener('click', () => dom.fileInput.click());
+  }
+  if (dom.btnAddMoreCamera) {
+    dom.btnAddMoreCamera.addEventListener('click', () => dom.cameraInput.click());
+  }
 
   // Text Direct Apply
   dom.applyTextBtn.addEventListener('click', () => {
@@ -2629,12 +2827,12 @@ ${state.currentDoc.text}`;
   // OCR button
   dom.btnOcrImage.addEventListener('click', runOcrOnCurrentImage);
 
-  // Clear Doc
+  // Clear Doc (Xóa toàn bộ tài liệu & ảnh đã nạp)
   dom.btnClearDoc.addEventListener('click', () => {
-    state.currentDoc = { title: '', text: '', type: '', imageBase64: null, wordCount: 0 };
-    dom.docPreviewCard.classList.add('hidden');
+    state.uploadedFiles = [];
+    refreshMultiDocumentsState();
     dom.rawTextInput.value = '';
-    showToast('Đã xóa tài liệu hiện tại!', 'info');
+    showToast('Đã xóa toàn bộ tài liệu đã nạp!', 'info');
   });
 
   // View / Edit Extracted Text

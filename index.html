@@ -200,7 +200,7 @@
       <!-- Mode 1: File & Image Upload Area -->
       <div id="drop-zone-container" class="mt-4">
         <div id="drop-zone" class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/30 hover:bg-indigo-50/60 rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-3">
-          <input type="file" id="file-input" class="hidden" accept=".docx,.doc,.pdf,image/*">
+          <input type="file" id="file-input" class="hidden" accept=".docx,.doc,.pdf,image/*" multiple>
           
           <div class="w-14 h-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
             <i class="fa-solid fa-file-circle-plus"></i>
@@ -208,12 +208,12 @@
 
           <div>
             <p class="text-xs sm:text-sm font-semibold text-slate-800">
-              Kéo thả file vào đây hoặc <span class="text-indigo-600 hover:underline">chọn từ thiết bị</span>
+              Kéo thả một hoặc <span class="text-indigo-600 hover:underline">chọn nhiều tài liệu / ảnh bài học cùng lúc</span>
             </p>
             <p class="text-xs text-slate-500 mt-1 flex flex-wrap items-center justify-center gap-1.5">
-              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 text-[11px]"><i class="fa-solid fa-file-word"></i> Word</span>
-              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-red-50 text-red-700 rounded border border-red-200 text-[11px]"><i class="fa-solid fa-file-pdf"></i> PDF</span>
-              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 text-[11px]"><i class="fa-solid fa-camera"></i> Ảnh / Camera</span>
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 text-[11px]"><i class="fa-solid fa-file-word"></i> Nhiều file Word</span>
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-red-50 text-red-700 rounded border border-red-200 text-[11px]"><i class="fa-solid fa-file-pdf"></i> Nhiều file PDF</span>
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 text-[11px]"><i class="fa-solid fa-images"></i> Nhiều ảnh bài học / Có hình vẽ</span>
             </p>
           </div>
 
@@ -221,9 +221,9 @@
           <div class="pt-2 flex items-center gap-2">
             <label for="camera-input" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95">
               <i class="fa-solid fa-camera text-indigo-600"></i>
-              <span>Chụp ảnh bài học ngay</span>
+              <span>Chụp ảnh bài học / hình vẽ ngay</span>
             </label>
-            <input type="file" id="camera-input" class="hidden" accept="image/*" capture="environment">
+            <input type="file" id="camera-input" class="hidden" accept="image/*" capture="environment" multiple>
           </div>
         </div>
       </div>
@@ -241,43 +241,69 @@
       </div>
 
       <!-- ACTIVE DOCUMENT PREVIEW BANNER -->
-      <div id="doc-preview-card" class="mt-4 hidden p-3 bg-indigo-50/70 border border-indigo-200 rounded-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 min-w-0">
-        <div class="flex items-center gap-2.5 min-w-0 flex-1">
-          <div id="doc-icon-badge" class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-base font-bold shrink-0">
-            <i class="fa-solid fa-file-lines"></i>
-          </div>
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-1.5">
-              <h3 id="doc-title" class="text-xs sm:text-sm font-bold text-slate-900 truncate">Chưa tải tài liệu</h3>
-              <span id="doc-badge-type" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-200 text-indigo-800 shrink-0">TEXT</span>
+      <div id="doc-preview-card" class="mt-4 hidden p-3.5 bg-indigo-50/70 border border-indigo-200 rounded-xl flex flex-col gap-2.5 min-w-0 transition-all">
+        <!-- Top Summary Row -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 min-w-0">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <div id="doc-icon-badge" class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-base font-bold shrink-0">
+              <i class="fa-solid fa-file-lines"></i>
             </div>
-            <p id="doc-stats" class="text-[11px] text-slate-500 mt-0.5 truncate">0 từ • Sẵn sàng tạo Sơ đồ tư duy, Đề thi, Tóm tắt</p>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <h3 id="doc-title" class="text-xs sm:text-sm font-bold text-slate-900 truncate">Chưa tải tài liệu</h3>
+                <span id="doc-badge-type" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-200 text-indigo-800 shrink-0">TEXT</span>
+              </div>
+              <p id="doc-stats" class="text-[11px] text-slate-500 mt-0.5 truncate">0 từ • Sẵn sàng tạo Sơ đồ tư duy, Đề thi, Tóm tắt</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 self-end sm:self-auto shrink-0 flex-wrap">
+            <!-- Enter / Scroll to Lesson -->
+            <button id="btn-enter-lesson" class="px-2.5 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all flex items-center gap-1 shadow-xs active:scale-95 cursor-pointer" title="Cuộn xuống xem nội dung bài học">
+              <i class="fa-solid fa-graduation-cap text-xs"></i>
+              <span>Vào học</span>
+            </button>
+
+            <!-- Image OCR Trigger if images present -->
+            <button id="btn-ocr-image" class="hidden px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 rounded-lg transition-all flex items-center gap-1 active:scale-95 cursor-pointer">
+              <i class="fa-solid fa-eye text-xs"></i>
+              <span id="ocr-btn-text">Nhận diện OCR tất cả ảnh</span>
+            </button>
+            
+            <!-- View raw text modal trigger -->
+            <button id="btn-view-extracted" class="px-2 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-all flex items-center gap-1 active:scale-95 cursor-pointer">
+              <i class="fa-solid fa-align-left text-xs"></i>
+              <span>Xem văn bản</span>
+            </button>
+
+            <!-- Clear all files -->
+            <button id="btn-clear-doc" class="px-2 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg transition-all active:scale-95 cursor-pointer" title="Xóa toàn bộ tài liệu đã nạp">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
           </div>
         </div>
 
-        <div class="flex items-center gap-1.5 self-end sm:self-auto shrink-0 flex-wrap">
-          <!-- Enter / Scroll to Lesson -->
-          <button id="btn-enter-lesson" class="px-2.5 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all flex items-center gap-1 shadow-xs active:scale-95 cursor-pointer" title="Cuộn xuống xem nội dung bài học">
-            <i class="fa-solid fa-graduation-cap text-xs"></i>
-            <span>Vào học</span>
-          </button>
-
-          <!-- Image OCR Trigger if image -->
-          <button id="btn-ocr-image" class="hidden px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 rounded-lg transition-all flex items-center gap-1">
-            <i class="fa-solid fa-eye text-xs"></i>
-            Nhận diện OCR
-          </button>
-          
-          <!-- View raw text modal trigger -->
-          <button id="btn-view-extracted" class="px-2 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-all flex items-center gap-1">
-            <i class="fa-solid fa-align-left text-xs"></i>
-            <span>Xem văn bản</span>
-          </button>
-
-          <!-- Clear file -->
-          <button id="btn-clear-doc" class="px-2 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Xóa tài liệu">
-            <i class="fa-solid fa-trash-can text-xs"></i>
-          </button>
+        <!-- Multi-Files Breakdown List (Shown when 1 or more files are uploaded) -->
+        <div id="uploaded-files-container" class="mt-1 pt-2.5 border-t border-indigo-200/60 hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-indigo-950 flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-indigo-600"></i>
+              Danh sách tài liệu đã gộp (<span id="uploaded-files-count" class="text-indigo-600 font-extrabold">0</span>):
+            </span>
+            <div class="flex items-center gap-1.5">
+              <button id="btn-add-more-files" class="px-2 py-1 text-[11px] font-semibold text-indigo-700 bg-white hover:bg-indigo-50 border border-indigo-200 rounded-lg flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer" title="Chọn thêm file Word, PDF hoặc Ảnh từ máy tính/điện thoại">
+                <i class="fa-solid fa-plus text-indigo-600 text-[10px]"></i>
+                <span>Thêm file</span>
+              </button>
+              <button id="btn-add-more-camera" class="px-2 py-1 text-[11px] font-semibold text-emerald-700 bg-white hover:bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer" title="Chụp thêm ảnh bài học mới">
+                <i class="fa-solid fa-camera text-emerald-600 text-[10px]"></i>
+                <span>Chụp thêm</span>
+              </button>
+            </div>
+          </div>
+          <div id="uploaded-files-items" class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1">
+            <!-- Populated dynamically via JS -->
+          </div>
         </div>
       </div>
     </section>
