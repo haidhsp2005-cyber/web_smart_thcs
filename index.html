@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SmartEdu THCS - Nền Tảng Học Tập & Khảo Thí Thông Minh Dành Cho Cấp 2</title>
   
   <!-- PWA & Mobile Capabilities -->
@@ -10,6 +10,9 @@
   <meta name="theme-color" content="#4f46e5">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartEdu THCS">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -1253,31 +1256,46 @@
 
   <!-- iOS / Safari PWA Install Instruction Modal -->
   <div id="ios-install-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl border border-slate-200 text-slate-800">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl border border-slate-200 text-slate-800 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between pb-2 border-b border-slate-100">
         <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-2">
-          <i class="fa-brands fa-apple text-lg"></i> Cài đặt lên màn hình chính iOS
+          <i class="fa-brands fa-apple text-slate-800 text-lg"></i> Cài đặt trên iPhone / iPad (iOS)
         </h3>
-        <button id="btn-close-ios-modal" class="p-1 text-slate-400 hover:text-slate-700">
+        <button id="btn-close-ios-modal" class="p-1 text-slate-400 hover:text-slate-700 cursor-pointer">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
+
+      <!-- Cảnh báo nếu mở trong Zalo / Messenger / Facebook trên iPhone -->
+      <div id="ios-inapp-warning" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 text-xs space-y-2">
+        <p class="font-bold flex items-center gap-1.5 text-amber-800">
+          <i class="fa-solid fa-circle-exclamation text-amber-600 text-sm"></i> Bạn đang mở trong ứng dụng khác
+        </p>
+        <p class="text-[11px] leading-relaxed text-amber-900">
+          Do bảo mật của iOS, để thêm vào màn hình chính bạn cần chuyển sang trình duyệt <strong>Safari</strong>:
+        </p>
+        <div class="space-y-1 text-[11px] text-amber-900 bg-white/70 p-2 rounded-lg border border-amber-200/60">
+          <div>1. Bấm biểu tượng <strong>dấu 3 chấm (...)</strong> hoặc <strong>Chia sẻ</strong> ở góc màn hình Zalo/Messenger.</div>
+          <div>2. Chọn <strong>"Mở bằng Safari" (Open in Safari)</strong>.</div>
+        </div>
+      </div>
+
       <div class="space-y-2.5 text-xs leading-relaxed text-slate-600">
         <div class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
           <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-[10px] shrink-0">1</span>
-          <p>Bấm biểu tượng <strong>Chia sẻ (Share) <i class="fa-solid fa-arrow-up-from-bracket text-indigo-600"></i></strong> ở thanh công cụ Safari.</p>
+          <p>Trên thanh công cụ Safari (ở dưới cùng hoặc trên cùng), bấm nút <strong>Chia sẻ (Share) <i class="fa-solid fa-arrow-up-from-bracket text-indigo-600"></i></strong>.</p>
         </div>
         <div class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
           <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-[10px] shrink-0">2</span>
-          <p>Cuộn xuống và chọn <strong>"Thêm vào MH chính" (Add to Home Screen <i class="fa-regular fa-square-plus text-indigo-600"></i>)</strong>.</p>
+          <p>Cuộn xuống menu và bấm chọn dòng <strong>"Thêm vào MH chính" (Add to Home Screen <i class="fa-regular fa-square-plus text-indigo-600"></i>)</strong>.</p>
         </div>
         <div class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
           <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-[10px] shrink-0">3</span>
-          <p>Bấm <strong>"Thêm" (Add)</strong> ở góc trên bên phải để hoàn tất!</p>
+          <p>Bấm chữ <strong>"Thêm" (Add)</strong> ở góc trên bên phải màn hình để hoàn tất!</p>
         </div>
       </div>
-      <button onclick="document.getElementById('ios-install-modal').classList.add('hidden')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs">
-        Đã hiểu
+      <button onclick="document.getElementById('ios-install-modal').classList.add('hidden')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs active:scale-95 cursor-pointer">
+        Đã hiểu & Làm theo ngay
       </button>
     </div>
   </div>

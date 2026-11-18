@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
     userAbortedOperation: false
   };
 
+  // ================= DEVICE & PLATFORM DETECTION (IOS / ANDROID / SAFARI / PWA) =================
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || isIos;
+  const isInAppBrowser = /FBAN|FBAV|Zalo|Line|Instagram|BytedanceWebview/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
   // ================= DOM ELEMENTS =================
   const dom = {
     // Top Bar (Dành riêng cho Cấp 2 - THCS)
@@ -2308,15 +2314,19 @@ ${state.currentDoc.text.slice(0, 8000)}`;
       let match = cachedVoices.find(v => (v.name.includes('HoaiMy') || v.name.includes('Hoài My')) && (v.lang.startsWith('vi') || v.lang.includes('VN')));
       if (match) return match;
 
-      // 2. Giọng nam ấm áp Nam Minh (Microsoft Neural / Natural)
+      // 2. Giọng Apple Linh bản địa trên iPhone / iPad / macOS
+      match = cachedVoices.find(v => (v.name.includes('Linh') || v.name.toLowerCase().includes('vietnamese')) && (v.lang || '').startsWith('vi'));
+      if (match) return match;
+
+      // 3. Giọng nam ấm áp Nam Minh (Microsoft Neural / Natural)
       match = cachedVoices.find(v => (v.name.includes('NamMinh') || v.name.includes('Nam Minh')) && (v.lang.startsWith('vi') || v.lang.includes('VN')));
       if (match) return match;
 
-      // 3. Giọng Google Tiếng Việt (Chrome nếu có)
+      // 4. Giọng Google Tiếng Việt (Chrome nếu có)
       match = cachedVoices.find(v => v.name.toLowerCase().includes('google') && (v.lang.startsWith('vi') || v.name.toLowerCase().includes('tiếng việt')));
       if (match) return match;
 
-      // 4. Bất kỳ giọng nào có mã ngôn ngữ vi-VN hoặc vi
+      // 5. Bất kỳ giọng nào có mã ngôn ngữ vi-VN hoặc vi
       match = cachedVoices.find(v => (v.lang || '').toLowerCase().startsWith('vi'));
       if (match) return match;
 
@@ -2468,7 +2478,8 @@ ${state.currentDoc.text.slice(0, 8000)}`;
 
   // Khởi tạo và mở khóa âm thanh trên điện thoại ngay từ lần chạm đầu tiên
   function unlockMobileAudio() {
-    if ('speechSynthesis' in window && !window._speechUnlocked) {
+    // Trên Android mở khóa bằng utterance câm, trên iOS WebKit tránh phát utterance rỗng làm nghẽn hàng đợi
+    if (!isIos && 'speechSynthesis' in window && !window._speechUnlocked) {
       try {
         const u = new SpeechSynthesisUtterance(' ');
         u.volume = 0;
@@ -2599,13 +2610,19 @@ ${state.currentDoc.text.slice(0, 8000)}`;
     let chunkIndex = 0;
     let watchdogTimer = null;
 
-    // Giữ nhịp thở cho Chromium (Tránh tự ngắt sau 14s)
+    // Giữ nhịp thở cho Chromium (Tránh tự ngắt sau 14s). KHÔNG gọi pause() trên iOS Safari vì WebKit sẽ ngắt hẳn tiếng!
     if (speechKeepAliveInterval) clearInterval(speechKeepAliveInterval);
     speechKeepAliveInterval = setInterval(() => {
       if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
         try {
-          window.speechSynthesis.pause();
-          window.speechSynthesis.resume();
+          if (!isIos) {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+          } else {
+            if (window.speechSynthesis.paused) {
+              window.speechSynthesis.resume();
+            }
+          }
         } catch (e) {}
       }
     }, 3500);
@@ -4106,11 +4123,7 @@ ${state.currentDoc.text}`;
   const androidInstallModal = document.getElementById('android-install-modal');
   const btnCloseAndroidModal = document.getElementById('btn-close-android-modal');
   const zaloBrowserWarning = document.getElementById('zalo-browser-warning');
-
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isInAppBrowser = /FBAN|FBAV|Zalo|Line|Instagram|BytedanceWebview/i.test(navigator.userAgent);
+  const iosInappWarning = document.getElementById('ios-inapp-warning');
 
   function showInstallUi() {
     if (isStandalone) return;
@@ -4166,9 +4179,18 @@ ${state.currentDoc.text}`;
       return;
     }
 
-    // 2. Nếu đang dùng thiết bị Apple (iOS Safari)
+    // 2. Nếu đang dùng thiết bị Apple (iPhone / iPad / iOS Safari)
     if (isIos) {
-      if (iosInstallModal) iosInstallModal.classList.remove('hidden');
+      if (iosInstallModal) {
+        if (iosInappWarning) {
+          if (isInAppBrowser) {
+            iosInappWarning.classList.remove('hidden');
+          } else {
+            iosInappWarning.classList.add('hidden');
+          }
+        }
+        iosInstallModal.classList.remove('hidden');
+      }
       return;
     }
 
