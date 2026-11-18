@@ -91,7 +91,8 @@ d:\Antigravity\phan_mem_hoc_tap\
 └── Tai_Lieu_Bao_Cao_KHKT/                  # Toàn bộ hồ sơ báo cáo dự thi KHKT
     ├── 1_Ban_Mo_Ta_De_Tai/                 # Bản mô tả đề tài (PDF, Word, HTML)
     ├── 2_Giai_Thich_Code_Va_Van_Dap/       # Cẩm nang giải thích code & 17 câu hỏi GK (PDF, Word, HTML)
-    └── 3_Huong_Dan_GitHub_Vercel_Demo/     # Hướng dẫn GitHub/Vercel & Kịch bản demo (PDF, Word, HTML)
+    ├── 3_Huong_Dan_GitHub_Vercel_Demo/     # Hướng dẫn GitHub/Vercel & Kịch bản demo (PDF, Word, HTML)
+    └── 4_Cac_Diem_Moi_Va_Nang_Cap_Dot_Pha/ # Báo cáo điểm mới & nâng cấp đột phá (PDF, Word, HTML)
 ```
 
 ---
