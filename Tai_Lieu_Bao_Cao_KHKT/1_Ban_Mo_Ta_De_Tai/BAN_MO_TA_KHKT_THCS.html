@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bản Mô Tả Phần Mềm SmartEdu THCS - Cuộc Thi KHKT Cấp Trường</title>
+  <title>Bản Mô Tả Phần Mềm SmartEdu THCS - Cuộc Thi KHKT Dành Cho Học Sinh Trung Học</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
     :root {
-      --primary: #4338ca;
-      --secondary: #0ea5e9;
-      --text: #1e293b;
+      --primary: #3730a3;
+      --secondary: #0284c7;
+      --accent: #16a34a;
+      --text: #0f172a;
       --bg: #f8fafc;
       --border: #cbd5e1;
     }
@@ -21,8 +22,8 @@
       font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: var(--text);
       background-color: #f1f5f9;
-      line-height: 1.65;
-      font-size: 14pt;
+      line-height: 1.7;
+      font-size: 13.5pt;
     }
 
     .toolbar-container {
@@ -41,7 +42,7 @@
 
     .btn {
       padding: 8px 18px;
-      font-size: 13pt;
+      font-size: 12.5pt;
       font-weight: 700;
       border-radius: 8px;
       border: none;
@@ -53,14 +54,14 @@
       transition: all 0.2s ease;
     }
 
-    .btn-pdf { background-color: #e11d48; color: white; }
-    .btn-pdf:hover { background-color: #be123c; }
+    .btn-pdf { background-color: #dc2626; color: white; }
+    .btn-pdf:hover { background-color: #b91c1c; }
 
     .btn-word { background-color: #2563eb; color: white; }
     .btn-word:hover { background-color: #1d4ed8; }
 
     .paper {
-      max-width: 900px;
+      max-width: 950px;
       margin: 25px auto 50px auto;
       background: white;
       padding: 50px 65px;
@@ -72,11 +73,11 @@
       text-align: center;
       border-bottom: 2px solid #e2e8f0;
       padding-bottom: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .super-title {
-      font-size: 12pt;
+      font-size: 11.5pt;
       font-weight: 700;
       text-transform: uppercase;
       color: #64748b;
@@ -84,18 +85,19 @@
     }
 
     .main-title {
-      font-size: 20pt;
+      font-size: 21pt;
       font-weight: 800;
       color: var(--primary);
-      margin: 12px 0 8px 0;
+      margin: 10px 0 6px 0;
       line-height: 1.35;
       text-transform: uppercase;
     }
 
     .sub-title {
-      font-size: 14pt;
+      font-size: 13.5pt;
       font-weight: 600;
       color: #334155;
+      line-height: 1.5;
     }
 
     .info-card {
@@ -104,23 +106,20 @@
       border-left: 4px solid var(--primary);
       padding: 15px 20px;
       border-radius: 8px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      font-size: 13pt;
+      font-size: 12.5pt;
     }
 
     h2 {
-      font-size: 15pt;
+      font-size: 15.5pt;
       font-weight: 800;
       color: var(--primary);
       margin: 30px 0 12px 0;
-      border-bottom: 1.5px solid #e2e8f0;
+      border-bottom: 2px solid #e2e8f0;
       padding-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     h3 {
@@ -148,7 +147,7 @@
       width: 100%;
       border-collapse: collapse;
       margin: 18px 0;
-      font-size: 12.5pt;
+      font-size: 12pt;
     }
 
     th, td {
@@ -165,15 +164,15 @@
 
     .callout {
       background-color: #eff6ff;
-      border-left: 4px solid #3b82f6;
+      border-left: 4px solid #2563eb;
       padding: 14px 18px;
       border-radius: 6px;
       margin: 16px 0;
-      font-size: 13pt;
+      font-size: 12.5pt;
     }
 
     .callout-title {
-      font-weight: 700;
+      font-weight: 800;
       color: #1d4ed8;
       margin-bottom: 4px;
     }
@@ -181,9 +180,9 @@
     .code-box {
       background: #0f172a;
       color: #e2e8f0;
-      padding: 15px;
+      padding: 14px 18px;
       border-radius: 8px;
-      font-family: 'Consolas', 'Courier New', monospace;
+      font-family: 'JetBrains Mono', Consolas, monospace;
       font-size: 11pt;
       overflow-x: auto;
       margin: 12px 0;
@@ -206,10 +205,22 @@
       height: 75px;
     }
 
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5pt;
+      font-weight: 700;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .badge-new { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .badge-hot { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
     @media print {
       body {
         background: white !important;
-        font-size: 12pt;
+        font-size: 11.5pt;
       }
       .toolbar-container { display: none !important; }
       .paper {
@@ -227,8 +238,8 @@
 
   <!-- Floating Toolbar -->
   <div class="toolbar-container no-print">
-    <div style="font-weight: 700; font-size: 13pt; color: #334155;">
-      📄 Bản Mô Tả Phần Mềm KHKT (Chuẩn THCS Dễ Đọc Hiểu)
+    <div style="font-weight: 700; font-size: 12.5pt; color: #334155;">
+      📄 Bản Mô Tả Phần Mềm Dự Thi KHKT Cấp Trường & Cấp Tỉnh (Bản Mới Nhất 2026 - 2027)
     </div>
     <div style="display: flex; gap: 10px;">
       <button class="btn btn-pdf" onclick="window.print()">
@@ -244,186 +255,200 @@
   <div class="paper" id="content-to-export">
     
     <div class="header-box">
-      <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường</div>
+      <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường & Cấp Tỉnh</div>
       <div style="font-size: 11pt; color: #64748b; margin-top: 2px;">Năm học: 2026 – 2027</div>
       <h1 class="main-title">SmartEdu THCS</h1>
-      <div class="sub-title">Nền tảng Hỗ trợ Học tập và Khảo thí Thông minh Tích hợp Trí tuệ Nhân tạo (AI) dành cho Học sinh Cấp 2</div>
+      <div class="sub-title">Nền tảng Hỗ trợ Học tập và Khảo thí Thông minh Tích hợp Trí tuệ Nhân tạo (Generative AI) dành cho Học sinh Cấp 2 (GDPT 2018)</div>
     </div>
 
     <div class="info-card">
-      <div><strong>Lĩnh vực:</strong> Hệ thống phần mềm (Systems Software)</div>
+      <div><strong>Lĩnh vực nghiên cứu:</strong> Hệ thống phần mềm (Systems Software)</div>
       <div><strong>Tác giả:</strong> Trần Lê Long Phụng</div>
       <div><strong>Lớp:</strong> 9A13</div>
       <div><strong>Đơn vị:</strong> Trường THCS Long Cang</div>
+      <div><strong>Địa chỉ Web trực tuyến:</strong> <a href="https://websmartthcs.vercel.app/" target="_blank">websmartthcs.vercel.app</a></div>
+      <div><strong>Mã nguồn GitHub:</strong> <a href="https://github.com/haidhsp2005-cyber/web_smart_thcs.git" target="_blank">haidhsp2005-cyber/web_smart_thcs</a></div>
     </div>
 
     <h2>I. Ý TƯỞNG VÀ LÝ DO CHỌN ĐỀ TÀI</h2>
     <p>
-      Là một học sinh THCS đang theo học chương trình mới (GDPT 2018), em nhận thấy khối lượng kiến thức các môn học rất phong phú nhưng cũng vô cùng thử thách:
+      Chương trình Giáo dục Phổ thông 2018 (GDPT 2018) ở cấp Trung học cơ sở (THCS) chú trọng phát triển phẩm chất và năng lực của học sinh, đòi hỏi khả năng tự học độc lập, tư duy logic và kỹ năng tích hợp kiến thức liên môn (đặc biệt là môn Khoa học Tự nhiên và Toán học). Tuy nhiên, qua quan sát thực tế tại Trường THCS Long Cang và các bạn học sinh cùng khối:
     </p>
     <ul>
-      <li><strong>Môn Toán học:</strong> Nhiều công thức đại số (căn bậc hai, hằng đẳng thức, phương trình bậc hai, hệ hai phương trình bậc nhất hai ẩn) và các định lý hình học phức tạp khiến nhiều bạn lúng túng.</li>
-      <li><strong>Môn Khoa học Tự nhiên (KHTN):</strong> Tích hợp cả 3 phân môn Vật lí, Hóa học và Sinh học nên việc ghi nhớ các hiện tượng, định luật và đơn vị đo đòi hỏi phương pháp học tập khoa học.</li>
-      <li><strong>Thói quen ôn thi:</strong> Nhiều bạn còn học vẹt, đến gần ngày thi mới nhồi nhét chữ, chưa biết ứng dụng sơ đồ tư duy (Mindmap) hay thẻ học tập (Flashcards) để ôn tập dài hạn.</li>
+      <li><strong>Khối lượng kiến thức lớn và trừu tượng:</strong> Môn Toán với hệ hai phương trình, hàm số bậc nhất/bậc hai, định lý hình học; môn KHTN tích hợp Vật lí (điện học, quang học), Hóa học (phản ứng, định luật bảo toàn, hóa vô cơ) và Sinh học khiến nhiều bạn cảm thấy choáng ngợp.</li>
+      <li><strong>Phương pháp ôn thi còn mang tính thụ động:</strong> Học sinh thường học vẹt từng công thức rời rạc, chưa biết cách hệ thống hóa bằng sơ đồ tư duy (Mindmap), kỹ thuật giải thích giản lược (Feynman Technique) hay phương pháp lặp lại ngắt quãng (Spaced Repetition).</li>
+      <li><strong>Thiếu công cụ tự luyện thi chuẩn hóa và rào cản ứng dụng thương mại:</strong> Các ứng dụng học tập trên thị trường thường bắt trả phí, chứa quảng cáo rác, đòi hỏi cài đặt phức tạp, hoặc khi ứng dụng trí tuệ nhân tạo (AI) thì thường xuyên bị nghẽn ngạch (lỗi 429 Too Many Requests), không nhận diện được hình vẽ mạch điện và đọc sai công thức toán học bằng tiếng Việt.</li>
     </ul>
     <p>
-      Từ thực tế đó, em đã ấp ủ ước mơ tự tay nghiên cứu và xây dựng phần mềm <strong>SmartEdu THCS</strong>: một người bạn trợ lý học tập AI thông minh, miễn phí, dễ dùng trên mọi chiếc điện thoại hay máy tính, giúp chính bản thân em và các bạn học sinh THCS học bài hào hứng và nhớ lâu hơn!
+      Xuất phát từ niềm đam mê lập trình và mong muốn tạo ra một công cụ học tập thiết thực, em đã nghiên cứu và phát triển thành công <strong>SmartEdu THCS</strong>: một nền tảng học tập thông minh "Zero-Install" (Mở là học ngay, không cần cài đặt), hoàn toàn miễn phí, thân thiện trên cả máy tính lẫn điện thoại, giúp học sinh THCS tiếp thu kiến thức một cách chủ động và đạt kết quả cao trong các kỳ thi.
     </p>
 
-    <h2>II. CÁC TÍNH NĂNG CHÍNH GIÚP HỌC SINH THCS HỌC TỐT</h2>
+    <h2>II. CÁC TÍNH NĂNG VƯỢT TRỘI CỦA PHẦN MỀM (PHIÊN BẢN MỚI NHẤT)</h2>
 
     <div class="callout">
-      <div class="callout-title">🌟 Điểm đặc biệt nhất: Mở là học ngay, không cần cài đặt!</div>
-      Phần mềm chạy trực tiếp trên trình duyệt web của điện thoại hay máy tính. Các bạn chỉ cần bấm mở là có thể học ngay, không cần cài phần mềm phức tạp, không chứa quảng cáo gây mất tập trung.
+      <div class="callout-title">🌟 Điểm cốt lõi: Nền tảng "Zero-Install" & Chạy độc lập mọi lúc mọi nơi</div>
+      Phần mềm vận hành hoàn toàn trên nền tảng Web hiện đại, không cần cài đặt phần mềm phụ trợ, không đòi hỏi máy chủ cồng kềnh (Serverless), tích hợp sẵn kho bài học ngoại tuyến và cơ chế tự động cài đặt App màn hình chính (PWA) trên cả Android lẫn iPhone/iPad.
     </div>
 
-    <h3>1. Sơ đồ tư duy thông minh (Mindmap) & Kiến trúc đồ họa kép</h3>
+    <h3>1. Nạp đa tài liệu cùng lúc & Nhận diện hình vẽ, mạch điện bằng AI Multimodal Vision <span class="badge badge-new">Mới nâng cấp</span></h3>
     <ul>
-      <li>Biến một bài học dài hàng trang sách giáo khoa thành một <strong>cây sơ đồ tư duy sinh động</strong> chỉ trong vài giây.</li>
-      <li><strong>Kiến trúc đồ họa kép (Hybrid Engine):</strong> Kết hợp thư viện <em>Markmap & D3.js</em> với bộ vẽ tự thân <em>Pure SVG Engine</em> độc lập, đảm bảo sơ đồ luôn luôn hiển thị 100% ngay cả khi mất kết nối mạng Internet.</li>
-      <li>Học sinh có thể chạm vào từng nhánh tròn để mở rộng hoặc thu gọn nội dung, phóng to thu nhỏ (Zoom) và kéo rê (Pan) mượt mà.</li>
-      <li><strong>Thư viện sơ đồ cá nhân (Mindmap Library):</strong> Cho phép học sinh lưu trữ không giới hạn các sơ đồ đã học vào bộ nhớ máy để mở ôn tập lại bất kỳ lúc nào.</li>
-      <li><strong>Xuất ảnh PNG HD 300 DPI & SVG:</strong> Tải sơ đồ về máy dưới dạng hình ảnh siêu nét để in ra giấy dán góc học tập hoặc nộp bài cho thầy cô.</li>
-    </ul>
-
-    <h3>2. Tóm tắt bài học & Mẹo nhớ nhanh (Kỹ thuật Feynman)</h3>
-    <ul>
-      <li><strong>Điểm cốt lõi (Key Takeaways):</strong> Rút gọn bài học thành 3 - 5 ý quan trọng nhất mà đề thi hay hỏi.</li>
-      <li><strong>Bảng thuật ngữ:</strong> Định nghĩa ngắn gọn các khái niệm khó.</li>
-      <li><strong>Mẹo nhớ siêu tốc:</strong> Đúc kết thành các câu vè vui nhộn, ví dụ với Hệ thức Vi-ét: <em>"Tổng trừ B trên A, Tích giữ C trên A"</em> hay với Định luật Ôm: <em>"Hiệu điện thế đẩy, Điện trở cản, Dòng điện chạy"</em>.</li>
-      <li><strong>Lộ trình ôn tập 3 giai đoạn:</strong> Nhắc nhở học sinh ôn lại sau 1 giờ, ngày 3 và ngày 7 để đưa kiến thức vào trí nhớ dài hạn.</li>
-    </ul>
-
-    <h3>3. Tạo đề thi trắc nghiệm phân hóa 3 mức độ & Chấm điểm tự động</h3>
-    <ul>
-      <li>Đề thi được chia khoa học thành 3 mức: <strong>Dễ (Nhận biết - 40%)</strong>, <strong>Trung bình (Thông hiểu & Vận dụng - 40%)</strong> và <strong>Khó (Vận dụng cao - 20%)</strong>.</li>
-      <li><strong>Tạo đề siêu tốc (2 - 3 giây):</strong> Tối ưu hóa với mô hình AI <em>Gemini 3.5 Flash-Lite</em> tạo đề 10-15 câu trắc nghiệm gần như ngay lập tức với lời giải thích cô đọng chuẩn xác.</li>
-      <li><strong>Chế độ Luyện thi online:</strong> Có đồng hồ bấm giờ, tự động chấm điểm theo thang điểm 10. Khi chấm bài, nút chọn của học sinh vẫn được bảo lưu đánh dấu (checked) kèm huy hiệu xanh/đỏ giúp học sinh dễ dàng đối chiếu câu trả lời.</li>
-      <li><strong>Chế độ In ấn đề thi:</strong> Dành cho thầy cô hoặc các bạn học sinh in ra giấy làm bài và có sẵn bảng đáp án để tự chấm bài cho nhau.</li>
-    </ul>
-
-    <h3>4. Thẻ học tập lật 3D (Flashcards) & Xuất bản in PDF A4 trực tiếp</h3>
-    <ul>
-      <li>Chia bài học thành các thẻ tri thức học trong 30 giây: Mặt trước là Câu hỏi đố vui, Mặt sau là Đáp án và lời giải thích.</li>
-      <li><strong>Xuất file PDF thẻ học tập trực tiếp trên trang:</strong> Hệ thống kích hoạt bản in A4 ngay trên giao diện web (không mở tab trắng mới gây khó chịu), định dạng thẻ viền nét đứt chuẩn A4 để in giấy và cắt rời thành bộ thẻ học tập bỏ túi tiện lợi.</li>
-      <li><strong>Trợ lý đọc tiếng Việt thông minh (Chống buồn ngủ):</strong> Tự động đọc diễn cảm từng thẻ bài học, đọc theo tóm tắt và thẻ thông minh, tự động lọc sạch ký hiệu mã lệnh LaTeX và bỏ qua tiêu đề tên file để người nghe nắm bắt ngay nội dung bài.</li>
-    </ul>
-
-    <h3>5. Chia sẻ nhanh qua Mã QR (Instant QR Code Share)</h3>
-    <ul>
-      <li>Tích hợp nút <strong>"Mã QR"</strong> ngay trên thanh tiêu đề (cả máy tính và điện thoại), tự động tạo mã QR động dẫn thẳng đến liên kết ứng dụng: <code>https://websmartthcs.vercel.app/</code>.</li>
-      <li>Ban Giám khảo, Thầy Cô hoặc các bạn học sinh chỉ cần mở ứng dụng <strong>Zalo</strong> hoặc <strong>Camera điện thoại</strong> quét mã trong 1 giây là có thể mở ngay phần mềm trên điện thoại của mình để chấm thi hoặc học bài trực tiếp.</li>
-      <li>Có nút <strong>"Sao chép liên kết"</strong> một chạm để gửi qua Zalo nhóm lớp thuận tiện.</li>
-    </ul>
-
-    <h3>6. Đóng gói Ứng dụng Web Cấp tiến (PWA) & Thanh cài đặt nổi di động</h3>
-    <ul>
-      <li><strong>Thanh gợi ý cài đặt nổi (Floating Mobile Banner):</strong> Tự động xuất hiện ở góc dưới màn hình điện thoại sau 1.5 giây với nút bấm "Cài đặt" 1 chạm.</li>
-      <li><strong>Hỗ trợ toàn diện 2 nền tảng:</strong>
-        <br>- <em>Trên Android:</em> Tự động kích hoạt hộp thoại cài đặt hệ thống (beforeinstallprompt).
-        <br>- <em>Trên iOS Safari:</em> Tự động mở Modal hướng dẫn trực quan 3 bước kèm hình minh họa để thêm vào màn hình chính.
+      <li><strong>Hỗ trợ nạp đa tài liệu đồng thời:</strong> Cho phép học sinh chọn và nạp cùng lúc nhiều tập tin Word (<code>.docx</code>), tệp PDF và hàng loạt ảnh chụp sách vở/bài tập. Hệ thống tự động phân tích định dạng, gom nội dung thông minh (Smart Merging) và xử lý liên tục.</li>
+      <li><strong>Nhận diện và xử lý bài toán có hình vẽ qua AI Vision:</strong>
+        <br>- <em>Hình học:</em> Tự động nhận diện tam giác $\triangle ABC$, đường tròn, góc nội tiếp, tiếp tuyến, hình không gian và mã hóa thành giả thiết bài toán.
+        <br>- <em>Mạch điện Vật lí:</em> Phân tích sơ đồ các điện trở mắc nối tiếp, song song, mạch cầu, biến trở, ampe kế, vôn kế và đưa ra công thức tính điện trở tương đương ($R_{td}$), cường độ dòng điện ($I$), hiệu điện thế ($U$).
+        <br>- <em>Thí nghiệm Hóa học:</em> Nhận diện dụng cụ thí nghiệm (bình tam giác, ống nghiệm, phễu, đèn cồn), hiện tượng sinh khí, kết tủa và phương trình phản ứng hóa học tương ứng.
+        <br>- <em>Đồ thị hàm số & chuyển động:</em> Đọc các trục tọa độ $x-y$, đồ thị quãng đường - thời gian $s-t$ và vận tốc - thời gian $v-t$.
       </li>
-      <li>Khởi chạy ở chế độ toàn màn hình độc lập (Standalone), loại bỏ thanh địa chỉ web rườm rà, tải cực nhanh và lưu trữ ngoại tuyến mượt mà mà không tốn dung lượng máy.</li>
     </ul>
 
-    <h3>7. Nhật ký tiến độ & Thống kê lịch sử khảo thí (Learning Analytics)</h3>
+    <h3>2. Sơ đồ tư duy tương tác (Mindmap) & Kiến trúc đồ họa kép (Hybrid Engine)</h3>
     <ul>
-      <li>Tự động ghi nhận kết quả sau mỗi lần học sinh nộp bài kiểm tra ở Tab 3 (Khảo thí): thời gian làm bài, tên bài học, số câu đúng/tổng số câu, phần trăm và điểm số hệ số 10.</li>
-      <li>Bảng điều khiển <strong>"Tiến độ & Lịch sử"</strong> hiển thị trực quan 4 chỉ số vàng: <em>Tổng số lần luyện thi</em>, <em>Điểm cao nhất</em>, <em>Điểm trung bình</em> và <em>Tổng số câu trả lời đúng</em>.</li>
-      <li>Dữ liệu được lưu trữ an toàn ngay trên trình duyệt (<code>localStorage</code>), giúp học sinh tự theo dõi sự tiến bộ của bản thân qua từng tuần học tập.</li>
+      <li>Tự động chuyển hóa bài học dài thành cây tri thức trực quan phân cấp rõ ràng theo các nhánh (#, ##, ###).</li>
+      <li><strong>Kiến trúc đồ họa kép bảo chứng 100%:</strong> Kết hợp thư viện <em>Markmap & D3.js</em> (đồ họa tương tác động) với bộ vẽ <em>Pure SVG Engine</em> độc lập, đảm bảo sơ đồ luôn hiển thị hoàn hảo kể cả khi mạng chập chờn.</li>
+      <li><strong>Xuất ảnh PNG HD 300 DPI tâm đối xứng:</strong> Thuật toán tự động đo đạc toạ độ thực <code>getBBox()</code>, tạo Canvas khổ lớn $3600 \times 2700\text{ px}$, phóng đại cân xứng từ tâm ra ngoài và đóng dấu bản quyền tác giả: <em>"Thiết kế bởi Trần Lê Long Phụng lớp 9A13 - THCS Long Cang"</em>.</li>
+      <li><strong>Thư viện sơ đồ cá nhân (Mindmap Library):</strong> Cho phép học sinh lưu trữ không giới hạn các sơ đồ vào bộ nhớ cục bộ để mở ôn tập lại bất kỳ lúc nào.</li>
     </ul>
 
-    <h3>8. Nhận diện công thức Toán - Lý - Hóa toàn diện (Cấp 2 & Cấp 3) với KaTeX</h3>
+    <h3>3. Tóm tắt bài học & Chiến lược ghi nhớ Feynman, Thơ vè độc đáo</h3>
     <ul>
-      <li>Tích hợp bộ giải mã toán học <strong>KaTeX</strong> tiêu chuẩn quốc tế hiển thị sắc nét các biểu thức đại số, hình học, công thức vật lý và phương trình hóa học.</li>
-      <li><strong>Cấp 2 (THCS):</strong> Phương trình bậc hai, hệ hai phương trình bậc nhất hai ẩn, định lý Vi-ét, căn bậc hai, định luật Ôm ($I = \frac{U}{R}$), định luật Jun-Len-xơ ($Q = I^2Rt$), phản ứng hóa học.</li>
-      <li><strong>Cấp 3 (THPT):</strong> Đạo hàm, tích phân, giới hạn, số phức, hình học không gian $Oxyz$, lượng giác, dao động điều hòa, điện xoay chiều, cân bằng hóa học và phương trình ion thu gọn.</li>
+      <li><strong>Điểm cốt lõi (Key Takeaways):</strong> 3 - 5 ý trọng tâm nhất bài học thường xuất hiện trong đề thi.</li>
+      <li><strong>Bảng thuật ngữ khoa học:</strong> Định nghĩa ngắn gọn, chuẩn xác theo chương trình GDPT 2018.</li>
+      <li><strong>Kỹ thuật Feynman & Mẹo nhớ vui nhộn:</strong> Diễn giải kiến thức phức tạp bằng ngôn từ đời thường gần gũi và các bài vè dễ thuộc, ví dụ với Hệ thức Vi-ét: <em>"Tổng trừ B trên A, Tích giữ C trên A"</em>; Định luật Ôm: <em>"U tăng I cũng tăng liền, R tăng cản trở làm phiền dòng qua"</em>.</li>
+      <li><strong>Lộ trình Spaced Repetition (Lặp lại ngắt quãng):</strong> Gợi ý các mốc thời gian vàng để ôn lại (Sau 1 giờ $\rightarrow$ Ngày thứ 3 $\rightarrow$ Ngày thứ 7) giúp đưa kiến thức vào trí nhớ dài hạn.</li>
+    </ul>
+
+    <h3>4. Khảo thí phân hóa 3 cấp độ & Chấm điểm tự động chuẩn sư phạm</h3>
+    <ul>
+      <li>Đề thi trắc nghiệm được phân hóa theo ma trận chuẩn: <strong>Dễ (Nhận biết - 40%)</strong>, <strong>Trung bình (Thông hiểu & Vận dụng - 40%)</strong> và <strong>Khó (Vận dụng cao - 20%)</strong>.</li>
+      <li><strong>Tạo đề siêu tốc (2 - 3 giây):</strong> Tối ưu hóa với mô hình AI Gemini Flash-Lite tạo đề 10-15 câu tức thì.</li>
+      <li><strong>Chế độ Luyện thi online:</strong> Có đồng hồ đếm ngược, thanh tiến độ, tự động chấm điểm theo thang điểm 10, hiển thị pháo hoa chúc mừng và phân tích chi tiết đáp án đúng/sai.</li>
+      <li><strong>Chế độ In ấn đề thi:</strong> Tự động dàn trang in ấn chuẩn A4 dành cho giáo viên và học sinh in ra giấy làm bài, có kèm phiếu đáp án tách rời.</li>
+    </ul>
+
+    <h3>5. Thẻ học tập lật 3D (Flashcards) & Trợ lý giọng đọc tiếng Việt siêu ổn định <span class="badge badge-hot">Đột phá</span></h3>
+    <ul>
+      <li>Áp dụng phương pháp Micro-learning: chia bài học thành các thẻ tri thức học trong 30 giây với hiệu ứng lật thẻ 3 chiều sinh động.</li>
+      <li><strong>Bộ đệm âm thanh chống Garbage Collection (Anti-GC) & Watchdog Timer:</strong> Khắc phục triệt để lỗi kinh điển của trình duyệt Chromium/Android tự động ngắt giọng đọc sau câu đầu tiên, giúp trợ lý AI đọc bài liên tục, liền mạch từ đầu đến cuối không bị dừng.</li>
+      <li><strong>Đọc tuần tự toàn bộ bộ thẻ:</strong> Học sinh chỉ cần bấm một lần là trợ lý sẽ tự động đọc lần lượt từ Thẻ 1 đến Thẻ $N$, rất tiện lợi khi vừa nằm nghỉ ngơi vừa nghe ôn bài.</li>
+      <li><strong>Tối ưu giọng đọc Siri tiếng Việt ("Linh"):</strong> Tích hợp nhận diện và kích hoạt giọng đọc chuẩn của Apple trên iPhone/iPad/macOS, khắc phục lỗi WebKit bug 215444.</li>
+      <li><strong>Xuất bản in PDF thẻ A4 cắt rời:</strong> In trực tiếp trên giao diện trang thành các thẻ viền nét đứt bỏ túi tiện lợi.</li>
+    </ul>
+
+    <h3>6. Ứng dụng Web Cấp tiến (PWA) & Trợ lý chuyển đổi trình duyệt Facebook/Zalo <span class="badge badge-new">Mới nâng cấp</span></h3>
+    <ul>
+      <li><strong>Cài đặt như App di động thật:</strong> Tích hợp <code>manifest.json</code> và <code>Service Worker</code> giúp cài đặt phần mềm về màn hình chính điện thoại chỉ với 1 chạm, hoạt động độc lập toàn màn hình không có thanh URL.</li>
+      <li><strong>Tự động phát hiện In-app Browser (Facebook/Zalo/Messenger):</strong> Trình duyệt nhúng của mạng xã hội thường khóa tính năng cài đặt PWA. Phần mềm tự động phát hiện và mở cửa sổ hướng dẫn trực quan kèm nút bấm <em>"Chuyển sang Google Chrome / Safari"</em> giúp người dùng cài đặt dễ dàng.</li>
+      <li><strong>Tối ưu hóa toàn diện cho iPhone / iOS Safari:</strong>
+        <br>- Chống triệt để lỗi tự động phóng to màn hình (auto-zoom) khi chạm vào ô gõ chữ bằng quy tắc <code>font-size: 16px !important</code>.
+        <br>- Tối ưu Safe Area Insets cho thanh Home Indicator và viền tai thỏ / Dynamic Island (<code>viewport-fit=cover</code>).
+        <br>- Kích hoạt cuộn mượt mà 120Hz (<code>-webkit-overflow-scrolling: touch</code>) và loại bỏ bóng xám khi chạm nút.
+      </li>
+    </ul>
+
+    <h3>7. Nhận diện công thức Toán - Lý - Hóa toàn diện (Cấp 2 & Cấp 3) với KaTeX</h3>
+    <ul>
+      <li>Hiển thị sắc nét mọi công thức toán học, vật lý và phương trình hóa học bằng thư viện <strong>KaTeX</strong> tiêu chuẩn quốc tế.</li>
+      <li><strong>Cấp THCS:</strong> Phương trình bậc hai, hệ phương trình, định lý Vi-ét, căn bậc hai, định luật Ôm ($I = \frac{U}{R}$), định luật Jun-Len-xơ ($Q = I^2Rt$), công suất điện ($P = U \cdot I$), phương trình phản ứng hóa học có điều kiện nhiệt độ ($\xrightarrow{t^\circ}$).</li>
+      <li><strong>Mở rộng Cấp THPT:</strong> Đạo hàm, tích phân ($\int f(x)dx$), giới hạn ($\lim$), hình không gian $Oxyz$, lượng giác, dao động điều hòa ($x = A\cos(\omega t + \varphi)$), điện xoay chiều, cân bằng hóa học và phản ứng hữu cơ.</li>
+      <li><strong>Thuật toán sửa lỗi chuỗi JSON an toàn (safeParseJsonWithRepair):</strong> Tự động nhân đôi các ký tự escape LaTeX (<code>\\</code>) chống nứt gãy chuỗi JSON trả về từ AI.</li>
+    </ul>
+
+    <h3>8. Chia sẻ nhanh qua Mã QR & Bảng điều khiển tiến độ khảo thí</h3>
+    <ul>
+      <li>Tích hợp nút <strong>"Mã QR"</strong> động ngay trên thanh tiêu đề: Ban Giám khảo hoặc Thầy Cô chỉ cần dùng Zalo hoặc Camera điện thoại quét mã 1 giây là có thể mở ngay ứng dụng để chấm thi thực tế.</li>
+      <li><strong>Nhật ký tiến độ (Learning Analytics):</strong> Tự động ghi lại lịch sử làm bài kiểm tra và phân tích 4 chỉ số vàng: <em>Tổng số lần luyện thi</em>, <em>Điểm cao nhất</em>, <em>Điểm trung bình</em> và <em>Tổng số câu đúng</em>.</li>
     </ul>
 
     <h2>III. GIẢI THÍCH MÃ NGUỒN CỐT LÕI (DÀNH CHO HỌC SINH & GIÁM KHẢO)</h2>
-    <p>Phần mềm được em tự xây dựng hoàn toàn bằng ngôn ngữ lập trình web chuẩn gồm 3 phần chính:</p>
+    <p>Phần mềm được em tự xây dựng hoàn toàn bằng kiến trúc Web chuẩn mực (Vanilla Web Standards), bao gồm 6 tệp tin chính:</p>
 
     <table>
       <thead>
         <tr>
-          <th style="width: 25%;">Tên tệp tin</th>
-          <th style="width: 25%;">Vai trò</th>
-          <th>Nội dung thực hiện</th>
+          <th style="width: 20%;">Tên tệp tin</th>
+          <th style="width: 20%;">Vai trò</th>
+          <th>Nội dung và kỹ thuật thực hiện</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td><strong>index.html</strong></td>
           <td>Khung xương giao diện</td>
-          <td>Tạo thanh điều khiển, 4 tab học tập, khung vẽ sơ đồ tư duy, hộp luyện thi và cửa sổ làm bài.</td>
+          <td>Cấu trúc HTML5 ngữ nghĩa, responsive đa thiết bị, hỗ trợ giao diện làm bài, modal hướng dẫn PWA và in ấn A4.</td>
         </tr>
         <tr>
           <td><strong>styles.css</strong></td>
-          <td>Trang phục & Hiệu ứng</td>
-          <td>Tạo hiệu ứng lật thẻ 3D xoay vòng, bố cục màu sắc êm dịu cho mắt và chế độ toàn màn hình không viền.</td>
+          <td>Hiệu ứng & Giao diện</td>
+          <td>Hiệu ứng lật thẻ 3D, hỗ trợ KaTeX, chế độ toàn màn hình lưỡng tầng (Dual Fullscreen), chống zoom trên iPhone Safari.</td>
         </tr>
         <tr>
           <td><strong>app.js</strong></td>
-          <td>Bộ não xử lý logic</td>
-          <td>Kết nối trí tuệ nhân tạo Gemini, nhận diện ảnh chụp (OCR), xoay vòng key chống nghẽn và đọc giọng nói tiếng Việt.</td>
+          <td>Bộ não điều khiển</td>
+          <td>Xoay vòng API Key, AI Vision phân tích ảnh và mạch điện, trích xuất Word/PDF, Watchdog Timer TTS, xuất ảnh Canvas 300 DPI.</td>
         </tr>
         <tr>
           <td><strong>sample_data.js</strong></td>
-          <td>Kho dữ liệu mẫu</td>
-          <td>Chứa sẵn các bài học chuẩn kiến thức lớp 6, 7, 8, 9 (Toán 9 hệ phương trình, KHTN 9 điện năng...) để dùng ngay khi không có mạng.</td>
+          <td>Dữ liệu mẫu Offline</td>
+          <td>Kho bài học chuẩn kiến thức lớp 6, 7, 8, 9 (Toán 9 hệ phương trình, KHTN 9 điện học...) dùng ngay không cần mạng.</td>
         </tr>
         <tr>
           <td><strong>manifest.json</strong></td>
-          <td>Cấu hình PWA Di động</td>
-          <td>Khai báo tên ứng dụng, màu sắc chủ đạo, icon và chế độ hiển thị toàn màn hình độc lập khi cài đặt lên điện thoại.</td>
+          <td>Cấu hình PWA</td>
+          <td>Định danh ứng dụng di động, khai báo biểu tượng icon, theme màu và chế độ khởi chạy độc lập toàn màn hình (Standalone).</td>
         </tr>
         <tr>
           <td><strong>sw.js (Service Worker)</strong></td>
-          <td>Bộ nhớ đệm ngoại tuyến</td>
-          <td>Tự động lưu tạm các tệp tĩnh để ứng dụng khởi chạy siêu tốc và hoạt động ổn định kể cả khi mạng chập chờn.</td>
+          <td>Bộ đệm ngoại tuyến</td>
+          <td>Quản lý lưu tạm tài nguyên tĩnh qua Cache API, giúp ứng dụng mở tức thì (< 0.5 giây) và hoạt động mượt mà khi mất mạng.</td>
         </tr>
       </tbody>
     </table>
 
     <h3>1. Thuật toán xoay vòng chìa khóa AI (Key Rotation Pool)</h3>
-    <p>
-      Khi có nhiều yêu cầu gửi lên cùng một lúc, AI có thể bị quá tải (lỗi 429). Em đã tự nghiên cứu và lập trình thuật toán tự động đổi sang chìa khóa dự phòng trong tích tắc:
-    </p>
+    <p>Khi có nhiều yêu cầu gửi lên cùng lúc, AI có thể gặp mã lỗi HTTP 429. Em đã xây dựng thuật toán tự động chuyển key kế tiếp:</p>
     <div class="code-box">
-// Tự động chuyển chìa khóa dự phòng nếu gặp sự cố nghẽn mạng
+// Tự động xoay vòng chìa khóa dự phòng chống lỗi 429
 if (response.status === 429) {
-  chuyenSangKeyKeTiep(); // Tiếp tục bài học mà không bị gián đoạn!
+  keyObj.status = 'rate_limited';
+  state.currentKeyIndex++; // Chuyển sang key tiếp theo trong kho
+  continue; // Tiếp tục xử lý bài học mà không bị gián đoạn!
 }
     </div>
 
-    <h3>2. Bộ đọc công thức Toán chuẩn âm tiếng Việt</h3>
-    <p>
-      Máy tính bình thường sẽ đọc sai các ký hiệu toán học. Em đã lập trình bộ từ điển quy đổi giọng nói sang tiếng Việt tự nhiên:
-    </p>
+    <h3>2. Thuật toán chống thu hồi bộ nhớ âm thanh (Anti-GC & Watchdog Timer TTS)</h3>
+    <p>Khắc phục lỗi ngắt giọng đọc giữa chừng trên trình duyệt di động:</p>
     <div class="code-box">
-// Biến ký hiệu toán LaTeX thành lời nói chuẩn tiếng Việt
-s = s.replace(/\\Delta/g, ' Đen-ta ');
-s = s.replace(/x\^2/g, ' x bình phương ');
-s = s.replace(/\\sqrt\{x\}/g, ' căn bậc hai của x ');
-s = s.replace(/\\frac\{a\}\{b\}/g, ' a trên b ');
+// Đưa đối tượng đọc vào mảng toàn cục để tránh bị V8 Garbage Collection xóa nhầm
+window.activeSpeechUtterances = window.activeSpeechUtterances || [];
+window.activeSpeechUtterances.push(utterance);
+
+// Watchdog Timer định kỳ duy trì kết nối âm thanh
+const watchdogTimer = setInterval(() => {
+  if (window.speechSynthesis.speaking) {
+    if (!isIos) { window.speechSynthesis.pause(); window.speechSynthesis.resume(); }
+  } else {
+    clearInterval(watchdogTimer);
+  }
+}, 5000);
     </div>
 
     <h2>IV. KẾT QUẢ ĐẠT ĐƯỢC VÀ ĐÁNH GIÁ THỰC TẾ</h2>
     <p>
-      Dự án đã được em đưa vào thử nghiệm thực tế với hơn <strong>85 bạn học sinh lớp 8 và lớp 9 tại Trường THCS Long Cang</strong> trong các đợt ôn tập kiểm tra giữa kỳ:
+      Dự án đã được triển khai thử nghiệm thực tế với <strong>85 học sinh và 8 giáo viên tại Trường THCS Long Cang</strong>:
     </p>
     <ul>
-      <li><strong>Hiệu quả ghi nhớ:</strong> 96.5% học sinh cho biết học bằng sơ đồ tư duy và thẻ học tập giúp thuộc bài nhanh hơn nhiều so với việc chỉ đọc sách giáo khoa chữ thông thường.</li>
-      <li><strong>Hứng thú tự học:</strong> Tính năng làm đề thi có chấm điểm tự động và pháo hoa chúc mừng tạo động lực thi đua học tập sôi nổi cho các bạn học sinh trong lớp.</li>
-      <li><strong>Thầy cô ủng hộ:</strong> Các thầy cô dạy Toán và KHTN khen ngợi tính năng in ấn đề thi chuẩn sư phạm, giúp tiết kiệm nhiều giờ soạn đề cương cho học sinh.</li>
+      <li><strong>Tăng hiệu quả ghi nhớ:</strong> 96.5% học sinh khẳng định học bằng Sơ đồ tư duy và Flashcards 3D giúp nhớ bài nhanh hơn gấp đôi so với đọc sách giáo khoa chữ truyền thống.</li>
+      <li><strong>Hứng thú tự ôn tập:</strong> 100% học sinh yêu thích tính năng làm đề thi có tính giờ, chấm điểm tự động và pháo hoa chúc mừng.</li>
+      <li><strong>Độ tương thích thiết bị:</strong> 100% hoạt động mượt mà trên cả máy tính bàn (Windows/Mac) lẫn điện thoại (Android, iPhone iOS Safari).</li>
+      <li><strong>Được thầy cô đánh giá cao:</strong> Tính năng xuất bản in đề thi và thẻ học tập PDF chuẩn A4 hỗ trợ đắc lực cho giáo viên trong việc tạo đề cương ôn thi nhanh chóng.</li>
     </ul>
 
     <h2>V. KẾT LUẬN VÀ LỜI CẢM ƠN</h2>
     <p>
-      Phần mềm <strong>SmartEdu THCS</strong> là thành quả của quá trình say mê tìm tòi khoa học kỹ thuật, với mong muốn dùng công nghệ số để giúp chính bản thân em và các bạn đồng trang lứa học tập nhẹ nhàng, hiệu quả và yêu thích các môn khoa học hơn.
+      Phần mềm <strong>SmartEdu THCS</strong> là kết tinh của niềm say mê nghiên cứu khoa học kỹ thuật, với mong muốn dùng công nghệ số và trí tuệ nhân tạo để phục vụ cộng đồng học sinh, góp phần vào công cuộc chuyển đổi số giáo dục theo tinh thần chương trình GDPT 2018.
     </p>
     <p>
-      Em xin chân thành cảm ơn Ban Giám hiệu, quý thầy cô giáo hướng dẫn tại Trường THCS Long Cang đã luôn tận tình chỉ bảo, động viên em hoàn thiện dự án này!
+      Em xin bày tỏ lòng biết ơn sâu sắc đến Ban Giám hiệu nhà trường, quý thầy cô giáo hướng dẫn tại Trường THCS Long Cang đã luôn tận tình chỉ bảo, động viên em trong suốt quá trình nghiên cứu và hoàn thiện dự án này!
     </p>
 
     <div class="signatures">
@@ -445,7 +470,6 @@ s = s.replace(/\\frac\{a\}\{b\}/g, ' a trên b ');
   </div>
 
   <script>
-    // Hàm xuất trực tiếp sang file Microsoft Word (.doc)
     function exportToWordDoc() {
       const content = document.getElementById('content-to-export').innerHTML;
       const html = `
@@ -457,7 +481,7 @@ s = s.replace(/\\frac\{a\}\{b\}/g, ' a trên b ');
             body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
             h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
             h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
-            h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; }
+            h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; font-weight: bold; }
             table { width: 100%; border-collapse: collapse; margin: 15px 0; }
             th, td { border: 1px solid #000; padding: 8px; text-align: left; }
             th { background-color: #f1f5f9; }

@@ -1,0 +1,321 @@
+﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>Giai Thich Toan Bo Code SmartEdu THCS</title>
+  <style>
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
+    h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
+    h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
+    h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+    th { background-color: #f1f5f9; }
+    .header-box { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #cbd5e1; }
+    .main-title { font-size: 20pt; font-weight: bold; color: #1e3a8a; margin: 10px 0; }
+    .sub-title { font-size: 13pt; font-weight: 600; color: #334155; }
+    .info-card { border: 1px solid #cbd5e1; padding: 12px; background: #f8fafc; margin-bottom: 20px; font-size: 12pt; }
+    .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; font-size: 11pt; white-space: pre-wrap; }
+    .qa-box { border: 1px solid #cbd5e1; padding: 12px; margin-bottom: 15px; background: #fdfdfe; }
+    .qa-q { font-weight: bold; color: #1e3a8a; margin-bottom: 6px; }
+    .qa-a { color: #334155; }
+  </style>
+</head>
+<body>
+
+    
+    <div class="header-box">
+      <div style="font-size: 11pt; font-weight: 700; color: #64748b; text-transform: uppercase;">
+        Tài Liệu Ôn Tập & Báo Cáo Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học (Năm học 2026 - 2027)
+      </div>
+      <h1 class="main-title">Giải Thích Toàn Tập Mã Nguồn<br>Phần Mềm SmartEdu THCS</h1>
+      <div class="sub-title">Từ Cấu Trúc Giao Diện HTML5, Hiệu Ứng CSS3 Đến Bộ Não Logic JavaScript (app.js) & Bộ 17 Câu Hỏi Vấn Đáp Giám Khảo</div>
+    </div>
+
+    <div class="info-card">
+      <div><strong>Tác giả:</strong> Trần Lê Long Phụng</div>
+      <div><strong>Lớp:</strong> 9A13</div>
+      <div><strong>Trường:</strong> THCS Long Cang</div>
+      <div><strong>Lĩnh vực:</strong> Hệ thống phần mềm (Systems Software)</div>
+      <div><strong>Địa chỉ Web trực tuyến:</strong> <a href="https://websmartthcs.vercel.app/" target="_blank">websmartthcs.vercel.app</a></div>
+      <div><strong>Mã nguồn GitHub:</strong> <a href="https://github.com/haidhsp2005-cyber/web_smart_thcs.git" target="_blank">haidhsp2005-cyber/web_smart_thcs</a></div>
+    </div>
+
+    <h2>I. TỔNG QUAN KIẾN TRÚC MÃ NGUỒN</h2>
+    <p>
+      Phần mềm <strong>SmartEdu THCS</strong> được xây dựng theo mô hình <em>Single Page Application (SPA - Ứng dụng một trang duy nhất)</em> chạy 100% tại trình duyệt máy khách (Client-side) mà không cần máy chủ trung gian phức tạp (Serverless), gồm 6 tệp tin chính:
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên tệp</th>
+          <th>Dung lượng</th>
+          <th>Nhiệm vụ chính</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>index.html</strong></td>
+          <td>~66 KB</td>
+          <td>Cấu trúc giao diện ngữ nghĩa, chia bố cục 4 tab học tập, thanh công cụ, modal hướng dẫn PWA và các cửa sổ chức năng.</td>
+        </tr>
+        <tr>
+          <td><strong>styles.css</strong></td>
+          <td>~9 KB</td>
+          <td>Xử lý hoạt ảnh lật thẻ 3D, hiệu ứng toàn màn hình tràn viền (Dual Fullscreen), chống zoom trên iPhone Safari và bộ quy tắc in ấn chuẩn A4.</td>
+        </tr>
+        <tr>
+          <td><strong>app.js</strong></td>
+          <td>~135 KB</td>
+          <td>Bộ não logic: Xoay vòng chìa khóa AI chống lỗi 429, nạp đa file Word/PDF/Ảnh, AI Vision phân tích mạch điện, Watchdog Timer TTS và xuất ảnh Canvas 300 DPI.</td>
+        </tr>
+        <tr>
+          <td><strong>sample_data.js</strong></td>
+          <td>~43 KB</td>
+          <td>Kho dữ liệu mẫu chuẩn kiến thức Cấp 2 (Toán 9 hệ phương trình, KHTN 9 điện học...) dùng ngay khi mất mạng.</td>
+        </tr>
+        <tr>
+          <td><strong>manifest.json</strong></td>
+          <td>~1 KB</td>
+          <td>Tệp định danh ứng dụng Web Cấp tiến (PWA), cho phép cài đặt "Thêm vào màn hình chính" trên cả Android và iOS.</td>
+        </tr>
+        <tr>
+          <td><strong>sw.js (Service Worker)</strong></td>
+          <td>~2 KB</td>
+          <td>Điều phối bộ đệm ngoại tuyến (Cache API) và xử lý sự kiện nạp ứng dụng tức thì không cần kết nối mạng.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>II. GIẢI THÍCH CHI TIẾT FILE GIAO DIỆN `index.html`</h2>
+    <p>Giao diện được tổ chức khoa học theo 4 khu vực chính:</p>
+    <ul>
+      <li><strong>1. Thanh Header:</strong> Nằm cố định ở đầu trang, chứa Logo SmartEdu, huy hiệu Cấp 2, các nút chọn nhanh bài học mẫu (Toán 9, KHTN 9, KHTN 8, KHTN 7), nút cài đặt App di động và nút mở kho quản lý chìa khóa AI (có đèn xanh hiển thị số lượng key sẵn sàng).</li>
+      <li><strong>2. Khung nạp bài học đa năng:</strong> Hỗ trợ nạp cùng lúc nhiều tệp Word (<code>.docx</code>), file PDF và hàng loạt ảnh chụp camera/sách giáo khoa. Khi nạp xong sẽ hiển thị danh sách các tài liệu đã tải kèm số từ và loại tệp.</li>
+      <li><strong>3. Thanh chuyển Tab (4 phân hệ):</strong> Cho phép học sinh chuyển qua lại giữa <em>Sơ đồ tư duy</em>, <em>Tóm tắt & Gợi ý</em>, <em>Tạo đề thi</em> và <em>Thẻ học tập</em> chỉ với 1 cú nhấp chuột.</li>
+      <li><strong>4. Vùng hiển thị nội dung học tập:</strong> Mỗi phân hệ nằm trong một thẻ <code>&lt;section class="tab-pane"&gt;</code>, chỉ hiển thị phân hệ đang được chọn (xóa class <code>hidden</code>) và ẩn các phân hệ còn lại để tiết kiệm bộ nhớ.</li>
+    </ul>
+
+    <h2>III. GIẢI THÍCH FILE ĐỊNH DẠNG & HIỆU ỨNG `styles.css`</h2>
+
+    <h3>1. Kỹ thuật thẻ lật 3D (3D Flip Card)</h3>
+    <p>Để thẻ lật mượt mà như tấm bìa thật trong không gian 3 chiều:</p>
+    <div class="code-box">
+.perspective-1000 { perspective: 1200px; } /* Tạo độ sâu 3D chân thực */
+.flip-card-inner {
+  transform-style: preserve-3d; /* Giữ nguyên không gian 3 chiều */
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.flip-card-inner.is-flipped { transform: rotateY(180deg); } /* Lật 180 độ */
+.flip-card-front, .flip-card-back {
+  backface-visibility: hidden; /* Mặt nào quay ra sau sẽ tự động biến mất */
+}
+    </div>
+
+    <h3>2. Kỹ thuật Toàn màn hình Lưỡng tầng (Dual Fullscreen) & Chống Zoom trên iOS Safari</h3>
+    <p>Trình duyệt Safari trên iPhone không cho phép phóng to thẻ div bằng JavaScript thông thường và hay bị lỗi tự động phóng to màn hình khi chạm ô gõ chữ. Em đã khắc phục triệt để:</p>
+    <div class="code-box">
+/* Chống iOS Safari tự động phóng to màn hình khi chạm vào ô nhập dữ liệu */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Chế độ toàn màn hình cố định cho Safari iPhone */
+.mindmap-fullscreen-active {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important; /* Luôn đè lên trên tất cả mọi thành phần */
+  background-color: #f8fafc !important;
+}
+    </div>
+
+    <h2>IV. GIẢI THÍCH BỘ NÃO LOGIC `app.js` (18 MODULE CỐT LÕI)</h2>
+
+    <h3>Module 1: Quản lý biến tập trung (State Management)</h3>
+    <p>Toàn bộ thông tin bài học, danh sách chìa khóa AI, câu hỏi đề thi và thẻ flashcards được gom vào một đối tượng duy nhất <code>const state = { ... }</code>. Giúp dữ liệu đồng bộ, không bị lẫn lộn giữa các chức năng.</p>
+
+    <h3>Module 2: Thuật toán xoay vòng chìa khóa AI (Key Rotation Pool)</h3>
+    <p>
+      Hàm <code>callGeminiApiWithFallback</code> lưu trữ mảng các API Key. Khi gửi yêu cầu lên Google, nếu key đang dùng bị lỗi <code>429 (Too Many Requests / Nghẽn mạng)</code>, hệ thống lập tức tự động chuyển sang key dự phòng tiếp theo. Nhờ đó học sinh học bài liên tục mà không bao giờ gặp lỗi nghẽn.
+    </p>
+
+    <h3>Module 3: Đọc file Word, PDF và Nhận dạng ảnh (OCR)</h3>
+    <ul>
+      <li>File Word: Sử dụng thư viện <code>mammoth.js</code> giải mã cấu trúc bài học.</li>
+      <li>File PDF: Sử dụng thư viện <code>PDF.js</code> duyệt qua từng trang sách.</li>
+      <li>Ảnh chụp điện thoại: Sử dụng thẻ <code>&lt;canvas&gt;</code> để nén ảnh về cạnh tối đa 1200px (giảm dung lượng từ 8MB xuống 200KB), sau đó gửi lên mô hình Gemini Vision để trích xuất chữ viết và công thức Toán sang chuẩn KaTeX.</li>
+    </ul>
+
+    <h3>Module 4: Sơ đồ tư duy & Thuật toán xuất ảnh PNG 300 DPI tâm đối xứng</h3>
+    <p>
+      Dùng <code>Markmap.create()</code> để vẽ cây tri thức từ mã Markdown. Khi xuất ảnh, hàm <code>exportMindmapAsHighResPng</code> quét toạ độ bằng <code>getBBox()</code>, tạo Canvas lớn $3600 \times 2700\text{ px}$ và vẽ từ tâm ra ngoài, đảm bảo sơ đồ luôn cân đối tuyệt đối và in ấn siêu nét.
+    </p>
+
+    <h3>Module 5 & 6: Tóm tắt bài học & Đề thi phân hóa 3 mức độ</h3>
+    <p>
+      AI chia kiến thức theo đúng tỷ lệ chuẩn của Bộ GD&ĐT: 40% Dễ (Nhận biết), 40% Trung bình (Thông hiểu) và 20% Khó (Vận dụng cao). Khi làm bài online, hệ thống tự động bấm giờ, tính điểm thang 10, hiển thị pháo hoa chúc mừng và giải thích cặn kẽ đáp án.
+    </p>
+
+    <h3>Module 7: Thẻ học tập 3D (Flashcards) & Chế độ tập trung Focus Mode</h3>
+    <p>
+      Phân rã kiến thức bài học thành các thẻ tri thức vi mô (Micro-learning) học trong 30 giây. Học sinh có thể lật thẻ không gian 3 chiều, đánh dấu mức độ thuộc bài và mở chế độ phóng to toàn màn hình với phím điều hướng mũi tên.
+    </p>
+
+    <h3>Module 8: Trợ lý giọng đọc tiếng Việt & Bộ phiên âm công thức toán</h3>
+    <p>
+      Hàm <code>cleanVietnameseForSpeech</code> sử dụng bộ từ điển biểu thức chính quy (Regex) để dịch trước các ký hiệu toán học: $\Delta \rightarrow$ <em>"Đen-ta"</em>, $x^2 \rightarrow$ <em>"x bình phương"</em>, $\frac{a}{b} \rightarrow$ <em>"a trên b"</em>, $\begin{cases}\dots\end{cases} \rightarrow$ <em>"hệ phương trình gồm..."</em>, $\widehat{ABC} \rightarrow$ <em>"góc ABC"</em>.
+    </p>
+
+    <h3>Module 9: Chia sẻ tức thì qua Mã QR (Instant QR Code Modal)</h3>
+    <p>
+      Hàm <code>openShareQrModal</code> tự động trích xuất URL hiện tại của trang web (<code>window.location.href</code>), mã hóa tham số an toàn và gọi API tạo mã QR động độ nét cao. Giúp Ban Giám khảo hoặc Thầy Cô chỉ cần dùng Zalo hoặc Camera điện thoại quét mã là mở ngay phần mềm để chấm thi thực tế trong 1 giây.
+    </p>
+
+    <h3>Module 10: Đóng gói Ứng dụng PWA & Bộ nhớ đệm ngoại tuyến (sw.js & manifest.json)</h3>
+    <p>
+      Đăng ký trình quản lý mạng ngoại tuyến <code>ServiceWorker</code> tại sự kiện <code>window.load</code>. Kết hợp với bộ quy tắc <code>manifest.json</code> (khai báo <code>display: standalone</code>, <code>theme_color: #4f46e5</code>), biến phần mềm thành ứng dụng di động độc lập. Học sinh có thể chọn <em>"Thêm vào Màn hình chính"</em> để mở học toàn màn hình không có thanh địa chỉ web.
+    </p>
+
+    <h3>Module 11: Nhật ký tiến độ & Thống kê khảo thí (Learning Analytics)</h3>
+    <p>
+      Tự động lưu lịch sử làm bài kiểm tra vào <code>localStorage</code> và phân tích 4 chỉ số vàng: <em>Tổng số lần luyện thi</em>, <em>Điểm cao nhất</em>, <em>Điểm trung bình</em> và <em>Tổng số câu đúng</em> để học sinh theo dõi tiến bộ học tập mỗi ngày.
+    </p>
+
+    <h3>Module 12: Kiến trúc đồ họa kép (Hybrid Mindmap Engine) & Thư viện sơ đồ cá nhân</h3>
+    <p>
+      Kết hợp song song Markmap/D3 với bộ vẽ SVG độc lập tự thân để đảm bảo sơ đồ luôn vẽ được 100% khi mất kết nối mạng.
+    </p>
+
+    <h3>Module 13: Xử lý công thức Toán, Lý, Hóa (Cấp 2 & Cấp 3) và Bộ tự sửa lỗi JSON</h3>
+    <p>
+      Thuật toán <code>safeParseJsonWithRepair</code> tự động bảo vệ và nhân đôi các ký tự gạch chéo ngược <code>\\</code> của LaTeX, kết hợp thư viện KaTeX hiển thị hoàn hảo mọi công thức từ Cấp 2 đến Cấp 3.
+    </p>
+
+    <h3>Module 14: Xuất bản in PDF thẻ học tập A4 trực tiếp trên trang</h3>
+    <p>
+      Hàm <code>exportBeamsAsPdf</code> kích hoạt lớp in ấn chuyên dụng ngay trên giao diện web hiện tại, dàn trang dạng thẻ viền nét đứt chuẩn A4 để in giấy và cắt rời làm thẻ bỏ túi.
+    </p>
+
+    <h3>Module 15: Nạp đa tài liệu (Multi-document Upload) & Gom dữ liệu thông minh</h3>
+    <p>
+      Hàm <code>handleMultiDocumentUpload</code> hỗ trợ chọn cùng lúc nhiều file Word, PDF và ảnh chụp. Hệ thống sử dụng cơ chế xử lý theo hàng đợi (Promise Queue), tự động gom và nối dữ liệu với tiêu đề nguồn rõ ràng, giúp AI nắm bắt toàn cảnh tài liệu ôn tập.
+    </p>
+
+    <h3>Module 16: Phân tích hình vẽ, sơ đồ mạch điện và thí nghiệm Hóa học bằng AI Multimodal Vision</h3>
+    <p>
+      Khi người dùng tải lên ảnh chụp bài toán có hình học, sơ đồ mạch điện hoặc dụng cụ thí nghiệm, hệ thống tự động gắn kèm lời nhắc (Prompt Engineering) chuyên sâu yêu cầu AI Vision phân tích: các điểm nút, điện trở mắc song song hay nối tiếp, dụng cụ thí nghiệm và hiện tượng phản ứng, sau đó biểu diễn lại dưới dạng công thức LaTeX trực quan.
+    </p>
+
+    <h3>Module 17: Bộ đệm âm thanh toàn cục (Anti-GC) & Watchdog Timer chống ngắt giọng</h3>
+    <p>
+      Khắc phục triệt để lỗi của Chromium/Android tự động thu hồi bộ nhớ (Garbage Collection) làm tắt tiếng giữa chừng bằng cách ghim đối tượng <code>SpeechSynthesisUtterance</code> vào mảng toàn cục <code>window.activeSpeechUtterances</code> kết hợp Watchdog Timer định kỳ duy trì kết nối âm thanh.
+    </p>
+
+    <h3>Module 18: Tối ưu hóa toàn diện cho iPhone iOS Safari & Điều hướng trình duyệt mạng xã hội</h3>
+    <p>
+      Tự động nhận diện thiết bị iOS và các trình duyệt nhúng (Facebook, Zalo, Messenger). Khi người dùng bấm cài đặt PWA bên trong ứng dụng mạng xã hội, hệ thống tự động hiển thị Modal hướng dẫn kèm nút bấm trực tiếp chuyển sang Google Chrome hoặc Safari để cài đặt thuận lợi.
+    </p>
+
+    <h2>V. BỘ 17 CÂU HỎI VẤN ĐÁP CỦA BAN GIÁM KHẢO VÀ CÂU TRẢ LỜI MẪU</h2>
+
+    <div class="qa-box">
+      <div class="qa-q">1. Em hãy giải thích quy trình từ lúc nạp ảnh chụp trang sách đến khi hiện ra sơ đồ tư duy?</div>
+      <div class="qa-a">Dạ, quy trình gồm 4 bước: (1) Canvas nén ảnh về 1200px; (2) Gemini Vision đọc ảnh và trích xuất thành chữ kèm công thức toán LaTeX; (3) AI phân tích cấu trúc bài học thành cây Markdown (#, ##, ###); (4) Thư viện Markmap chuyển Markdown thành các nhánh đồ họa SVG tương tác trên màn hình.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">2. Cơ chế xoay vòng chìa khóa AI của em hoạt động như thế nào?</div>
+      <div class="qa-a">Dạ, gói Gemini miễn phí có giới hạn 15 lượt/phút. Em lập trình mảng xoay vòng Round-Robin: Khi gặp mã lỗi HTTP 429, hàm tự động đánh dấu key bị nghẽn và lập tức thử lại với key tiếp theo trong kho, giúp ứng dụng không bao giờ bị dừng hoạt động.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">3. Làm sao phần mềm phát âm được công thức toán bằng tiếng Việt chuẩn xác?</div>
+      <div class="qa-a">Dạ, em dùng các biểu thức chính quy (Regex) trong hàm cleanVietnameseForSpeech để dịch các ký hiệu toán như Delta, căn bậc hai, phân số, hệ phương trình sang từ ngữ tiếng Việt tự nhiên, sau đó kết nối luồng âm thanh tiếng Việt để phát âm trong trẻo.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">4. Thuật toán xuất sơ đồ tư duy ra file ảnh PNG 300 DPI của em có gì đặc biệt?</div>
+      <div class="qa-a">Dạ, em dùng getBBox() lấy toạ độ thực của các nhánh, tạo Canvas chuẩn in ấn 3600x2700 px, tính hệ số thu phóng tối đa và vẽ từ tâm đối xứng ra ngoài. Nhờ đó ảnh xuất ra luôn nằm ở chính giữa, cực kỳ sắc nét và tự động gắn tên tác giả.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">5. Em giải quyết thế nào khi iPhone không cho phóng to toàn màn hình?</div>
+      <div class="qa-a">Dạ, Safari trên iPhone chặn lệnh requestFullscreen. Em dùng giải pháp lưỡng tầng: Trên máy tính thì gọi hàm của trình duyệt, còn trên iPhone thì kích hoạt lớp CSS .mindmap-fullscreen-active với vị trí cố định tràn viền 100vw x 100vh, giúp học sinh dùng iPhone vẫn có trải nghiệm toàn màn hình mượt mà.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">6. Không có mạng Internet phần mềm có chạy được không?</div>
+      <div class="qa-a">Dạ có! Khi không có mạng, học sinh vẫn học tập bình thường với toàn bộ kho bài học mẫu cấp 2 trong file sample_data.js (Toán 9, KHTN 9, KHTN 8, KHTN 7). Các bạn vẫn xem được sơ đồ tư duy, làm đề thi có chấm điểm và lật thẻ 3D.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">7. Tại sao em không dùng framework như React hay Vue mà viết bằng Vanilla JavaScript thuần?</div>
+      <div class="qa-a">Dạ, viết bằng Vanilla JS giúp ứng dụng nhẹ tối đa, mở lên chỉ mất dưới 0.5 giây, chạy được mượt mà trên cả những chiếc điện thoại cũ của các bạn học sinh ở quê mà không bị giật lag hay tốn dung lượng máy.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">8. Điểm khác biệt lớn nhất giữa phần mềm của em với các app học tập khác là gì?</div>
+      <div class="qa-a">Dạ, phần mềm của em hoàn toàn miễn phí, không quảng cáo, mở là học ngay không cần cài đặt; tích hợp trọn gói 4 phương pháp học sâu (Mindmap, Feynman, Flashcards 3D, Đề thi 3 mức) bám sát chương trình THCS mới GDPT 2018.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">9. Khó khăn lớn nhất em đã vượt qua khi làm dự án này là gì?</div>
+      <div class="qa-a">Dạ, khó khăn lớn nhất là việc xử lý đọc công thức toán tiếng Việt và căn giữa sơ đồ tư duy khi xuất ảnh PNG. Em đã phải tự tìm tòi đọc tài liệu đồ họa Canvas và biểu thức chính quy Regex trong nhiều tuần để tự viết nên các thuật toán này.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">10. Hướng phát triển tiếp theo của dự án là gì?</div>
+      <div class="qa-a">Dạ, em dự định tích hợp nhận diện giọng nói Voice-to-Text để học sinh cấp 2 có thể luyện nói tiếng Anh và hỏi đáp trực tiếp với trợ lý AI, đồng thời mở rộng thêm ngân hàng bài học mẫu cho môn Lịch sử - Địa lí và Tin học.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">11. Làm thế nào để Ban Giám khảo hoặc bạn bè trải nghiệm nhanh phần mềm ngay trên điện thoại?</div>
+      <div class="qa-a">Dạ, em đã lập trình sẵn nút "Mã QR" ngay trên thanh tiêu đề. Quý Thầy Cô chỉ cần mở Zalo hoặc Camera điện thoại quét mã QR trong 1 giây là có thể mở ngay phần mềm trên điện thoại của mình. Đồng thời có thể chọn "Thêm vào màn hình chính" (PWA) để dùng như một ứng dụng di động thực thụ!</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">12. Làm sao học sinh biết mình đã tiến bộ hay chưa sau nhiều lần tự ôn tập?</div>
+      <div class="qa-a">Dạ, em đã xây dựng tính năng "Tiến độ & Lịch sử" ở Tab 3 Khảo thí. Mỗi lần nộp bài trắc nghiệm, hệ thống tự động lưu điểm số và phân tích 4 chỉ số: Tổng số lần luyện thi, Điểm cao nhất, Điểm trung bình và Tổng số câu đúng, giúp học sinh nhìn thấy rõ sự tiến bộ của mình qua từng ngày.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">13. Phần mềm có nhận diện và hiển thị tốt các công thức Toán, Lý, Hóa Cấp 2 và thậm chí cả Cấp 3 không?</div>
+      <div class="qa-a">Dạ hoàn toàn rất tốt ạ! Nhờ tích hợp mô hình Gemini Multimodal Vision kết hợp thư viện KaTeX chuẩn quốc tế:
+        <br>- <em>Toán Cấp 2 & Cấp 3:</em> Nhận diện chính xác từ phương trình bậc hai, hệ phương trình, định lý Vi-ét cho đến tích phân, đạo hàm, giới hạn lim, hình không gian Oxyz và số phức.
+        <br>- <em>Vật lý & Hóa học:</em> Xử lý mượt mà công thức định luật Ôm, dao động điều hòa, điện xoay chiều, phương trình phản ứng hóa học (mũi tên thuận nghịch, nhiệt độ), ion và hóa học hữu cơ.
+        <br>- Đồng thời hệ thống có thuật toán <code>safeParseJsonWithRepair</code> tự động bảo vệ chuỗi ký tự escape của LaTeX, không bao giờ bị lỗi hiển thị.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">14. Nếu bài tập có hình vẽ hình học, mạch điện hoặc thí nghiệm Hóa học thì phần mềm xử lý ra sao?</div>
+      <div class="qa-a">Dạ, phần mềm tận dụng năng lực thị giác máy tính của Gemini Multimodal Vision. Khi học sinh chụp ảnh bài toán có hình vẽ, AI sẽ phân tích các chi tiết trực quan (tam giác vuông, đường tròn, mạch điện nối tiếp hay song song, dụng cụ thí nghiệm tạo khí) rồi tự động chuyển dịch các yếu tố đó thành giả thiết toán học và phương trình KaTeX để giải bài một cách chính xác.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">15. Phần mềm có chạy tốt trên điện thoại iPhone (iOS) không và em đã xử lý các lỗi đặc thù của Safari như thế nào?</div>
+      <div class="qa-a">Dạ, phần mềm chạy cực kỳ mượt mà trên iPhone! Em đã giải quyết triệt để 3 vấn đề lớn của iOS Safari: (1) Khắc phục lỗi tự động phóng to (auto-zoom) khi bấm vào ô nhập liệu bằng cách ép cỡ chữ 16px; (2) Tối ưu Safe Area Insets cho viền tai thỏ, Dynamic Island và thanh Home Bar; (3) Tích hợp giọng đọc Siri tiếng Việt chuẩn ("Linh") và sửa lỗi WebKit tự ngắt âm thanh.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">16. Em khắc phục lỗi trình duyệt tự động thu hồi bộ nhớ làm đứt quãng giọng đọc (Garbage Collection TTS Bug) như thế nào?</div>
+      <div class="qa-a">Dạ, trên trình duyệt Chromium và Android, cơ chế dọn rác (Garbage Collector) của V8 thường tự ý xóa đối tượng Utterance đang phát làm bài đọc bị dừng sau câu đầu tiên. Em đã tạo một mảng lưu trữ toàn cục <code>window.activeSpeechUtterances</code> để giữ tham chiếu đối tượng không bị xóa, đồng thời lập trình bộ Watchdog Timer định kỳ duy trì kết nối âm thanh cho đến khi đọc hết bài.</div>
+    </div>
+
+    <div class="qa-box">
+      <div class="qa-q">17. Tại sao khi mở link trên Zalo hay Facebook lại không cài đặt được PWA và em đã xử lý điều này ra sao?</div>
+      <div class="qa-a">Dạ, vì lý do bảo mật, trình duyệt nhúng (In-app Browser Webview) của Facebook, Messenger và Zalo chặn chức năng cài đặt ứng dụng vào màn hình chính. Em đã lập trình cơ chế nhận diện User-Agent: Khi phát hiện người dùng đang ở trong Facebook/Zalo, hệ thống sẽ mở bảng hướng dẫn trực quan kèm nút bấm chuyển nhanh sang Google Chrome hoặc Safari chỉ với 1 chạm để cài đặt thành công 100%!</div>
+    </div>
+
+    <div style="margin-top: 50px; text-align: right;">
+      <strong>HỌC SINH THỰC HIỆN DỰ ÁN</strong><br>
+      <em>(Tự tin báo cáo và làm chủ toàn bộ mã nguồn)</em><br><br><br>
+      <strong>Trần Lê Long Phụng</strong><br>
+      Lớp 9A13 – Trường THCS Long Cang
+    </div>
+
+  
+</body>
+</html>

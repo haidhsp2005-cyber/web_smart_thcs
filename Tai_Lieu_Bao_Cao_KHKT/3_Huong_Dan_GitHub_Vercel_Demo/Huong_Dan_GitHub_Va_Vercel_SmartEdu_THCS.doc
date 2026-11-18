@@ -10,167 +10,167 @@
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
     th, td { border: 1px solid #000; padding: 8px; text-align: left; }
     th { background-color: #f1f5f9; }
-    .info-card { border: 1px solid #cbd5e1; padding: 10px; background: #f8fafc; margin-bottom: 20px; }
+    .header-box { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #cbd5e1; }
+    .super-title { font-size: 12pt; font-weight: bold; text-transform: uppercase; color: #64748b; }
+    .main-title { font-size: 20pt; font-weight: bold; color: #1e3a8a; margin: 10px 0; }
+    .sub-title { font-size: 13pt; font-weight: 600; color: #334155; }
+    .info-card { border: 1px solid #cbd5e1; padding: 12px; background: #f8fafc; margin-bottom: 20px; font-size: 12pt; }
     .step-box { border-left: 3px solid #0284c7; background: #f0f9ff; padding: 10px; margin: 15px 0; }
     .tip-box { border-left: 3px solid #16a34a; background: #f0fdf4; padding: 10px; margin: 15px 0; }
     .dialogue-box { border-left: 3px solid #2563eb; background: #eff6ff; padding: 10px; margin: 15px 0; }
-    .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; }
+    .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; font-size: 11pt; white-space: pre-wrap; }
   </style>
 </head>
 <body>
 
     
     <div class="header-box">
-      <div class="super-title">Cuá»™c Thi Khoa Há»c Ká»¹ Thuáº­t DÃ nh Cho Há»c Sinh Trung Há»c Cáº¥p TrÆ°á»ng</div>
-      <div style="font-size: 11pt; color: #64748b; margin-top: 2px;">NÄƒm há»c: 2026 â€“ 2027</div>
-      <h1 class="main-title">Cáº©m Nang HÆ°á»›ng Dáº«n Thá»±c HÃ nh</h1>
-      <div class="sub-title">CÃ¡ch ÄÆ°a MÃ£ Nguá»“n LÃªn GitHub, Triá»ƒn Khai Vercel & Ká»‹ch Báº£n Demo TrÆ°á»›c Ban GiÃ¡m Kháº£o</div>
+      <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường & Cấp Tỉnh</div>
+      <div style="font-size: 11pt; color: #64748b; margin-top: 2px;">Năm học: 2026 – 2027</div>
+      <h1 class="main-title">Cẩm Nang Hướng Dẫn Thực Hành</h1>
+      <div class="sub-title">Cách Đưa Mã Nguồn Lên GitHub, Triển Khai Vercel & Kịch Bản Demo Trước Ban Giám Khảo</div>
     </div>
 
     <div class="info-card">
-      <div><strong>Äá» tÃ i:</strong> Pháº§n má»m SmartEdu THCS</div>
-      <div><strong>TÃ¡c giáº£:</strong> Tráº§n LÃª Long Phá»¥ng</div>
-      <div><strong>Lá»›p:</strong> 9A13</div>
-      <div><strong>ÄÆ¡n vá»‹:</strong> TrÆ°á»ng THCS Long Cang</div>
+      <div><strong>Đề tài:</strong> Phần mềm SmartEdu THCS</div>
+      <div><strong>Tác giả:</strong> Trần Lê Long Phụng</div>
+      <div><strong>Lớp:</strong> 9A13</div>
+      <div><strong>Đơn vị:</strong> Trường THCS Long Cang</div>
+      <div><strong>Địa chỉ Web trực tuyến:</strong> <a href="https://websmartthcs.vercel.app/" target="_blank">websmartthcs.vercel.app</a></div>
+      <div><strong>Mã nguồn GitHub:</strong> <a href="https://github.com/haidhsp2005-cyber/web_smart_thcs.git" target="_blank">haidhsp2005-cyber/web_smart_thcs</a></div>
     </div>
 
-    <h2>PHáº¦N I. CHUáº¨N Bá»Š TÃ€I KHOáº¢N MIá»„N PHÃ</h2>
-    <p>Äá»ƒ hoÃ n táº¥t trong vÃ²ng 3 phÃºt, báº¡n chá»‰ cáº§n chuáº©n bá»‹ má»™t Ä‘á»‹a chá»‰ Email (hoáº·c tÃ i khoáº£n Google):</p>
+    <h2>PHẦN I. CHUẨN BỊ TÀI KHOẢN MIỄN PHÍ</h2>
+    <p>Để hoàn tất trong vòng 3 phút, bạn chỉ cần chuẩn bị một địa chỉ Email (hoặc tài khoản Google):</p>
     <ol>
-      <li><strong>TÃ i khoáº£n GitHub (NÆ¡i lÆ°u trá»¯ mÃ£ nguá»“n má»Ÿ):</strong> Truy cáº­p <a href="https://github.com" target="_blank">github.com</a>, báº¥m <strong>Sign up</strong>, Ä‘iá»n email vÃ  máº­t kháº©u Ä‘á»ƒ táº¡o tÃ i khoáº£n miá»…n phÃ­.</li>
-      <li><strong>TÃ i khoáº£n Vercel (NÆ¡i phÃ¡t hÃ nh trang web lÃªn Internet):</strong> Truy cáº­p <a href="https://vercel.com" target="_blank">vercel.com</a>, báº¥m <strong>Sign Up</strong> vÃ  chá»n ngay nÃºt <strong>"Continue with GitHub"</strong> Ä‘á»ƒ tá»± Ä‘á»™ng liÃªn káº¿t hai tÃ i khoáº£n vá»›i nhau.</li>
+      <li><strong>Tài khoản GitHub (Nơi lưu trữ mã nguồn mở):</strong> Truy cập <a href="https://github.com" target="_blank">github.com</a>, bấm <strong>Sign up</strong>, điền email và mật khẩu để tạo tài khoản miễn phí.</li>
+      <li><strong>Tài khoản Vercel (Nơi phát hành trang web lên Internet):</strong> Truy cập <a href="https://vercel.com" target="_blank">vercel.com</a>, bấm <strong>Sign Up</strong> và chọn ngay nút <strong>"Continue with GitHub"</strong> để tự động liên kết hai tài khoản với nhau.</li>
     </ol>
 
-    <h2>PHáº¦N II. CÃCH ÄÆ¯A TOÃ€N Bá»˜ MÃƒ NGUá»’N LÃŠN GITHUB</h2>
-    <p>Báº¡n cÃ³ thá»ƒ chá»n 1 trong 2 cÃ¡ch dÆ°á»›i Ä‘Ã¢y tÃ¹y theo má»©c Ä‘á»™ quen thuá»™c:</p>
+    <h2>PHẦN II. CÁCH ĐƯA TOÀN BỘ MÃ NGUỒN LÊN GITHUB</h2>
+    <p>Dự án hiện đã được đẩy lên kho mã nguồn chính thức với đầy đủ lịch sử commit:</p>
 
     <div class="step-box">
-      <div class="step-title">ðŸ‘‰ CÃCH 1: KÃ©o tháº£ trÃªn giao diá»‡n Web (SiÃªu dá»…, chá»‰ máº¥t 1 phÃºt)</div>
-      <ol>
-        <li>Má»Ÿ trang <a href="https://github.com" target="_blank">github.com</a>, báº¥m vÃ o dáº¥u <strong>"+"</strong> á»Ÿ gÃ³c trÃªn bÃªn pháº£i mÃ n hÃ¬nh âž” Chá»n <strong>New repository</strong>.</li>
-        <li>Táº¡i má»¥c <strong>Repository name</strong>: Äiá»n chá»¯ <code>smartedu-thcs</code>.</li>
-        <li>Chá»n cháº¿ Ä‘á»™ <strong>Public</strong> (Ä‘á»ƒ Ban GiÃ¡m kháº£o cÃ³ thá»ƒ má»Ÿ xem trá»±c tiáº¿p).</li>
-        <li>Báº¥m nÃºt xanh lÃ¡ <strong>Create repository</strong> á»Ÿ cuá»‘i trang.</li>
-        <li>Táº¡i mÃ n hÃ¬nh má»›i hiá»‡n ra, tÃ¬m vÃ  nháº¥p vÃ o dÃ²ng chá»¯ nhá» mÃ u xanh: <strong>"uploading an existing file"</strong>.</li>
-        <li>Má»Ÿ thÆ° má»¥c <code>d:\Antigravity\phan_mem_hoc_tap</code> trÃªn mÃ¡y tÃ­nh cá»§a báº¡n:
-          <ul>
-            <li>Nháº¥n tá»• há»£p phÃ­m <code>Ctrl + A</code> Ä‘á»ƒ chá»n toÃ n bá»™ cÃ¡c file (index.html, app.js, styles.css, sample_data.js, manifest.json, sw.js, icon.svg, README.md, cÃ¡c file PDF vÃ  Word).</li>
-            <li><strong>KÃ©o chuá»™t tháº£ tháº³ng toÃ n bá»™ cÃ¡c file nÃ y</strong> vÃ o giá»¯a cá»­a sá»• trÃ¬nh duyá»‡t GitHub.</li>
-          </ul>
-        </li>
-        <li>Chá» thanh táº£i lÃªn hoÃ n táº¥t (khoáº£ng 10-15 giÃ¢y), cuá»™n xuá»‘ng cuá»‘i trang báº¥m nÃºt <strong>Commit changes</strong>. Xong 100%!</li>
-      </ol>
-    </div>
-
-    <div class="step-box">
-      <div class="step-title">ðŸ‘‰ CÃCH 2: DÃ¹ng dÃ²ng lá»‡nh Git (Chuáº©n tÃ¡c phong láº­p trÃ¬nh chuyÃªn nghiá»‡p)</div>
-      <p>Má»Ÿ á»©ng dá»¥ng <strong>PowerShell</strong> hoáº·c <strong>Terminal</strong> táº¡i thÆ° má»¥c <code>d:\Antigravity\phan_mem_hoc_tap</code> vÃ  cháº¡y láº§n lÆ°á»£t 6 cÃ¢u lá»‡nh sau:</p>
-      <div class="code-box">git init
-git add .
-git commit -m "SmartEdu THCS - Phien ban Cuoc thi KHKT cap Truong - Tran Le Long Phung"
-git branch -M main
-git remote add origin https://github.com/haidhsp2005-cyber/web_smart_thcs.git
-git push -u origin main</div>
-      <p><em>(Kho mÃ£ nguá»“n chÃ­nh thá»©c cá»§a dá»± Ã¡n: <code>https://github.com/haidhsp2005-cyber/web_smart_thcs.git</code>).</em></p>
+      <div class="step-title">👉 Kho mã nguồn GitHub chính thức của dự án:</div>
+      <div class="code-box">https://github.com/haidhsp2005-cyber/web_smart_thcs.git</div>
+      <p>Khi cần cập nhật code mới từ máy tính, chỉ cần mở PowerShell tại thư mục dự án và gõ:</p>
+      <div class="code-box">git add .
+git commit -m "Cập nhật tính năng mới SmartEdu THCS"
+git push origin main
+git push origin main:master</div>
     </div>
 
     <div class="page-break"></div>
 
-    <h2>PHáº¦N III. Káº¾T Ná»I VERCEL Äá»‚ CÃ“ ÄÆ¯á»œNG LINK WEB TRONG 30 GIÃ‚Y</h2>
-    <p>Sau khi mÃ£ nguá»“n Ä‘Ã£ náº±m trÃªn GitHub, viá»‡c xuáº¥t báº£n lÃªn Internet qua Vercel diá»…n ra cá»±c nhanh:</p>
-    <ol>
-      <li>Truy cáº­p <a href="https://vercel.com" target="_blank">vercel.com</a>, Ä‘Äƒng nháº­p báº±ng GitHub.</li>
-      <li>Táº¡i báº£ng Ä‘iá»u khiá»ƒn Dashboard, báº¥m nÃºt <strong>Add New...</strong> âž” Chá»n <strong>Project</strong>.</li>
-      <li>á»ž danh sÃ¡ch kho lÆ°u trá»¯ GitHub hiá»‡n ra bÃªn trÃ¡i, báº¡n sáº½ nhÃ¬n tháº¥y ngay dá»± Ã¡n <code>web_smart_thcs</code>. Báº¥m nÃºt <strong>Import</strong> bÃªn cáº¡nh.</li>
-      <li>á»ž mÃ n hÃ¬nh cáº¥u hÃ¬nh, giá»¯ nguyÃªn má»i thiáº¿t láº­p máº·c Ä‘á»‹nh (Framework Preset: Other) vÃ  báº¥m nÃºt xanh <strong>Deploy</strong>.</li>
-      <li>Chá» Ä‘Ãºng <strong>20 - 30 giÃ¢y</strong>, mÃ n hÃ¬nh sáº½ tung phÃ¡o hoa chÃºc má»«ng! Báº¡n sáº½ nháº­n Ä‘Æ°á»£c Ä‘Æ°á»ng link web chÃ­nh thá»©c cÃ³ dáº¡ng:
-        <br><strong><code>https://websmartthcs.vercel.app</code></strong>
-      </li>
-    </ol>
-
+    <h2>PHẦN III. KẾT NỐI VERCEL ĐỂ CÓ ĐƯỜNG LINK WEB TRONG 30 GIÂY</h2>
+    <p>Dự án đã được triển khai tự động (Continuous Deployment) trên nền tảng Vercel với tên miền chính thức:</p>
     <div class="tip-box">
-      <strong>ðŸŒŸ Äiá»ƒm ká»³ diá»‡u cá»§a Vercel:</strong> Ká»ƒ tá»« lÃºc nÃ y, pháº§n má»m cá»§a báº¡n Ä‘Ã£ cÃ³ máº·t trÃªn Internet toÃ n cáº§u vá»›i giao thá»©c báº£o máº­t cao nháº¥t HTTPS. Cáº£ tÃ­nh nÄƒng **MÃ£ QR**, **PWA CÃ i Ä‘áº·t app lÃªn Ä‘iá»‡n thoáº¡i**, vÃ  **Offline Service Worker** Ä‘á»u sáº½ kÃ­ch hoáº¡t hoáº¡t Ä‘á»™ng 100% hoÃ n háº£o!
+      <strong>🌐 Địa chỉ Web chính thức:</strong> <a href="https://websmartthcs.vercel.app" target="_blank" style="font-weight: bold; color: #15803d; font-size: 14pt;">https://websmartthcs.vercel.app</a>
+      <br>Mỗi khi đẩy code mới lên GitHub, hệ thống Vercel sẽ tự động build và cập nhật phiên bản mới nhất cho toàn bộ người dùng trên khắp thế giới trong vòng 20 giây!
     </div>
 
-    <h2>PHáº¦N IV. Ká»ŠCH Báº¢N DEMO THá»°C CHIáº¾N TRÆ¯á»šC BAN GIÃM KHáº¢O</h2>
-    <p>DÆ°á»›i Ä‘Ã¢y lÃ  ká»‹ch báº£n chuáº©n sÆ° pháº¡m, tá»«ng cÃ¢u thoáº¡i Ä‘Æ°á»£c soáº¡n sáºµn giÃºp em <strong>Tráº§n LÃª Long Phá»¥ng</strong> tá»± tin Ä‘á»‘i Ä‘Ã¡p vÃ  thuyáº¿t phá»¥c trá»n váº¹n Ban GiÃ¡m kháº£o:</p>
+    <h2>PHẦN IV. KỊCH BẢN DEMO THỰC CHIẾN TRƯỚC BAN GIÁM KHẢO</h2>
+    <p>Dưới đây là kịch bản chuẩn sư phạm, từng câu thoại được biên soạn kỹ lưỡng giúp em <strong>Trần Lê Long Phụng</strong> tự tin đối đáp và thuyết phục trọn vẹn Ban Giám khảo:</p>
 
     <div class="dialogue-box">
-      <div class="dialogue-q">TÃ¬nh huá»‘ng 1: Má»Ÿ mÃ n pháº§n bÃ¡o cÃ¡o sáº£n pháº©m</div>
+      <div class="dialogue-q">Tình huống 1: Mở màn phần báo cáo sản phẩm</div>
       <div class="dialogue-a">
-        "KÃ­nh thÆ°a Ban GiÃ¡m kháº£o! Em tÃªn lÃ  Tráº§n LÃª Long Phá»¥ng, há»c sinh lá»›p 9A13 TrÆ°á»ng THCS Long Cang. Äáº¿n vá»›i cuá»™c thi KHKT nÄƒm nay, em xin Ä‘Æ°á»£c trÃ¬nh bÃ y dá»± Ã¡n: <strong>SmartEdu THCS - Ná»n táº£ng Há»— trá»£ Há»c táº­p vÃ  Kháº£o thÃ­ ThÃ´ng minh dÃ nh cho há»c sinh Cáº¥p 2</strong>.<br>
-        Äá»ƒ thuáº­n tiá»‡n nháº¥t cho Tháº§y/CÃ´ Ä‘Ã¡nh giÃ¡ trá»±c quan, pháº§n má»m cá»§a em Ä‘Ã£ Ä‘Æ°á»£c xuáº¥t báº£n trá»±c tiáº¿p lÃªn Internet. Em trÃ¢n trá»ng kÃ­nh má»i Tháº§y/CÃ´ má»Ÿ Ä‘iá»‡n thoáº¡i quÃ©t <strong>MÃ£ QR</strong> trÃªn mÃ n hÃ¬nh Ä‘á»ƒ tráº£i nghiá»‡m ngay láº­p tá»©c áº¡!"
+        "Kính thưa Ban Giám khảo! Em tên là Trần Lê Long Phụng, học sinh lớp 9A13 Trường THCS Long Cang. Đến với cuộc thi KHKT năm nay, em xin được trình bày dự án: <strong>SmartEdu THCS - Nền tảng Hỗ trợ Học tập và Khảo thí Thông minh dành cho học sinh Cấp 2</strong>.<br>
+        Để thuận tiện nhất cho Thầy/Cô đánh giá trực quan, phần mềm của em đã được xuất bản trực tiếp lên Internet. Em trân trọng kính mời Thầy/Cô mở điện thoại quét <strong>Mã QR</strong> trên màn hình để trải nghiệm ngay lập tức ạ!"
       </div>
     </div>
 
     <div class="dialogue-box">
-      <div class="dialogue-q">TÃ¬nh huá»‘ng 2: Ban GiÃ¡m kháº£o há»i vá» mÃ£ nguá»“n vÃ  tÃ­nh trung thá»±c cá»§a sáº£n pháº©m</div>
-      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>ðŸ’¬ Ban GiÃ¡m kháº£o: "Pháº§n má»m nÃ y mÃ£ nguá»“n lÆ°u á»Ÿ Ä‘Ã¢u? CÃ³ pháº£i em tá»± lÃ m hay láº¥y cá»§a ngÆ°á»i khÃ¡c?"</em></div>
+      <div class="dialogue-q">Tình huống 2: Ban Giám khảo hỏi về mã nguồn và tính trung thực của sản phẩm</div>
+      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Phần mềm này mã nguồn lưu ở đâu? Có phải em tự làm hay lấy của người khác?"</em></div>
       <div class="dialogue-a">
-        "Dáº¡ kÃ­nh thÆ°a Ban GiÃ¡m kháº£o, toÃ n bá»™ mÃ£ nguá»“n cá»§a dá»± Ã¡n Ä‘Æ°á»£c em tá»± tay viáº¿t vÃ  quáº£n lÃ½ cÃ´ng khai trÃªn kho lÆ°u trá»¯ <strong>GitHub</strong> áº¡. Em xin phÃ©p Ä‘Æ°á»£c má»Ÿ trá»±c tiáº¿p mÃ n hÃ¬nh GitHub cho Tháº§y/CÃ´ cÃ¹ng xem:<br>
-        1. <strong>Tá»‡p README.md:</strong> Ghi rÃµ thÃ´ng tin tÃ¡c giáº£ Tráº§n LÃª Long Phá»¥ng - Lá»›p 9A13 - TrÆ°á»ng THCS Long Cang.<br>
-        2. <strong>Má»¥c Lá»‹ch sá»­ Commits:</strong> Ghi nháº­n Ä‘áº§y Ä‘á»§ tá»«ng má»‘c thá»i gian em nghiÃªn cá»©u, thá»­ nghiá»‡m, sá»­a Ä‘á»•i vÃ  nÃ¢ng cáº¥p qua tá»«ng phiÃªn báº£n.<br>
-        3. <strong>Kiáº¿n trÃºc mÃ£ nguá»“n:</strong> HoÃ n toÃ n viáº¿t báº±ng <strong>JavaScript thuáº§n (Vanilla JS)</strong>, khÃ´ng phá»¥ thuá»™c framework phá»©c táº¡p. Em tá»± láº­p trÃ¬nh thuáº­t toÃ¡n xoay vÃ²ng chÃ¬a khÃ³a AI chá»‘ng lá»—i 429, thuáº­t toÃ¡n xá»­ lÃ½ Ã¢m há»c phÃ¡t Ã¢m cÃ´ng thá»©c toÃ¡n tiáº¿ng Viá»‡t, vÃ  thuáº­t toÃ¡n váº½ sÆ¡ Ä‘á»“ tÆ° duy xuáº¥t áº£nh siÃªu nÃ©t 300 DPI áº¡!"
+        "Dạ kính thưa Ban Giám khảo, toàn bộ mã nguồn của dự án được em tự tay viết và quản lý công khai trên kho lưu trữ <strong>GitHub</strong> tại địa chỉ <code>haidhsp2005-cyber/web_smart_thcs</code> ạ. Em xin phép được mở trực tiếp màn hình GitHub cho Thầy/Cô cùng xem:<br>
+        1. <strong>Tệp README.md:</strong> Ghi rõ thông tin tác giả Trần Lê Long Phụng - Lớp 9A13 - Trường THCS Long Cang.<br>
+        2. <strong>Mục Lịch sử Commits:</strong> Ghi nhận đầy đủ từng mốc thời gian em nghiên cứu, thử nghiệm, sửa đổi và nâng cấp qua từng phiên bản.<br>
+        3. <strong>Kiến trúc mã nguồn:</strong> Hoàn toàn viết bằng <strong>JavaScript thuần (Vanilla JS)</strong>, không phụ thuộc framework phức tạp. Em tự lập trình thuật toán xoay vòng chìa khóa AI chống lỗi 429, thuật toán xử lý âm học phát âm công thức toán tiếng Việt, và thuật toán vẽ sơ đồ tư duy xuất ảnh siêu nét 300 DPI ạ!"
       </div>
     </div>
 
     <div class="dialogue-box">
-      <div class="dialogue-q">TÃ¬nh huá»‘ng 3: Ban GiÃ¡m kháº£o há»i vá» kháº£ nÄƒng á»©ng dá»¥ng thá»±c táº¿ trÃªn Ä‘iá»‡n thoáº¡i</div>
-      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>ðŸ’¬ Ban GiÃ¡m kháº£o: "Há»c sinh á»Ÿ nhÃ  dÃ¹ng Ä‘iá»‡n thoáº¡i thÃ¬ sá»­ dá»¥ng tháº¿ nÃ o? CÃ³ cáº§n cÃ i Ä‘áº·t gÃ¬ phá»©c táº¡p khÃ´ng?"</em></div>
+      <div class="dialogue-q">Tình huống 3: Ban Giám khảo hỏi về khả năng ứng dụng thực tế trên điện thoại</div>
+      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Học sinh ở nhà dùng điện thoại thì sử dụng thế nào? Có cần cài đặt gì phức tạp không?"</em></div>
       <div class="dialogue-a">
-        "Dáº¡ thÆ°a Tháº§y/CÃ´, Ä‘Ã¢y chÃ­nh lÃ  Æ°u Ä‘iá»ƒm lá»›n nháº¥t cá»§a SmartEdu THCS! á»¨ng dá»¥ng Ã¡p dá»¥ng cÃ´ng nghá»‡ <strong>PWA (Progressive Web App)</strong>:<br>
-        - Há»c sinh chá»‰ cáº§n báº¥m má»Ÿ link hoáº·c quÃ©t mÃ£ QR lÃ  há»c Ä‘Æ°á»£c ngay.<br>
-        - CÃ¡c báº¡n cÃ³ thá»ƒ chá»n <em>'ThÃªm vÃ o MÃ n hÃ¬nh chÃ­nh'</em> Ä‘á»ƒ á»©ng dá»¥ng xuáº¥t hiá»‡n nhÆ° má»™t App chuyÃªn nghiá»‡p trÃªn Ä‘iá»‡n thoáº¡i mÃ  khÃ´ng cáº§n táº£i tá»« App Store hay CH Play.<br>
-        - Ká»ƒ cáº£ khi máº¥t máº¡ng Internet, há»‡ thá»‘ng váº«n lÆ°u táº¡m bÃ i há»c trong bá»™ Ä‘á»‡m <code>sw.js</code> vÃ  kho dá»¯ liá»‡u máº«u <code>sample_data.js</code> Ä‘á»ƒ cÃ¡c báº¡n Ã´n thi mÃ´n ToÃ¡n 9 vÃ  KHTN 9 bÃ¬nh thÆ°á»ng áº¡!"
+        "Dạ thưa Thầy/Cô, đây chính là ưu điểm lớn nhất của SmartEdu THCS! Ứng dụng áp dụng công nghệ <strong>PWA (Progressive Web App)</strong>:<br>
+        - Học sinh chỉ cần bấm mở link hoặc quét mã QR là học được ngay.<br>
+        - Các bạn có thể chọn <em>'Thêm vào Màn hình chính'</em> để ứng dụng xuất hiện như một App chuyên nghiệp trên điện thoại mà không cần tải từ App Store hay CH Play.<br>
+        - Kể cả khi mất mạng Internet, hệ thống vẫn lưu tạm bài học trong bộ đệm <code>sw.js</code> và kho dữ liệu mẫu <code>sample_data.js</code> để các bạn ôn thi môn Toán 9 và KHTN 9 bình thường ạ!"
       </div>
     </div>
 
-    <h2>PHáº¦N V. Báº¢NG KIá»‚M TRA TRÆ¯á»šC GIá»œ THI (CHECKLIST)</h2>
+    <div class="dialogue-box">
+      <div class="dialogue-q">Tình huống 4: Ban Giám khảo hỏi về việc bài tập có hình vẽ, mạch điện hay công thức phức tạp</div>
+      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Nếu bài tập hình học có tam giác, đường tròn hay bài KHTN có mạch điện, bình thí nghiệm thì AI có hiểu được không?"</em></div>
+      <div class="dialogue-a">
+        "Dạ thưa Thầy/Cô, hệ thống tích hợp mô hình thị giác AI (Gemini Multimodal Vision) hiện đại nhất:<br>
+        - Khi nạp ảnh bài toán, AI sẽ quét toàn bộ các đường nét: nhận diện góc vuông, đường tròn nội tiếp, tam giác $\triangle ABC$ hoặc các điện trở mắc nối tiếp, song song trong mạch điện.<br>
+        - Sau đó, hệ thống tự động bóc tách các giả thiết và công thức sang chuẩn KaTeX toán học và tạo ra sơ đồ tư duy cùng bộ đề thi tương ứng chuẩn xác ạ!"
+      </div>
+    </div>
+
+    <div class="dialogue-box">
+      <div class="dialogue-q">Tình huống 5: Ban Giám khảo dùng thử trên điện thoại iPhone hoặc quét mã trong Zalo</div>
+      <div class="dialogue-q" style="font-weight: normal; color: #b91c1c;"><em>💬 Ban Giám khảo: "Thầy/Cô quét mã bằng Zalo trên iPhone thì cài đặt ứng dụng vào màn hình chính như thế nào?"</em></div>
+      <div class="dialogue-a">
+        "Dạ thưa Thầy/Cô, khi mở liên kết trong Zalo hoặc Facebook, do tính năng bảo mật của các ứng dụng này chặn việc cài đặt PWA, phần mềm của em đã tích hợp cơ chế nhận diện thông minh: Khi Thầy/Cô bấm nút 'Cài đặt', hệ thống sẽ hiện popup hướng dẫn kèm nút bấm chuyển nhanh sang Google Chrome hoặc Safari. Trên Safari iPhone, Thầy/Cô chỉ cần bấm nút Chia sẻ (Share) rồi chọn 'Thêm vào MH chính' là có ngay ứng dụng toàn màn hình mượt mà ạ!"
+      </div>
+    </div>
+
+    <h2>PHẦN V. BẢNG KIỂM TRA TRƯỚC GIỜ THI (CHECKLIST)</h2>
     <table>
       <thead>
         <tr>
           <th style="width: 40px; text-align: center;">STT</th>
-          <th>Ná»™i dung kiá»ƒm tra</th>
-          <th style="width: 100px; text-align: center;">Tráº¡ng thÃ¡i</th>
+          <th>Nội dung kiểm tra</th>
+          <th style="width: 100px; text-align: center;">Trạng thái</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td style="text-align: center;">1</td>
-          <td>Kiá»ƒm tra link web Vercel trÃªn Ä‘iá»‡n thoáº¡i xem cÃ³ cháº¡y mÆ°á»£t khÃ´ng</td>
-          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Äáº¡t ]</td>
+          <td>Kiểm tra link web Vercel (websmartthcs.vercel.app) trên điện thoại xem có chạy mượt không</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
         <tr>
           <td style="text-align: center;">2</td>
-          <td>Má»Ÿ thá»­ tÃ­nh nÄƒng MÃ£ QR trÃªn mÃ n hÃ¬nh xem Ä‘iá»‡n thoáº¡i quÃ©t cÃ³ nháº¡y khÃ´ng</td>
-          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Äáº¡t ]</td>
+          <td>Mở thử tính năng Mã QR trên màn hình xem điện thoại quét có nhạy không</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
         <tr>
           <td style="text-align: center;">3</td>
-          <td>Kiá»ƒm tra kho API Key Gemini trong mÃ¡y (Ã­t nháº¥t 1-2 key sáºµn sÃ ng)</td>
-          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Äáº¡t ]</td>
+          <td>Kiểm tra kho API Key Gemini trong máy (ít nhất 1-2 key sẵn sàng)</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
         <tr>
           <td style="text-align: center;">4</td>
-          <td>Má»Ÿ thá»­ bÃ i máº«u ToÃ¡n 9 (Há»‡ phÆ°Æ¡ng trÃ¬nh) vÃ  báº¥m nÃºt Ä‘á»c giá»ng nÃ³i</td>
-          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Äáº¡t ]</td>
+          <td>Mở thử bài mẫu Toán 9 (Hệ phương trình) và bấm nút đọc giọng nói</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
         <tr>
           <td style="text-align: center;">5</td>
-          <td>Chuáº©n bá»‹ sáºµn tab trÃ¬nh duyá»‡t má»Ÿ trang GitHub repository cá»§a dá»± Ã¡n</td>
-          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Äáº¡t ]</td>
+          <td>Thử tính năng nạp cùng lúc nhiều ảnh chụp bài tập và file Word/PDF</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
         <tr>
           <td style="text-align: center;">6</td>
-          <td>In sáºµn 01 báº£n Thuyáº¿t minh Ä‘á» tÃ i (File PDF) ná»™p cho Ban GiÃ¡m kháº£o</td>
-          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Äáº¡t ]</td>
+          <td>Chuẩn bị sẵn tab trình duyệt mở trang GitHub repository của dự án</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">7</td>
+          <td>In sẵn 01 bản Thuyết minh đề tài (File PDF) nộp cho Ban Giám khảo</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">[ Đạt ]</td>
         </tr>
       </tbody>
     </table>
 
     <div style="margin-top: 40px; text-align: right;">
-      <strong>CHÃšC EM TRáº¦N LÃŠ LONG PHá»¤NG THI THáº¬T Tá»T VÃ€ Äáº T GIáº¢I CAO NHáº¤T!</strong><br>
-      <em>Long Cang, ThÃ¡ng 11 NÄƒm 2026</em>
+      <strong>CHÚC EM TRẦN LÊ LONG PHỤNG THI THẬT TỐT VÀ ĐẠT GIẢI CAO NHẤT!</strong><br>
+      <em>Long Cang, Năm học 2026 - 2027</em>
     </div>
 
   
