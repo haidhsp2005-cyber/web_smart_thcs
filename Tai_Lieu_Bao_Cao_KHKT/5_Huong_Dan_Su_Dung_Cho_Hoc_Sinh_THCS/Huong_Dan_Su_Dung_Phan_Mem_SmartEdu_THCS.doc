@@ -1,0 +1,130 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>Sổ Tay Hướng Dẫn Sử Dụng SmartEdu THCS Cho Học Sinh</title>
+  <style>
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
+    h1 { font-size: 18pt; text-align: center; color: #1e3a8a; font-weight: bold; }
+    h2 { font-size: 14pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; font-weight: bold; }
+    h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+    th { background-color: #f1f5f9; font-weight: bold; }
+    .tip-box { background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 10px; margin: 15px 0; }
+    .step-box { border: 1px solid #cbd5e1; padding: 12px; margin-bottom: 15px; background: #f8fafc; }
+    .step-title { font-weight: bold; color: #1e3a8a; margin-bottom: 6px; }
+    .key-badge { background: #e2e8f0; border: 1px solid #cbd5e1; padding: 2px 6px; font-weight: bold; }
+    .footer-signatures { margin-top: 40px; display: table; width: 100%; }
+    .sig-col { display: table-cell; width: 50%; text-align: center; }
+  </style>
+</head>
+<body>
+  <div style="text-align: center;">
+    <p style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #475569;">BỘ TÀI LIỆU HỖ TRỢ HỌC SINH VÀ GIÁO VIÊN THCS • CHƯƠNG TRÌNH GDPT 2018</p>
+    <h1 style="color: #1e3a8a; margin: 12px 0;">SỔ TAY HƯỚNG DẪN SỬ DỤNG PHẦN MỀM<br>SMARTEDU THCS</h1>
+    <p style="font-size: 13pt; font-weight: bold; color: #334155;">Nền Tảng Tự Học, Ôn Thi & Khảo Thí Thông Minh Bằng Trí Tuệ Nhân Tạo (AI)</p>
+    <p style="font-size: 12pt; color: #1d4ed8; font-weight: bold;">Biên soạn: TRẦN LÊ LONG PHỤNG • Lớp 9A13 • Trường THCS Long Cang</p>
+  </div>
+
+  <table style="width: 100%; margin: 20px 0; border: 1px solid #000;">
+    <tr>
+      <td style="width: 25%; font-weight: bold; background: #f8fafc;">Địa chỉ web:</td>
+      <td style="width: 25%;">https://websmartthcs.vercel.app/</td>
+      <td style="width: 25%; font-weight: bold; background: #f8fafc;">Mã nguồn:</td>
+      <td style="width: 25%;">haidhsp2005-cyber/web_smart_thcs</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold; background: #f8fafc;">Đối tượng:</td>
+      <td>Học sinh Lớp 6, 7, 8, 9 (và mở rộng THPT)</td>
+      <td style="font-weight: bold; background: #f8fafc;">Thiết bị hỗ trợ:</td>
+      <td>Điện thoại (Android, iPhone), Tablet, PC/Laptop</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold; background: #f8fafc;">Môn học trọng tâm:</td>
+      <td>Toán, KHTN (Lý - Hóa - Sinh), Tiếng Anh, Sử - Địa, GDCD, Công nghệ</td>
+      <td style="font-weight: bold; background: #f8fafc;">Trạng thái:</td>
+      <td>Miễn phí 100%, Hoạt động 24/7</td>
+    </tr>
+  </table>
+
+  <div class="tip-box">
+    <strong>💡 LỜI NÓI ĐẦU:</strong> Các bạn học sinh thân mến! SmartEdu THCS là "trợ lý học tập thông minh" được thiết kế đặc biệt để giúp các bạn ôn bài nhẹ nhàng, thuộc bài trong 30 giây, vẽ sơ đồ tư duy cực đẹp và tự tạo đề kiểm tra 15 phút, 1 tiết để tự tin giành điểm 9, 10 trên lớp!
+  </div>
+
+  <h2>1. BƯỚC 1: TRUY CẬP & CÀI ĐẶT ỨNG DỤNG LÊN ĐIỆN THOẠI</h2>
+  <div class="step-box">
+    <div class="step-title">📱 Cách 1: Sử dụng trực tiếp trên trình duyệt Web</div>
+    <p>Mở trình duyệt Google Chrome (trên Android/Máy tính) hoặc Safari (trên iPhone/iPad), gõ địa chỉ: <strong>https://websmartthcs.vercel.app/</strong> là học được ngay.</p>
+  </div>
+  <div class="step-box">
+    <div class="step-title">📲 Cách 2: Cài ứng dụng (PWA) lên màn hình chính điện thoại</div>
+    <ul>
+      <li><strong>Trên điện thoại Android:</strong> Bấm nút <strong>"Cài"</strong> ở góc trên hoặc thanh banner ở đáy màn hình $\rightarrow$ chọn "Thêm vào màn hình chính".</li>
+      <li><strong>Trên iPhone / iPad (Safari):</strong> Bấm nút <strong>Chia sẻ (hình vuông mũi tên lên)</strong> $\rightarrow$ chọn <strong>"Thêm vào MH chính" (Add to Home Screen)</strong>.</li>
+    </ul>
+  </div>
+
+  <h2>2. BƯỚC 2: NẠP TÀI LIỆU HỌC TẬP VÀO PHẦN MỀM</h2>
+  <ul>
+    <li><strong>Cách 1 - Tải tệp:</strong> Chọn cùng lúc nhiều file Word (.docx), PDF hoặc file văn bản (.txt).</li>
+    <li><strong>Cách 2 - Chụp ảnh Camera:</strong> Chụp ảnh trực tiếp trang sách giáo khoa, bài tập trong vở. Chọn nhiều ảnh cùng lúc, AI sẽ đọc chữ và nhận dạng công thức toán học, sơ đồ thí nghiệm KHTN.</li>
+    <li><strong>Cách 3 - Nạp bài mẫu có sẵn:</strong> Bấm các nút bài mẫu trên thanh điều hướng: <em>Mẫu Toán 9</em>, <em>Mẫu KHTN 9</em>, <em>Mẫu KHTN 8</em>, <em>Mẫu KHTN 7</em> để trải nghiệm tức thì.</li>
+  </ul>
+
+  <h2>3. BƯỚC 3: HỌC VÀ ÔN BÀI VỚI 4 CÔNG CỤ THÔNG MINH</h2>
+  <h3>🌳 CÔNG CỤ 1: SƠ ĐỒ TƯ DUY TƯƠNG TÁC (MINDMAP)</h3>
+  <ul>
+    <li>Chạm vào các nút tròn để thu gọn hoặc bung nở các ý chi tiết.</li>
+    <li>Dùng 2 ngón tay phóng to/thu nhỏ trên điện thoại.</li>
+    <li>Bấm <strong>"Lưu sơ đồ"</strong> để cất vào Thư viện xem lại offline không cần mạng.</li>
+    <li>Bấm <strong>"Ảnh PNG HD"</strong> để tải ảnh sơ đồ sắc nét về máy làm hình nền hoặc gửi cho bạn bè.</li>
+  </ul>
+
+  <h3>📝 CÔNG CỤ 2: TÓM TẮT BÀI HỌC & CHIẾN LƯỢC GHI NHỚ</h3>
+  <ul>
+    <li>Giải thích bằng phương pháp Feynman dễ hiểu, kèm mẹo nhớ vui và thơ lục bát giúp nhớ công thức siêu tốc.</li>
+    <li><strong>🔊 Nghe đọc tóm tắt (Giọng Chị Google HD):</strong> Bật loa nghe giọng đọc trong trẻo, ấm áp, chuẩn ngữ điệu tiếng Việt 100%, không lo mỏi mắt hay buồn ngủ.</li>
+    <li>Chuyển đổi tốc độ đọc: 1.0x (Tiêu chuẩn), 1.1x (Hoạt bát), 1.2x (Cấp tốc).</li>
+  </ul>
+
+  <h3>🎯 CÔNG CỤ 3: TẠO ĐỀ THI TRẮC NGHIỆM 3 MỨC ĐỘ</h3>
+  <ul>
+    <li>Chọn số lượng câu (6 câu, 10 câu, 15 câu).</li>
+    <li>Đủ 3 cấp độ: Nhận biết (Dễ) $\rightarrow$ Thông hiểu (Trung bình) $\rightarrow$ Vận dụng (Khó).</li>
+    <li>Tự động chấm điểm, bắn pháo hoa chúc mừng điểm 9-10 và giải thích chi tiết đúng/sai.</li>
+    <li>Bấm <strong>"Chế độ Bản in A4"</strong> để tải đề thi in ra giấy làm bài nhóm.</li>
+  </ul>
+
+  <h3>🗂️ CÔNG CỤ 4: THẺ HỌC TẬP LẬT 3D (FLASHCARDS)</h3>
+  <ul>
+    <li>Chạm nhẹ vào thẻ để lật xem đáp án và điểm cốt lõi trong 30 giây.</li>
+    <li>Bấm biểu tượng loa để nghe đọc từng thẻ hoặc bấm "Nghe đọc toàn bộ".</li>
+    <li>Bấm "+ Đánh dấu thuộc" để theo dõi tiến độ ghi nhớ.</li>
+    <li>Xem Chế độ tập trung (Focus Carousel) phóng to từng thẻ trên điện thoại.</li>
+    <li>Xuất bản in PDF cắt rời kẹp vào sách vở.</li>
+  </ul>
+
+  <h2>4. BÍ QUYẾT ĐẠT ĐIỂM CAO TRONG KỲ THI CÙNG SMARTEDU THCS</h2>
+  <ol>
+    <li><strong>Bước 1 (10 phút trước giờ học):</strong> Nạp bài mới vào SmartEdu, xem nhanh Sơ đồ tư duy và nghe đọc tóm tắt để nắm khung sườn bài học.</li>
+    <li><strong>Bước 2 (Sau giờ học trên lớp):</strong> Mở Thẻ học tập (Flashcards), lật từng thẻ ôn lại kiến thức cốt lõi và bấm "Đã thuộc".</li>
+    <li><strong>Bước 3 (2 ngày sau):</strong> Làm thử đề thi trắc nghiệm 10 câu để kiểm tra độ nhớ kiến thức (Spaced Repetition).</li>
+    <li><strong>Bước 4 (Trước ngày thi 1 tuần):</strong> Tải ảnh Sơ đồ tư duy và in bộ đề thi ra giấy A4 để luyện giải đề tốc độ cao.</li>
+  </ol>
+
+  <div class="footer-signatures">
+    <div class="sig-col">
+      <p><strong>XÁC NHẬN CỦA BAN CHỦ NHIỆM / THẦY CÔ HƯỚNG DẪN</strong></p>
+      <p style="font-size: 11pt; color: #64748b;">(Ký và ghi rõ họ tên)</p>
+      <div style="height: 60px;"></div>
+      <p><strong>........................................................</strong></p>
+    </div>
+    <div class="sig-col">
+      <p><strong>HỌC SINH THỰC HIỆN DỰ ÁN</strong></p>
+      <p style="font-size: 11pt; color: #64748b;">(Ký và ghi rõ họ tên)</p>
+      <div style="height: 60px;"></div>
+      <p><strong>Trần Lê Long Phụng</strong></p>
+    </div>
+  </div>
+</body>
+</html>

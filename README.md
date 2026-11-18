@@ -92,7 +92,8 @@ d:\Antigravity\phan_mem_hoc_tap\
     ├── 1_Ban_Mo_Ta_De_Tai/                 # Bản mô tả đề tài (PDF, Word, HTML)
     ├── 2_Giai_Thich_Code_Va_Van_Dap/       # Cẩm nang giải thích code & 17 câu hỏi GK (PDF, Word, HTML)
     ├── 3_Huong_Dan_GitHub_Vercel_Demo/     # Hướng dẫn GitHub/Vercel & Kịch bản demo (PDF, Word, HTML)
-    └── 4_Cac_Diem_Moi_Va_Nang_Cap_Dot_Pha/ # Báo cáo điểm mới & nâng cấp đột phá (PDF, Word, HTML)
+    ├── 4_Cac_Diem_Moi_Va_Nang_Cap_Dot_Pha/ # Báo cáo điểm mới & nâng cấp đột phá (PDF, Word, HTML)
+    └── 5_Huong_Dan_Su_Dung_Cho_Hoc_Sinh_THCS/ # Sổ tay hướng dẫn sử dụng dành cho học sinh THCS (PDF, Word, HTML)
 ```
 
 ---
