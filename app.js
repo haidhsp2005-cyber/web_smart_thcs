@@ -2047,7 +2047,7 @@ ${state.currentDoc.text.slice(0, 8000)}`;
     dom.beamCardsGrid.innerHTML = '';
     beamsArray.forEach((beam, bIndex) => {
       const cardContainer = document.createElement('div');
-      cardContainer.className = 'h-72 perspective-1000 select-none';
+      cardContainer.className = 'min-h-[380px] sm:min-h-[330px] h-[380px] sm:h-[330px] perspective-1000 select-none';
 
       const inner = document.createElement('div');
       inner.className = 'flip-card-inner cursor-pointer shadow-md rounded-2xl';
@@ -2055,7 +2055,7 @@ ${state.currentDoc.text.slice(0, 8000)}`;
 
       // Front Face
       const front = document.createElement('div');
-      front.className = 'flip-card-front bg-white p-5 border border-slate-200 flex flex-col justify-between';
+      front.className = 'flip-card-front bg-white p-5 border border-slate-200 flex flex-col justify-between overflow-y-auto';
       front.innerHTML = `
         <div>
           <div class="flex items-center justify-between">
@@ -2066,7 +2066,7 @@ ${state.currentDoc.text.slice(0, 8000)}`;
           </div>
           <h4 class="text-sm font-bold text-slate-900 mt-2">${beam.title}</h4>
           <p class="text-xs text-slate-500 mt-1 italic">💡 30s Takeaway: ${beam.takeaway || ''}</p>
-          <div class="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+          <div class="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100 max-h-48 overflow-y-auto">
             <p class="text-xs font-semibold text-slate-800 leading-relaxed">${beam.frontQuestion}</p>
           </div>
         </div>
@@ -2078,7 +2078,7 @@ ${state.currentDoc.text.slice(0, 8000)}`;
 
       // Back Face
       const back = document.createElement('div');
-      back.className = 'flip-card-back bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-5 flex flex-col justify-between';
+      back.className = 'flip-card-back bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-5 flex flex-col justify-between overflow-y-auto';
       back.innerHTML = `
         <div>
           <div class="flex items-center justify-between">
