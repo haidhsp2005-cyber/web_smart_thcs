@@ -1,11 +1,11 @@
-# SmartEdu THCS - Nền Tảng Hỗ Trợ Học Tập & Khảo Thí Thông Minh (Chuyên Cấp 2 & Mở Rộng STEM Cấp 3)
+﻿# SmartEdu THCS - Nền Tảng Hỗ Trợ Học Tập & Khảo Thí Thông Minh (Chuyên Cấp 2 & Mở Rộng STEM Cấp 3)
 
 > **Dự án tham dự:** Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường & Cấp Tỉnh  
 > **Năm học:** 2026 – 2027  
 > **Tác giả:** Trần Lê Long Phụng (Lớp 9A13)  
 > **Đơn vị:** Trường THCS Long Cang  
 > **Lĩnh vực:** Hệ thống phần mềm (Systems Software)  
-> **Kho mã nguồn GitHub:** [https://github.com/longphungtranle-star/smartedu-thcs.](https://github.com/longphungtranle-star/smartedu-thcs.)  
+> **Kho mã nguồn GitHub:** [https://github.com/longphungtranle-star/smartedu-thcs](https://github.com/longphungtranle-star/smartedu-thcs)  
 > **Trải nghiệm trực tuyến (Live Demo):** [https://smartedu-thcs.vercel.app/](https://smartedu-thcs.vercel.app/)
 
 ---
