@@ -2,127 +2,34 @@
 <head>
   <meta charset='utf-8'>
   <title>Phieu Thuyet Trinh San Pham KHKT Cap Truong</title>
-  <!--[if gte mso 9]>
-  <xml>
-    <w:WordDocument>
-      <w:View>Print</w:View>
-      <w:Zoom>100</w:Zoom>
-      <w:DoNotOptimizeForBrowser/>
-    </w:WordDocument>
-  </xml>
-  <![endif]-->
   <style>
-    @page Section1 {
-      size: 21.0cm 29.7cm;
-      margin: 2.0cm 2.0cm 2.0cm 2.5cm;
-      mso-header-margin: 36.0pt;
-      mso-footer-margin: 36.0pt;
-      mso-paper-source: 0;
-    }
-    div.Section1 {
-      page: Section1;
-    }
-    body {
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 13pt;
-      line-height: 1.4;
-      color: #000;
-    }
-    p {
-      margin: 4pt 0;
-      text-align: justify;
-    }
-    p.indent {
-      text-indent: 1.25cm;
-    }
-    .header-box {
-      text-align: center;
-      margin-bottom: 16pt;
-    }
-    .sub-title {
-      font-size: 11pt;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .main-title {
-      font-size: 14pt;
-      font-weight: bold;
-      text-transform: uppercase;
-      color: #1e3a8a;
-      margin: 8pt 0 14pt 0;
-    }
-    table.info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 12pt;
-    }
-    table.info-table td {
-      padding: 3pt 4pt;
-      font-size: 13pt;
-      vertical-align: top;
-    }
-    .label {
-      font-weight: bold;
-      width: 25%;
-    }
-    .colon {
-      width: 2%;
-      font-weight: bold;
-    }
-    .value {
-      width: 73%;
-    }
-    .sec-head {
-      font-size: 13pt;
-      font-weight: bold;
-      color: #0f172a;
-      margin-top: 10pt;
-      margin-bottom: 4pt;
-    }
-    ul {
-      margin: 3pt 0 8pt 0;
-      padding-left: 24pt;
-    }
-    li {
-      margin-bottom: 3pt;
-      text-align: justify;
-    }
-    table.sig-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20pt;
-    }
-    table.sig-table th, table.sig-table td {
-      border: 1px solid #000;
-      padding: 8pt;
-      text-align: center;
-      vertical-align: top;
-    }
-    table.sig-table th {
-      background-color: #f1f5f9;
-      font-size: 12pt;
-      font-weight: bold;
-      width: 50%;
-    }
-    .sig-space {
-      height: 80pt;
-    }
-    .sig-name {
-      font-weight: bold;
-      font-size: 13pt;
-    }
-    .sig-note {
-      font-style: italic;
-      font-size: 11pt;
-    }
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.45; color: #000; margin: 20px; }
+    .header-box { text-align: center; margin-bottom: 20px; }
+    .sub-title { font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #334155; }
+    .main-title { font-size: 15pt; font-weight: bold; text-transform: uppercase; color: #1e3a8a; margin: 10px 0 15px 0; }
+    table.info-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+    table.info-table td { padding: 4px 6px; font-size: 13pt; vertical-align: top; border: none; }
+    .label { font-weight: bold; width: 25%; }
+    .colon { width: 2%; font-weight: bold; }
+    .value { width: 73%; }
+    .sec-head { font-size: 13.5pt; font-weight: bold; color: #0f172a; margin-top: 14px; margin-bottom: 5px; }
+    p { margin: 4px 0 8px 0; text-align: justify; }
+    p.indent { text-indent: 1.25cm; }
+    ul { margin: 4px 0 10px 0; padding-left: 25px; }
+    li { margin-bottom: 4px; text-align: justify; }
+    table.sig-table { width: 100%; border-collapse: collapse; margin-top: 25px; }
+    table.sig-table th, table.sig-table td { border: 1px solid #000; padding: 10px; text-align: center; vertical-align: top; }
+    table.sig-table th { background-color: #f1f5f9; font-size: 12.5pt; font-weight: bold; width: 50%; }
+    .sig-space { height: 75px; }
+    .sig-name { font-weight: bold; font-size: 13pt; }
+    .sig-note { font-style: italic; font-size: 11pt; color: #475569; }
   </style>
 </head>
 <body>
-<div class="Section1">
 
   <div class="header-box">
     <div class="sub-title">ỦY BAN NHÂN DÂN HUYỆN CẦN ĐƯỚC — TRƯỜNG THCS LONG CANG</div>
-    <div class="sub-title" style="color: #334155;">CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC CẤP TRƯỜNG</div>
+    <div class="sub-title" style="font-size: 12pt; color: #1e293b;">CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC CẤP TRƯỜNG</div>
     <div class="main-title">
       PHIẾU THUYẾT TRÌNH SẢN PHẨM THI KHKT CẤP TRƯỜNG<br>
       DÀNH CHO HỌC SINH LỚP 8, 9 NĂM HỌC 2026 - 2027
@@ -138,7 +45,7 @@
     <tr>
       <td class="label">Ngày tháng năm sinh</td>
       <td class="colon">:</td>
-      <td class="value">... / ... / 2012</td>
+      <td class="value"><strong>01/09/2012</strong></td>
     </tr>
     <tr>
       <td class="label">Lớp</td>
@@ -158,7 +65,7 @@
     <tr>
       <td class="label">GV hướng dẫn</td>
       <td class="colon">:</td>
-      <td class="value">..................................................................................................................</td>
+      <td class="value"><strong>Lê Thị Ngọc Diện</strong></td>
     </tr>
   </table>
 
@@ -240,7 +147,7 @@
   </ul>
 
   <div class="sec-head">7. Cam kết thực hiện liêm chính khoa học</div>
-  <p class="indent">Em xin cam đoan sản phẩm dự thi <strong>"SmartEdu THCS - Nền tảng học tập & khảo thí thông minh cấp 2"</strong> là công trình nghiên cứu và sáng tạo do chính em tự tay thực hiện dưới sự định hướng, hướng dẫn khoa học của Giáo viên hướng dẫn tại Trường THCS Long Cang.</p>
+  <p class="indent">Em xin cam đoan sản phẩm dự thi <strong>"SmartEdu THCS - Nền tảng học tập & khảo thí thông minh cấp 2"</strong> là công trình nghiên cứu và sáng tạo do chính em tự tay thực hiện dưới sự định hướng, hướng dẫn khoa học của Giáo viên hướng dẫn <strong>Lê Thị Ngọc Diện</strong> tại Trường THCS Long Cang.</p>
   <p class="indent">Toàn bộ các số liệu khảo nghiệm, kết quả đo đạc, tài liệu tham khảo và mã nguồn của dự án đều hoàn toàn trung thực, minh bạch và được công bố công khai trên kho lưu trữ mã nguồn mở GitHub (<u>https://github.com/longphungtranle-star/smartedu-thcs.</u>). Sản phẩm không sao chép nguyên mẫu hay vi phạm quyền sở hữu trí tuệ của bất kỳ tổ chức hay cá nhân nào. Em xin hoàn toàn chịu trách nhiệm trước Ban Giám khảo và Ban Tổ chức cuộc thi về cam kết liêm chính khoa học này.</p>
 
   <table class="sig-table">
@@ -254,7 +161,7 @@
     </tr>
     <tr>
       <td>
-        <div class="sig-name">..................................................................</div>
+        <div class="sig-name">Lê Thị Ngọc Diện</div>
       </td>
       <td>
         <div class="sig-name">Trần Lê Long Phụng</div>
@@ -262,6 +169,5 @@
     </tr>
   </table>
 
-</div>
 </body>
 </html>
