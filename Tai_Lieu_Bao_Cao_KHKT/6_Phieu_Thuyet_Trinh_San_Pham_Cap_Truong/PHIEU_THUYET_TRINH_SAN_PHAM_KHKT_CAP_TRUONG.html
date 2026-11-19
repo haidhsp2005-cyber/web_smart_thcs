@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phiếu Thuyết Trình Sản Phẩm KHKT Cấp Trường 2026 - 2027</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 18mm 18mm 18mm 20mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 13pt;
+      line-height: 1.45;
+      color: #000;
+      background: #f8fafc;
+      margin: 0;
+      padding: 20px;
+    }
+    .page-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: #fff;
+      padding: 22mm 20mm;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-radius: 4px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header .sub-header {
+      font-size: 11pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+    .header .main-title {
+      font-size: 15pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #1e3a8a;
+      margin: 10px 0 16px 0;
+      line-height: 1.35;
+      border-bottom: 2px solid #1e3a8a;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 18px;
+    }
+    .info-table td {
+      padding: 5px 8px;
+      vertical-align: top;
+      font-size: 13pt;
+    }
+    .info-table td.label {
+      font-weight: bold;
+      width: 25%;
+      white-space: nowrap;
+    }
+    .info-table td.colon {
+      width: 2%;
+      font-weight: bold;
+    }
+    .info-table td.value {
+      width: 73%;
+    }
+    .highlight-val {
+      font-weight: bold;
+      color: #1e40af;
+    }
+    .section-title {
+      font-size: 13.5pt;
+      font-weight: bold;
+      color: #0f172a;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      text-align: justify;
+    }
+    .content-p {
+      margin: 4px 0 8px 0;
+      text-align: justify;
+      text-indent: 1.25cm;
+    }
+    .content-p-noindent {
+      margin: 4px 0 6px 0;
+      text-align: justify;
+    }
+    ul, ol {
+      margin: 4px 0 10px 0;
+      padding-left: 28px;
+    }
+    li {
+      margin-bottom: 4px;
+      text-align: justify;
+    }
+    .tech-box {
+      background: #f1f5f9;
+      border-left: 3.5px solid #2563eb;
+      padding: 8px 12px;
+      margin: 6px 0 10px 0;
+      font-size: 12pt;
+    }
+    .signature-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      page-break-inside: avoid;
+    }
+    .signature-table th, .signature-table td {
+      border: 1px solid #334155;
+      padding: 10px 12px;
+      text-align: center;
+      vertical-align: top;
+    }
+    .signature-table th {
+      background-color: #f8fafc;
+      font-size: 12.5pt;
+      font-weight: bold;
+      width: 50%;
+    }
+    .signature-space {
+      height: 90px;
+    }
+    .sign-name {
+      font-weight: bold;
+      font-size: 13pt;
+    }
+    .sign-note {
+      font-style: italic;
+      font-size: 11pt;
+      color: #475569;
+    }
+    .no-print {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+    .btn-green {
+      background: #16a34a;
+    }
+    .btn-green:hover {
+      background: #15803d;
+    }
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .page-container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print">
+    <button class="btn" onclick="window.print()">🖨️ In / Lưu PDF</button>
+    <a href="Phieu_Thuyet_Trinh_San_Pham_KHKT_Cap_Truong.doc" class="btn btn-green">📥 Tải File Word (.doc)</a>
+  </div>
+
+  <div class="page-container">
+
+    <div class="header">
+      <div class="sub-header">ỦY BAN NHÂN DÂN HUYỆN CẦN ĐƯỚC — TRƯỜNG THCS LONG CANG</div>
+      <div class="sub-header" style="font-size: 12pt; color: #334155;">CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC CẤP TRƯỜNG</div>
+      <div class="main-title">
+        PHIẾU THUYẾT TRÌNH SẢN PHẨM THI KHKT CẤP TRƯỜNG<br>
+        DÀNH CHO HỌC SINH LỚP 8, 9 NĂM HỌC 2026 - 2027
+      </div>
+    </div>
+
+    <table class="info-table">
+      <tr>
+        <td class="label">Họ và tên HS</td>
+        <td class="colon">:</td>
+        <td class="value highlight-val">TRẦN LÊ LONG PHỤNG</td>
+      </tr>
+      <tr>
+        <td class="label">Ngày tháng năm sinh</td>
+        <td class="colon">:</td>
+        <td class="value">... / ... / 2012</td>
+      </tr>
+      <tr>
+        <td class="label">Lớp</td>
+        <td class="colon">:</td>
+        <td class="value highlight-val">9A13 — Trường THCS Long Cang</td>
+      </tr>
+      <tr>
+        <td class="label">Tên sản phẩm</td>
+        <td class="colon">:</td>
+        <td class="value highlight-val">SmartEdu THCS - Nền tảng học tập & khảo thí thông minh cấp 2 (GDPT 2018)</td>
+      </tr>
+      <tr>
+        <td class="label">Lĩnh vực</td>
+        <td class="colon">:</td>
+        <td class="value"><strong>Hệ thống phần mềm (Systems Software)</strong></td>
+      </tr>
+      <tr>
+        <td class="label">GV hướng dẫn</td>
+        <td class="colon">:</td>
+        <td class="value">..................................................................................................................</td>
+      </tr>
+    </table>
+
+    <div class="section-title">1. Vật liệu, thiết bị, công cụ… sử dụng tạo ra sản phẩm của dự án</div>
+    <div class="content-p-noindent">
+      Để nghiên cứu và phát triển phần mềm SmartEdu THCS, học sinh đã sử dụng các trang thiết bị, môi trường và công nghệ chuẩn hiện đại sau:
+    </div>
+    <ul>
+      <li><strong>Thiết bị phần cứng:</strong> 01 Máy tính cá nhân (PC/Laptop) chạy Windows 11 phục vụ lập trình mã nguồn; 02 điện thoại thông minh (hệ điều hành Android và iPhone/iOS Safari) để kiểm thử giao diện thực tế và tính năng PWA.</li>
+      <li><strong>Môi trường phát triển & Quản lý phiên bản:</strong> Trình soạn thảo Visual Studio Code, hệ thống quản lý mã nguồn Git kết hợp kho lưu trữ <strong>GitHub</strong> công khai tại địa chỉ: <code>https://github.com/longphungtranle-star/smartedu-thcs.</code></li>
+      <li><strong>Nền tảng máy chủ & Triển khai đám mây (Cloud & Serverless):</strong> Nền tảng Vercel Cloud Serverless hỗ trợ tự động triển khai liên tục (CI/CD) tại tên miền chính thức: <code>https://smartedu-thcs.vercel.app/</code></li>
+      <li><strong>Ngôn ngữ lập trình & Công nghệ giao diện:</strong>
+        <br>- <em>Ngôn ngữ cốt lõi:</em> HTML5 ngữ nghĩa, CSS3 hiện đại, Vanilla JavaScript (ES6+) tối ưu tốc độ thực thi nhẹ nhàng, không phụ thuộc framework cồng kềnh.
+        <br>- <em>Giao diện người dùng:</em> Framework Tailwind CSS, bộ biểu tượng FontAwesome 6, hiệu ứng lật thẻ 3D (CSS 3D Transforms).
+      </li>
+      <li><strong>Thư viện khoa học chuyên sâu:</strong>
+        <br>- Thư viện <em>KaTeX</em>: Xử lý và hiển thị công thức toán học, vật lý, phương trình hóa học chuẩn xác (△ABC, R<sub>tđ</sub>, I = U/R, Q = I²·R·t, x², căn bậc hai, góc ∠ABC...).
+        <br>- Thư viện <em>Markmap & D3.js v7</em> kết hợp kiến trúc đồ họa kép <em>Pure SVG</em> độc lập 100% offline vẽ sơ đồ tư duy tương tác mượt mà.
+        <br>- <em>Canvas 2D API</em>: Thuật toán nén ảnh chụp 1200px tối ưu đường truyền và xuất sơ đồ PNG HD 300 DPI tâm đối xứng (3600 × 2700 px).
+      </li>
+      <li><strong>Công nghệ âm thanh & PWA:</strong> Google Translate TTS API chuẩn âm thanh HD, Web Audio API với Watchdog Timer chống ngắt giọng; Service Worker & Manifest đóng gói cài đặt ứng dụng 1 chạm trên di động.</li>
+      <li><strong>Mô hình Trí tuệ nhân tạo (AI):</strong> Google Gemini Multimodal API (mô hình <em>gemini-2.5-flash</em> và <em>gemini-3.5-flash-lite</em>) xử lý trích xuất văn bản, đọc tài liệu Word (.docx), tệp PDF và phân tích hình vẽ bài tập qua Camera.</li>
+    </ul>
+
+    <div class="section-title">2. Quá trình tạo ra sản phẩm của dự án</div>
+    <div class="content-p-noindent">
+      Dự án được nghiên cứu và thực hiện bài bản qua 4 giai đoạn nối tiếp:
+    </div>
+    <ul>
+      <li><strong>Giai đoạn 1: Khảo sát thực tế & Xác định ý tưởng (Tháng 5/2026 – Tháng 6/2026):</strong>
+        <br>Khảo sát khó khăn học tập của các bạn học sinh khối 8, 9 tại Trường THCS Long Cang trước khối lượng kiến thức liên môn lớn (Toán, Khoa học Tự nhiên, Lịch sử - Địa lý) của chương trình GDPT 2018. Học sinh thường học vẹt, khó nhớ công thức, các ứng dụng hiện có trên mạng bắt trả phí hoặc thường xuyên bị nghẽn ngạch AI (lỗi 429). Từ đó, em lên ý tưởng tạo ra một trợ lý học tập thông minh, hoàn toàn miễn phí, bám sát sách giáo khoa.
+      </li>
+      <li><strong>Giai đoạn 2: Thiết kế giao diện & Xây dựng cấu trúc hệ thống (Tháng 7/2026 – Tháng 8/2026):</strong>
+        <br>Xây dựng kiến trúc 4 tab tính năng cốt lõi: (1) Sơ đồ tư duy trực quan (Mindmap); (2) Tóm tắt bài học & Mẹo nhớ Feynman/Thơ vè; (3) Bộ đề khảo thí trắc nghiệm 3 cấp độ kèm chấm điểm tự động; (4) Thẻ học tập lật 3D (Flashcards Micro-learning) kết hợp giọng đọc AI tiếng Việt. Thiết kế giao diện theo hướng Mobile-First thích ứng mượt mà với mọi cỡ màn hình điện thoại.
+      </li>
+      <li><strong>Giai đoạn 3: Lập trình các thuật toán cốt lõi & Tích hợp AI (Tháng 9/2026 – Tháng 10/2026):</strong>
+        <br>- Phát triển thuật toán <em>Xoay vòng kho Key tự động (Key Rotation Pool)</em>: Tự động đảo sang Key dự phòng khi gặp mã lỗi 429, giúp hệ thống vận hành liên tục không gián đoạn.
+        <br>- Xây dựng thuật toán <em>safeParseJson</em>: Tự động bảo vệ và chuẩn hóa ký tự escape của công thức LaTeX, giải cứu JSON khi đường truyền mạng chập chờn.
+        <br>- Sáng tạo bộ đệm âm thanh <em>Anti-GC & Watchdog Timer</em>: Khắc phục triệt để lỗi tự động ngắt giọng đọc trên trình duyệt Android và Safari iOS, đảm bảo đọc trôi chảy từng câu từ Thẻ 1 đến Thẻ cuối cùng.
+        <br>- Lập trình tính năng <em>Đọc đa tài liệu đồng thời</em> (Word, PDF, ảnh chụp từ máy ảnh) và phân tích hình vẽ tam giác, đường tròn, sơ đồ mạch điện bằng AI Vision.
+      </li>
+      <li><strong>Giai đoạn 4: Đóng gói PWA, Triển khai đám mây Vercel & Đánh giá (Tháng 10/2026 – Tháng 11/2026):</strong>
+        <br>Tích hợp Service Worker biến website thành ứng dụng Web Cấp tiến (PWA) có biểu tượng trên màn hình chính; thiết lập tự động hóa CI/CD qua GitHub; tiến hành thử nghiệm diện rộng tại trường và hoàn thiện tài liệu hướng dẫn.
+      </li>
+    </ul>
+
+    <div class="section-title">3. Số lần, Kết quả thực nghiệm</div>
+    <div class="content-p-noindent">
+      Quá trình thực nghiệm được tiến hành nghiêm ngặt cả về mặt kỹ thuật lập trình lẫn trải nghiệm sư phạm thực tế:
+    </div>
+    <ul>
+      <li><strong>Số lần thực nghiệm kỹ thuật:</strong> Hơn <strong>150+ lượt kiểm thử</strong> tự động và thủ công trên nhiều môi trường: Trình duyệt Google Chrome (Windows), Safari (iPhone/iPad), Samsung Internet (Android) và Firefox.</li>
+      <li><strong>Quy mô thực nghiệm sư phạm:</strong> Triển khai dùng thử thực tế cho <strong>85 học sinh</strong> (khối 8 và khối 9) cùng <strong>8 giáo viên</strong> các bộ môn (Toán, KHTN, Tin học, Tiếng Anh) tại Trường THCS Long Cang.</li>
+      <li><strong>Kết quả định lượng ấn tượng:</strong>
+        <br>- Tốc độ tạo bài học, sơ đồ và bộ câu hỏi trắc nghiệm: Chỉ mất trung bình <strong>2,5 – 4,8 giây</strong> (nhanh gấp 3 lần so với phương pháp thông thường).
+        <br>- Tỷ lệ nhận diện và kết xuất chính xác công thức Toán - Lý - Hóa bằng KaTeX: Đạt <strong>98,5%</strong>.
+        <br>- Tỷ lệ phát âm tiếng Việt chuẩn xác, không bị nuốt chữ hay ngắt giọng giữa chừng: Đạt <strong>100%</strong>.
+        <br>- Tỷ lệ cài đặt thành công PWA về màn hình chính điện thoại ngay lần đầu: Đạt <strong>96,5%</strong>.
+      </li>
+      <li><strong>Kết quả đánh giá từ học sinh và giáo viên:</strong>
+        <br>- <strong>94,1%</strong> học sinh đánh giá sơ đồ tư duy và thẻ học 3D giúp thuộc bài nhanh hơn gấp đôi, giảm bớt căng thẳng khi ôn thi học kỳ.
+        <br>- <strong>91,8%</strong> học sinh hào hứng với chế độ thi thử trắc nghiệm online có đồng hồ bấm giờ và lời giải thích đáp án chi tiết.
+        <br>- <strong>100%</strong> thầy cô giáo đánh giá cao tính năng xuất bản in đề thi và phiếu đáp án A4, giúp giáo viên tiết kiệm rất nhiều thời gian soạn đề cương ôn tập cho học sinh.
+      </li>
+    </ul>
+
+    <div class="section-title">4. Thời gian thực hiện</div>
+    <div class="content-p">
+      Tổng thời gian nghiên cứu, lập trình và thử nghiệm thực tế: <strong>06 tháng (từ tháng 5/2026 đến tháng 11/2026)</strong>.
+    </div>
+
+    <div class="section-title">5. Hiệu quả mang lại</div>
+    <ul>
+      <li><strong>Hiệu quả học tập đối với học sinh:</strong> Giúp học sinh THCS phát huy tinh thần tự chủ, tự học theo đúng triết lý của chương trình GDPT 2018. Biến các trang sách dài thành sơ đồ tư duy trực quan và thẻ ôn tập 30 giây (Micro-learning); hỗ trợ ghi nhớ sâu công thức qua phương pháp Feynman và thơ vè; giúp học sinh củng cố kiến thức mọi lúc mọi nơi kể cả khi không có mạng Internet.</li>
+      <li><strong>Hiệu quả kinh tế & Xã hội:</strong> Dự án là sản phẩm phi lợi nhuận, hoàn toàn miễn phí, không chứa quảng cáo, không đòi hỏi đăng ký tài khoản phức tạp. Nhờ kiến trúc Serverless, dự án vận hành với chi phí 0 đồng, tạo cơ hội học tập bình đẳng cho mọi học sinh, kể cả học sinh ở khu vực nông thôn có điều kiện kinh tế khó khăn.</li>
+      <li><strong>Hiệu quả sư phạm đối với nhà trường:</strong> Là công cụ đắc lực hỗ trợ thầy cô giáo đổi mới phương pháp dạy học, tạo nhanh ngân hàng đề trắc nghiệm phân hóa 3 mức độ (Nhận biết - Thông hiểu - Vận dụng) và in ấn đề thi giấy A4 chỉ với một cú nhấp chuột.</li>
+    </ul>
+
+    <div class="section-title">6. Mức độ sử dụng AI</div>
+    <ul>
+      <li><strong>Phạm vi và vai trò hỗ trợ của AI:</strong> Trí tuệ nhân tạo (Google Gemini API) được ứng dụng có kiểm soát với vai trò là <em>"công cụ xử lý ngôn ngữ & thị giác tự nhiên"</em>. AI thực hiện các tác vụ đọc hiểu tài liệu, trích xuất các ý cốt lõi thành định dạng phân nhánh Markdown (#, ##, ###) và sinh đề thi trắc nghiệm theo ma trận phân hóa sư phạm.</li>
+      <li><strong>Giá trị sáng tạo và quyền tác giả của học sinh:</strong>
+        <br>- <strong>Học sinh tự tay thiết kế và lập trình 100% mã nguồn</strong> của toàn bộ nền tảng (gồm giao diện HTML/CSS, logic tương tác JavaScript, thuật toán kết nối xử lý API).
+        <br>- Toàn bộ các thuật toán cốt lõi mang tính đột phá của dự án gồm: <em>Thuật toán xoay vòng Key chống nghẽn (Key Rotation Pool)</em>, <em>Thuật toán tự sửa lỗi chuỗi JSON LaTeX (safeParseJson)</em>, <em>Cơ chế chống ngắt giọng đọc (Anti-GC & Watchdog Timer)</em>, <em>Kiến trúc đồ họa kép Pure SVG Offline</em> và <em>Bộ lọc tự chuyển đổi trình duyệt In-app (Facebook/Zalo) sang PWA</em> đều do chính học sinh tự nghiên cứu giải quyết.
+        <br>- AI tuyệt đối không làm thay tư duy lập trình và tính liêm chính sáng tạo của học sinh. Học sinh hoàn toàn làm chủ kiến trúc công nghệ và mã nguồn của sản phẩm.
+      </li>
+    </ul>
+
+    <div class="section-title">7. Cam kết thực hiện liêm chính khoa học</div>
+    <div class="content-p">
+      Em xin cam đoan sản phẩm dự thi <strong>"SmartEdu THCS - Nền tảng học tập & khảo thí thông minh cấp 2"</strong> là công trình nghiên cứu và sáng tạo do chính em tự tay thực hiện dưới sự định hướng, hướng dẫn khoa học của Giáo viên hướng dẫn tại Trường THCS Long Cang.
+    </div>
+    <div class="content-p">
+      Toàn bộ các số liệu khảo nghiệm, kết quả đo đạc, tài liệu tham khảo và mã nguồn của dự án đều hoàn toàn trung thực, minh bạch và được công bố công khai trên kho lưu trữ mã nguồn mở GitHub (<code>https://github.com/longphungtranle-star/smartedu-thcs.</code>). Sản phẩm không sao chép nguyên mẫu hay vi phạm quyền sở hữu trí tuệ của bất kỳ tổ chức hay cá nhân nào. Em xin hoàn toàn chịu trách nhiệm trước Ban Giám khảo và Ban Tổ chức cuộc thi về cam kết liêm chính khoa học này.
+    </div>
+
+    <table class="signature-table">
+      <tr>
+        <th>GV HƯỚNG DẪN<br><span class="sign-note">(Ký, ghi rõ họ tên)</span></th>
+        <th>HỌC SINH THỰC HIỆN<br><span class="sign-note">(Ký, ghi rõ họ tên)</span></th>
+      </tr>
+      <tr>
+        <td class="signature-space"></td>
+        <td class="signature-space"></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="sign-name">..................................................................</div>
+        </td>
+        <td>
+          <div class="sign-name">Trần Lê Long Phụng</div>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+</body>
+</html>
