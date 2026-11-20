@@ -27,14 +27,21 @@
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="styles.css">
   
+  <!-- JSZip for Word (.docx) & Archive Extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <!-- Mammoth.js for Word (.docx) Parsing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   
-  <!-- PDF.js for PDF Parsing -->
+  <!-- PDF.js for PDF Parsing with Vietnamese CMaps -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
     if (window.pdfjsLib) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      } catch (e) {
+        console.warn('PDF.js worker init fallback:', e);
+      }
     }
   </script>
   
@@ -203,7 +210,7 @@
       <!-- Mode 1: File & Image Upload Area -->
       <div id="drop-zone-container" class="mt-4">
         <div id="drop-zone" class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/30 hover:bg-indigo-50/60 rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-3">
-          <input type="file" id="file-input" class="hidden" accept=".docx,.doc,.pdf,image/*" multiple>
+          <input type="file" id="file-input" class="hidden" accept=".docx,.doc,.pdf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" multiple>
           
           <div class="w-14 h-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
             <i class="fa-solid fa-file-circle-plus"></i>
@@ -271,12 +278,6 @@
             <button id="btn-ocr-image" class="hidden px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 rounded-lg transition-all flex items-center gap-1 active:scale-95 cursor-pointer">
               <i class="fa-solid fa-eye text-xs"></i>
               <span id="ocr-btn-text">Nhận diện OCR tất cả ảnh</span>
-            </button>
-            
-            <!-- Read Doc Voice Assistant button -->
-            <button id="btn-read-doc" class="px-2.5 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-all flex items-center gap-1 active:scale-95 cursor-pointer" title="Nghe trợ lý AI đọc bài học">
-              <i class="fa-solid fa-volume-high text-xs text-indigo-600"></i>
-              <span>Nghe đọc</span>
             </button>
             
             <!-- View raw text modal trigger -->
