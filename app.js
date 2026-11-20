@@ -1322,6 +1322,30 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Đã bỏ bớt tài liệu khỏi danh sách gộp!', 'info');
   };
 
+  // Đóng / mở khung hướng dẫn sử dụng nhanh
+  window.toggleUserGuide = function() {
+    const guideSection = document.getElementById('user-guide-section');
+    const guideContent = document.getElementById('user-guide-content');
+    const toggleText = document.getElementById('guide-toggle-text');
+    const toggleIcon = document.getElementById('guide-toggle-icon');
+
+    if (!guideContent) return;
+
+    const isHidden = guideContent.classList.contains('hidden');
+    if (isHidden) {
+      guideContent.classList.remove('hidden');
+      if (toggleText) toggleText.textContent = 'Thu gọn';
+      if (toggleIcon) toggleIcon.className = 'fa-solid fa-chevron-up text-[10px]';
+      if (guideSection) {
+        guideSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    } else {
+      guideContent.classList.add('hidden');
+      if (toggleText) toggleText.textContent = 'Mở rộng';
+      if (toggleIcon) toggleIcon.className = 'fa-solid fa-chevron-down text-[10px]';
+    }
+  };
+
   // Hàm xử lý nạp nhiều file cùng một lúc (Word, PDF, Ảnh bài học)
   async function handleMultipleUploadedFiles(fileList) {
     if (!fileList || fileList.length === 0) return;
