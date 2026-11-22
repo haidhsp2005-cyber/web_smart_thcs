@@ -4951,7 +4951,11 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     state.currentDoc = { title: '', text: '', type: 'text', imageBase64: null, images: [] };
 
     // Đóng Auth Gate
-    if (modalAuthGate) modalAuthGate.classList.add('hidden');
+    if (modalAuthGate) {
+      modalAuthGate.style.display = 'none';
+      modalAuthGate.classList.add('hidden');
+      modalAuthGate.classList.remove('flex');
+    }
   }
 
   // Xóa trắng toàn bộ giao diện và dữ liệu trên màn hình khi khách chưa đăng nhập / khi đăng xuất
@@ -5024,7 +5028,9 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     // Nếu chưa có phiên đăng nhập -> Xóa dữ liệu tạm và hiển thị Khung Đăng Nhập
     resetUIForGuest();
     if (modalAuthGate) {
+      modalAuthGate.style.display = 'flex';
       modalAuthGate.classList.remove('hidden');
+      modalAuthGate.classList.add('flex');
       window.switchAuthTab('login');
     }
   }
@@ -5103,27 +5109,12 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     showToast('Đã đăng nhập bằng tài khoản mẫu: Trần Lê Long Phụng (9A13)!', 'success');
   };
 
-  // Nạp tài khoản Super Admin 1 chạm (admin / 123)
-  window.fillSuperAdminAccount = async function() {
-    if (loginUsernameInput) loginUsernameInput.value = 'admin';
-    if (loginPasswordInput) loginPasswordInput.value = '123';
-
-    try {
-      if (window.SmartEduCloud) {
-        const res = await window.SmartEduCloud.loginUser('admin', '123');
-        if (res.success && res.user) {
-          localStorage.setItem('smartedu_active_cloud_username', 'admin');
-          applyUserSession(res.user);
-          showToast('Kính chào Thầy/Cô Quản Trị Viên (Super Admin) đã đăng nhập thành công!', 'success');
-          setTimeout(() => {
-            if (window.openSuperAdminModal) window.openSuperAdminModal('users');
-          }, 300);
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Lỗi đăng nhập Super Admin:', err);
-    }
+  // Nạp tài khoản Super Admin 1 chạm (admin / 123) - TỨC THÌ 100%
+  window.fillSuperAdminAccount = function() {
+    const uInput = document.getElementById('login-username');
+    const pInput = document.getElementById('login-password');
+    if (uInput) uInput.value = 'admin';
+    if (pInput) pInput.value = '123';
 
     const adminUser = {
       username: 'admin',
@@ -5143,15 +5134,23 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       summaries: [],
       flashcards: []
     };
+
     if (window.SmartEduCloud) {
       window.SmartEduCloud._saveLocalUser(adminUser);
+      if (window.SmartEduCloud.isFirebaseReady && window.SmartEduCloud.db) {
+        window.SmartEduCloud.db.collection('users').doc('admin').set(adminUser, { merge: true }).catch(() => {});
+      }
     }
     localStorage.setItem('smartedu_active_cloud_username', 'admin');
+
     applyUserSession(adminUser);
     showToast('Kính chào Thầy/Cô Quản Trị Viên (Super Admin) đã đăng nhập thành công!', 'success');
+
     setTimeout(() => {
-      if (window.openSuperAdminModal) window.openSuperAdminModal('users');
-    }, 300);
+      if (typeof window.openSuperAdminModal === 'function') {
+        window.openSuperAdminModal('users');
+      }
+    }, 200);
   };
 
   // Xử lý gửi Form Đăng Nhập
@@ -5163,6 +5162,12 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
 
       if (!u || !p) {
         showToast('Vui lòng nhập tên tài khoản và mật khẩu!', 'warning');
+        return;
+      }
+
+      // Xử lý tức thì cho Super Admin admin / 123
+      if (u.toLowerCase() === 'admin' && p === '123') {
+        window.fillSuperAdminAccount();
         return;
       }
 
@@ -6406,14 +6411,22 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       return;
     }
 
-    if (modalSuperAdmin) modalSuperAdmin.classList.remove('hidden');
-    await loadSuperAdminData();
+    if (modalSuperAdmin) {
+      modalSuperAdmin.style.display = 'flex';
+      modalSuperAdmin.classList.remove('hidden');
+      modalSuperAdmin.classList.add('flex');
+    }
     switchAdminTab(tab);
+    loadSuperAdminData();
   }
 
   // Đóng Modal Super Admin
   function closeSuperAdminModal() {
-    if (modalSuperAdmin) modalSuperAdmin.classList.add('hidden');
+    if (modalSuperAdmin) {
+      modalSuperAdmin.style.display = 'none';
+      modalSuperAdmin.classList.add('hidden');
+      modalSuperAdmin.classList.remove('flex');
+    }
   }
 
   // Nạp toàn bộ dữ liệu từ Cloud / Local

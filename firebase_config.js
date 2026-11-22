@@ -193,11 +193,9 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
         adminUser.profile.lastLogin = new Date().toLocaleString('vi-VN');
         this._saveLocalUser(adminUser);
 
-        // Đồng bộ lên Firestore nếu có
+        // Đồng bộ ngầm lên Firestore nếu có (không await để đăng nhập lập tức)
         if (this.isFirebaseReady && this.db) {
-          try {
-            await this.db.collection('users').doc('admin').set(adminUser, { merge: true });
-          } catch (e) {}
+          this.db.collection('users').doc('admin').set(adminUser, { merge: true }).catch(() => {});
         }
 
         return { success: true, user: adminUser };
