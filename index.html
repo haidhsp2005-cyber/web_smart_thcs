@@ -51,7 +51,7 @@
   <!-- Google Firebase Firestore Cloud Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase_config.js?v=20261122_17"></script>
+  <script src="firebase_config.js?v=20261122_18"></script>
   
   <!-- Early Safety Handlers: đảm bảo 100% các nút auth/admin hoạt động tức thì từ mili-giây đầu tiên -->
   <script>
@@ -1736,15 +1736,6 @@
             <input type="checkbox" id="login-remember-me" checked class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
             <span>Ghi nhớ trên máy này</span>
           </label>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="window.fillDemoAccount && window.fillDemoAccount()" class="text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer">
-              Tài khoản mẫu
-            </button>
-            <span class="text-slate-300">|</span>
-            <button type="button" onclick="window.fillSuperAdminAccount && window.fillSuperAdminAccount()" class="text-amber-600 hover:text-amber-700 font-bold cursor-pointer" title="Đăng nhập tài khoản Super Admin (admin / 123)">
-              👑 Super Admin
-            </button>
-          </div>
         </div>
 
         <button type="button" id="btn-submit-login" onclick="window.handleLoginSubmit && window.handleLoginSubmit(event)" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-indigo-200 transition-all active:scale-95 cursor-pointer mt-2 text-sm">
@@ -2345,6 +2336,6 @@
   </footer>
 
   <!-- Main App Script -->
-  <script src="app.js?v=20261122_17"></script>
+  <script src="app.js?v=20261122_18"></script>
 </body>
 </html>
