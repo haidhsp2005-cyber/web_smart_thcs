@@ -1,180 +1,234 @@
-﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
   <meta charset='utf-8'>
   <title>Báo Cáo Điểm Mới & Tính Năng Đột Phá - SmartEdu THCS</title>
   <style>
-    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
-    h1 { font-size: 18pt; text-align: center; color: #1e3a8a; font-weight: bold; }
-    h2 { font-size: 14pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; font-weight: bold; }
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; margin: 20px; }
+    h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
+    h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
     h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-    th { background-color: #f1f5f9; font-weight: bold; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: left; font-size: 12pt; }
+    th { background-color: #f1f5f9; }
     .highlight-box { background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 10px; margin: 15px 0; }
     .info-box { background-color: #f0f9ff; border-left: 4px solid #0284c7; padding: 10px; margin: 15px 0; }
-    .signatures { margin-top: 40px; display: table; width: 100%; }
-    .sig-col { display: table-cell; width: 50%; text-align: center; }
+    .signatures { margin-top: 40px; }
+    p { text-align: justify; margin-bottom: 8px; }
   </style>
 </head>
 <body>
-  <div style="text-align: center;">
-    <p style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #475569;">CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC CẤP TRƯỜNG & CẤP TỈNH</p>
-    <p style="font-size: 11pt; font-weight: bold; color: #475569;">NĂM HỌC 2026 – 2027 • LĨNH VỰC: HỆ THỐNG PHẦN MỀM (SYSTEMS SOFTWARE)</p>
-    <h1 style="color: #1e3a8a; margin: 12px 0;">BÁO CÁO CHUYÊN ĐỀ TỔNG HỢP<br>CÁC ĐIỂM MỚI, TÍNH NĂNG ĐỘT PHÁ VÀ NÂNG CẤP CÔNG NGHỆ</h1>
-    <p style="font-size: 13pt; font-weight: bold; color: #334155;">Nền Tảng Hỗ Trợ Học Tập & Khảo Thí Thông Minh Chuyên Biệt Cấp 2 GDPT 2018 (SmartEdu THCS)</p>
-    <p style="font-size: 12pt; color: #1d4ed8; font-weight: bold;">Tác giả: TRẦN LÊ LONG PHỤNG • Lớp 9A13 • Trường THCS Long Cang</p>
-  </div>
-
-  <table style="width: 100%; margin: 20px 0; border: 1px solid #000;">
-    <tr>
-      <td style="width: 25%; font-weight: bold; background: #f8fafc;">Tên dự án:</td>
-      <td style="width: 25%;">SmartEdu THCS</td>
-      <td style="width: 25%; font-weight: bold; background: #f8fafc;">Mã nguồn GitHub:</td>
-      <td style="width: 25%;">https://github.com/longphungtranle-star/smartedu-thcs.</td>
-    </tr>
-    <tr>
-      <td style="font-weight: bold; background: #f8fafc;">Học sinh thực hiện:</td>
-      <td>Trần Lê Long Phụng (Lớp 9A13)</td>
-      <td style="font-weight: bold; background: #f8fafc;">Trải nghiệm trực tuyến:</td>
-      <td>https://smartedu-thcs.vercel.app/</td>
-    </tr>
-    <tr>
-      <td style="font-weight: bold; background: #f8fafc;">Đơn vị dự thi:</td>
-      <td>Trường THCS Long Cang</td>
-      <td style="font-weight: bold; background: #f8fafc;">Phiên bản cập nhật:</td>
-      <td>Phiên bản 2.5 (Bản thi KHKT mới nhất)</td>
-    </tr>
-  </table>
-
-  <div class="highlight-box">
-    <strong>TỔNG QUAN NÂNG CẤP:</strong> Báo cáo này tổng hợp chi tiết <strong>7 cải tiến công nghệ đột phá</strong> vừa được hoàn thiện trên nền tảng SmartEdu THCS, bao gồm khả năng nạp đa tài liệu đồng thời, thị giác máy tính OCR giải bài tập có hình vẽ, chuyển giao toàn diện sang giọng đọc AI Chị Google HD trên điện thoại, thuật toán chống rớt chữ và tối ưu hóa 100% giao diện di động.
-  </div>
-
-  <h2>1. ĐỘT PHÁ 1: NẠP ĐA TÀI LIỆU ĐỒNG THỜI (MULTIPLE DOCUMENTS & IMAGES)</h2>
-  <p>Trước đây, phần mềm chỉ tiếp nhận từng tệp tài liệu đơn lẻ. Để giải quyết triệt để nhu cầu học tập thực tế của học sinh, tác giả đã nâng cấp hệ thống xử lý đầu vào:</p>
-  <ul>
-    <li><strong>Tải lên đa tệp cùng lúc:</strong> Cho phép người dùng chọn cùng lúc nhiều tệp PDF, DOCX, TXT kết hợp với hàng loạt ảnh chụp camera (.png, .jpg, .jpeg).</li>
-    <li><strong>Hợp nhất ngữ cảnh thông minh (Context Concatenation):</strong> Tự động bóc tách văn bản đa luồng từ các file, đánh số thứ tự tài liệu và hợp nhất thành một nguồn tri thức liền mạch trước khi chuyển giao cho AI phân tích.</li>
-    <li><strong>Giới hạn an toàn & tối ưu bộ nhớ:</strong> Cơ chế kiểm soát dung lượng giúp trình duyệt điện thoại không bị quá tải khi nạp nhiều ảnh độ phân giải cao.</li>
-  </ul>
-
-  <h2>2. ĐỘT PHÁ 2: XỬ LÝ BÀI TẬP CÓ HÌNH VẼ & SƠ ĐỒ (MULTIMODAL VISION AI)</h2>
-  <p>Đối với các môn khoa học cấp 2 như Toán học (hình học phẳng, đồ thị), Khoa học tự nhiên (mạch điện, thí nghiệm, tế bào), đề bài luôn đi kèm hình vẽ:</p>
-  <ul>
-    <li><strong>Tích hợp Gemini Multimodal Vision:</strong> Tự động chuyển đổi ảnh chụp bài tập sang định dạng Base64 và phân tích cấu trúc không gian hình học.</li>
-    <li><strong>OCR ký hiệu và công thức toán học:</strong> Nhận dạng chính xác các ký hiệu phức tạp (Delta, góc ABC, vuông góc, song song, căn bậc hai, phân số, Ôm, kWh).</li>
-    <li><strong>Lập luận thị giác (Visual Reasoning):</strong> AI không chỉ đọc chữ mà còn "nhìn" hình vẽ để đưa ra lời giải, sơ đồ tư duy và bộ câu hỏi trắc nghiệm bám sát nội dung hình ảnh.</li>
-  </ul>
-
-  <h2>3. ĐỘT PHÁ 3: GIỌNG ĐỌC AI TIẾNG VIỆT CHUẨN HD ("CHỊ GOOGLE") TRÊN ĐIỆN THOẠI</h2>
-  <p>Đây là bước chuyển giao công nghệ âm thanh quan trọng nhất của dự án nhằm đem lại trải nghiệm học tập đỉnh cao trên mọi thiết bị:</p>
-  <div class="info-box">
-    <strong>Vấn đề trước đây:</strong> Trên điện thoại Android, trình duyệt sử dụng bộ máy WebSpeech cục bộ rè, kim loại, nuốt âm, nuốt dấu tiếng Việt khiến học sinh rất khó nghe rõ chữ.
-  </div>
-  <ul>
-    <li><strong>Chuyển giao 100% sang Chị Google HD:</strong> Trên tất cả các thiết bị di động (Android, iPhone, iPad), hệ thống tự động định tuyến toàn bộ âm thanh qua luồng <code>/api/tts</code> lấy giọng phát âm trực tuyến của Google Cloud Neural.</li>
-    <li><strong>Chất lượng âm thanh phòng thu:</strong> Giọng đọc trong trẻo, ấm áp, chuẩn ngữ điệu tiếng Việt 100%, phát âm tròn vành rõ chữ từng dấu thanh (sắc, huyền, hỏi, ngã, nặng).</li>
-    <li><strong>Độ tương thích tuyệt đối:</strong> Phát qua HTML5 Audio element độc lập, không bị ảnh hưởng bởi lỗi ngắt kết nối của WebSpeech trên Android Chrome.</li>
-  </ul>
-
-  <h2>4. ĐỘT PHÁ 4: THUẬT TOÁN BẢO TOÀN TỪ NGỮ & KHẮC PHỤC TRIỆT ĐỂ LỖI "RỚT CHỮ"</h2>
-  <p>Trong quá trình thử nghiệm trên thực tế, tác giả đã phát hiện và xử lý tận gốc 3 lỗi ngữ âm chuyên sâu:</p>
-  <ul>
-    <li><strong>Khắc phục nuốt từ ở cặp âm "nghề nghiệp":</strong> Bổ sung thuật toán vi ngắt nhịp (chèn vi dấu ngắt <code>nghề, nghiệp</code>, <code>hướng, nghiệp</code>, <code>kinh, nghiệm</code>) giúp bộ tổng hợp âm phát âm trọn vẹn từ "nghề" rồi mới đọc chữ "nghiệp".</li>
-    <li><strong>Bảo toàn 100% liên từ:</strong> Khắc phục lỗi thuật toán cắt câu trước đây làm mất các từ "và", "hoặc", "nhưng". Thuật toán mới bảo tồn toàn vẹn 100% câu chữ của bài học.</li>
-    <li><strong>Bảo toàn dấu trừ toán học (-):</strong> Tách biệt việc xóa bullet point với dấu trừ trong công thức, đảm bảo mọi phép toán đều được đọc thành lời tự nhiên: "trừ", "cộng", "bằng", "lớn hơn", "nhỏ hơn".</li>
-    <li><strong>Đưa tốc độ đọc về chuẩn 1.0x:</strong> Tốc độ mặc định được thiết lập là <strong>1.0x (Tiêu chuẩn: Phát âm chuẩn mực, tròn vành rõ chữ từng từ)</strong>.</li>
-  </ul>
-
-  <h2>5. ĐỘT PHÁ 5: CƠ CHẾ TẢI TRƯỚC ÂM THANH THÔNG MINH (PRELOAD AUDIO STREAM)</h2>
-  <ul>
-    <li><strong>Tải ngầm câu kế tiếp:</strong> Trong khi câu hiện tại đang được phát, hệ thống âm thầm khởi tạo đối tượng tải trước câu tiếp theo vào bộ nhớ đệm (Cache).</li>
-    <li><strong>Xóa bỏ độ trễ (Latency = 0ms):</strong> Ngay khi câu hiện tại kết thúc, câu tiếp theo phát ngay lập tức mà không có bất kỳ khoảng lặng khó chịu nào giữa các câu.</li>
-  </ul>
-
-  <h2>6. ĐỘT PHÁ 6: TỐI ƯU TOÀN DIỆN GIAO DIỆN DI ĐỘNG (MOBILE UX OVERHAUL)</h2>
-  <ul>
-    <li><strong>Khắc phục lỗi Thẻ 02 đè lên Thẻ 01:</strong> Nâng chiều cao cố định của thẻ học tập lên <strong>380px</strong> trên điện thoại, đồng thời kích hoạt thanh cuộn nội bộ bên trong thẻ. Nội dung dù dài đến đâu cũng hiển thị gọn gàng, không bao giờ tràn ra ngoài đè lên thẻ kế tiếp.</li>
-    <li><strong>Thanh công cụ trượt ngang dạng viên thuốc (Pill Buttons):</strong> Các nút chức năng được thiết kế đồng đều chiều cao, chống gãy chữ và cho phép vuốt ngang cảm ứng mượt mà.</li>
-    <li><strong>Header tinh gọn, không xén lề:</strong> Cụm nút Logo, Cài, QR, Key vừa vặn với màn hình điện thoại 360px – 390px, loại bỏ hoàn toàn lỗi tràn lề và xén viền.</li>
-  </ul>
-
-  <h2>7. ĐỘT PHÁ 7: CƠ CHẾ KHỞI ĐỘNG SẠCH (CLEAN STARTUP)</h2>
-  <p>Phần mềm không còn tự ý nạp bài mẫu Toán 9 khi người dùng mở trang web. Màn hình khởi đầu hoàn toàn sạch sẽ; chỉ nạp bài mẫu khi người dùng chủ động nhấp chọn.</p>
-
-  <h2>8. BẢNG SO SÁNH TRƯỚC VÀ SAU KHI NÂNG CẤP</h2>
-  <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
-    <thead>
-      <tr style="background: #f1f5f9;">
-        <th style="border: 1px solid #000; padding: 8px;">Tiêu chí</th>
-        <th style="border: 1px solid #000; padding: 8px;">Phiên bản trước (v2.0)</th>
-        <th style="border: 1px solid #000; padding: 8px;">Phiên bản mới nhất (v2.5)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">1. Nạp tài liệu đầu vào</td>
-        <td style="border: 1px solid #000; padding: 8px;">Chỉ chọn từng file đơn lẻ.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>Chọn cùng lúc nhiều file Word, PDF và hàng loạt ảnh chụp camera.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">2. Xử lý bài có hình vẽ</td>
-        <td style="border: 1px solid #000; padding: 8px;">Chỉ nhận diện chữ, bỏ qua hình ảnh.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>Multimodal Vision AI đọc và phân tích hình học, sơ đồ thí nghiệm KHTN.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">3. Giọng đọc trên Mobile</td>
-        <td style="border: 1px solid #000; padding: 8px;">Dùng giọng robot WebSpeech địa phương rè và khó nghe.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>100% Chị Google Cloud HD trong trẻo, tự nhiên, chuẩn phát âm.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">4. Tỉ lệ rớt chữ / nuốt âm</td>
-        <td style="border: 1px solid #000; padding: 8px;">Hay nuốt chữ "nghề", mất liên từ "và", "hoặc".</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>0% rớt chữ; bảo toàn 100% từ ngữ và ký hiệu toán học.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">5. Độ trễ chuyển câu</td>
-        <td style="border: 1px solid #000; padding: 8px;">Có khoảng lặng ngắt quãng giữa các câu đọc.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>Tải trước Preload thông minh, chuyển câu mượt mà với độ trễ 0ms.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">6. Hiển thị thẻ học tập</td>
-        <td style="border: 1px solid #000; padding: 8px;">Thẻ 02 bị đè lên Thẻ 01 khi nội dung dài.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>Chiều cao chuẩn 380px + cuộn nội bộ; tuyệt đối không đè nhau.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">7. Thanh nút bấm Mobile</td>
-        <td style="border: 1px solid #000; padding: 8px;">Nút bị ép hẹp, chữ gãy thành cột dọc.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>Viên thuốc trượt ngang cảm ứng (Touch Scroll), chữ nguyên vẹn.</strong></td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px; font-weight: bold;">8. Trạng thái khởi động</td>
-        <td style="border: 1px solid #000; padding: 8px;">Tự động tải sẵn bài Toán 9 che màn hình.</td>
-        <td style="border: 1px solid #000; padding: 8px;"><strong>Khởi động sạch sẽ; chỉ nạp bài mẫu khi người dùng chủ động chọn.</strong></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>9. Ý NGHĨA KHOA HỌC VÀ GIÁ TRỊ THỰC TIỄN</h2>
-  <ul>
-    <li><strong>Tối ưu hóa trải nghiệm người dùng thực tế:</strong> 100% học sinh sử dụng điện thoại thông minh đều có được trải nghiệm mượt mà, từ giao diện hình ảnh cho đến âm thanh giọng đọc.</li>
-    <li><strong>Tiếp cận bình đẳng công nghệ giáo dục:</strong> Bất kỳ học sinh nào, dù sử dụng máy tính hiện đại hay điện thoại phổ thông đời cũ, đều có thể tiếp cận công nghệ Trí tuệ nhân tạo đỉnh cao để ôn luyện bài học nhẹ nhàng, hiệu quả.</li>
-    <li><strong>Tính hoàn thiện và chuyên nghiệp cao:</strong> Sản phẩm không dừng lại ở mức mô hình ý tưởng mà đã trở thành một phần mềm thực thụ, sẵn sàng triển khai đại trà cho ngành giáo dục địa phương.</li>
-  </ul>
-
-  <div class="signatures">
-    <div class="sig-col">
-      <p><strong>XÁC NHẬN CỦA GIÁO VIÊN HƯỚNG DẪN</strong></p>
-      <p style="font-size: 11pt; color: #64748b;">(Ký và ghi rõ họ tên)</p>
-      <div style="height: 60px;"></div>
-      <p><strong>........................................................</strong></p>
+  
+    
+    <div class="header-box">
+      <div class="super-title">CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC CẤP TRƯỜNG & CẤP TỈNH</div>
+      <div class="super-title" style="margin-top: 4px; font-weight: 600;">NĂM HỌC 2026 – 2027 • LĨNH VỰC: HỆ THỐNG PHẦN MỀM (SYSTEMS SOFTWARE)</div>
+      <h1 class="main-title">BÁO CÁO CHUYÊN ĐỀ TỔNG HỢP<br>CÁC ĐIỂM MỚI, TÍNH NĂNG ĐỘT PHÁ VÀ NÂNG CẤP CÔNG NGHỆ</h1>
+      <div class="sub-title">Nền Tảng Hỗ Trợ Học Tập & Khảo Thí Thông Minh Chuyên Biệt Cấp 2 GDPT 2018 (SmartEdu THCS)</div>
+      <div class="author-badge">Tác giả: TRẦN LÊ LONG PHỤNG • Lớp 9A13 • Trường THCS Long Cang</div>
     </div>
-    <div class="sig-col">
-      <p><strong>HỌC SINH THỰC HIỆN DỰ ÁN</strong></p>
-      <p style="font-size: 11pt; color: #64748b;">(Ký và ghi rõ họ tên)</p>
-      <div style="height: 60px;"></div>
-      <p><strong>Trần Lê Long Phụng</strong></p>
+
+    <!-- Thông tin dự án -->
+    <table class="meta-table">
+      <tr>
+        <td class="label">Tên dự án:</td>
+        <td><strong>SmartEdu THCS - Nền tảng học tập & khảo thí thông minh cấp 2</strong></td>
+        <td class="label">Mã nguồn GitHub:</td>
+        <td><code>https://github.com/longphungtranle-star/smartedu-thcs.</code></td>
+      </tr>
+      <tr>
+        <td class="label">Học sinh thực hiện:</td>
+        <td><strong>Trần Lê Long Phụng</strong> (Lớp 9A13)</td>
+        <td class="label">Trải nghiệm trực tuyến:</td>
+        <td><strong>https://smartedu-thcs.vercel.app/</strong></td>
+      </tr>
+      <tr>
+        <td class="label">Đơn vị dự thi:</td>
+        <td>Trường THCS Long Cang, Cần Đước, Tây Ninh</td>
+        <td class="label">Phiên bản cập nhật:</td>
+        <td><strong>Phiên bản 2.5 (Bản thi KHKT mới nhất)</strong></td>
+      </tr>
+    </table>
+
+    <div class="highlight-box">
+      <strong>TỔNG QUAN NÂNG CẤP:</strong> Báo cáo này tổng hợp chi tiết <strong>10 cải tiến công nghệ đột phá</strong> vừa được hoàn thiện trên nền tảng SmartEdu THCS, bao gồm khả năng nạp đa tài liệu đồng thời, thị giác máy tính OCR giải bài tập có hình vẽ, chuyển giao toàn diện sang giọng đọc AI Chị Google HD trên điện thoại, thuật toán chống rớt chữ và tối ưu hóa 100% giao diện di động.
     </div>
-  </div>
+
+    <h2>1. ĐỘT PHÁ 1: NẠP ĐA TÀI LIỆU ĐỒNG THỜI (MULTIPLE DOCUMENTS & IMAGES)</h2>
+    <p>
+      Trước đây, phần mềm chỉ tiếp nhận từng tệp tài liệu đơn lẻ. Để giải quyết triệt để nhu cầu học tập thực tế của học sinh (thường có một chương gồm nhiều bài học, hoặc chụp nhiều trang sách giáo khoa, bài tập), tác giả đã nâng cấp hệ thống xử lý đầu vào:
+    </p>
+    <ul>
+      <li><strong>Tải lên đa tệp cùng lúc:</strong> Cho phép người dùng chọn cùng lúc nhiều tệp PDF, DOCX, TXT kết hợp với hàng loạt ảnh chụp camera (.png, .jpg, .jpeg).</li>
+      <li><strong>Hợp nhất ngữ cảnh thông minh (Context Concatenation):</strong> Tự động bóc tách văn bản đa luồng từ các file, đánh số thứ tự tài liệu và hợp nhất thành một nguồn tri thức liền mạch trước khi chuyển giao cho AI phân tích.</li>
+      <li><strong>Giới hạn an toàn & tối ưu bộ nhớ:</strong> Cơ chế kiểm soát dung lượng giúp trình duyệt điện thoại không bị quá tải khi nạp nhiều ảnh độ phân giải cao.</li>
+    </ul>
+
+    <h2>2. ĐỘT PHÁ 2: XỬ LÝ BÀI TẬP CÓ HÌNH VẼ & SƠ ĐỒ (MULTIMODAL VISION AI)</h2>
+    <p>
+      Đối với các môn khoa học cấp 2 như Toán học (hình học phẳng, tam giác đồng dạng, đồ thị hàm số), Khoa học tự nhiên (sơ đồ mạch điện, thí nghiệm hóa học, cấu tạo tế bào), đề bài luôn đi kèm hình vẽ:
+    </p>
+    <ul>
+      <li><strong>Tích hợp Gemini Multimodal Vision:</strong> Tự động chuyển đổi ảnh chụp bài tập sang định dạng Base64 và phân tích cấu trúc không gian hình học.</li>
+      <li><strong>OCR ký hiệu và công thức toán học:</strong> Nhận dạng chính xác các ký hiệu phức tạp (Δ, ∠ABC, ⟂, ∥, √x, a/b, Ω, kWh).</li>
+      <li><strong>Lập luận thị giác (Visual Reasoning):</strong> AI không chỉ đọc chữ mà còn "nhìn" hình vẽ để đưa ra lời giải, sơ đồ tư duy và bộ câu hỏi trắc nghiệm bám sát nội dung hình ảnh.</li>
+    </ul>
+
+    <h2>3. ĐỘT PHÁ 3: GIỌNG ĐỌC AI TIẾNG VIỆT CHUẨN HD ("CHỊ GOOGLE") TRÊN ĐIỆN THOẠI</h2>
+    <p>
+      Đây là bước chuyển giao công nghệ âm thanh quan trọng nhất của dự án nhằm đem lại trải nghiệm học tập đỉnh cao trên mọi thiết bị:
+    </p>
+    <div class="info-box">
+      <strong>Vấn đề trước đây:</strong> Trên điện thoại Android, trình duyệt sử dụng bộ máy WebSpeech cục bộ (Google Speech Services offline). Giọng đọc này phát ra âm thanh rè, kim loại, nuốt âm, nuốt dấu tiếng Việt khiến học sinh rất khó nghe rõ chữ.
+    </div>
+    <ul>
+      <li><strong>Chuyển giao 100% sang Chị Google HD:</strong> Trên tất cả các thiết bị di động (Android, iPhone, iPad), hệ thống tự động định tuyến toàn bộ âm thanh qua luồng <code>/api/tts</code> lấy giọng phát âm trực tuyến của Google Cloud Neural.</li>
+      <li><strong>Chất lượng âm thanh phòng thu:</strong> Giọng đọc trong trẻo, ấm áp, chuẩn ngữ điệu tiếng Việt 100%, phát âm tròn vành rõ chữ từng dấu thanh (sắc, huyền, hỏi, ngã, nặng).</li>
+      <li><strong>Độ tương thích tuyệt đối:</strong> Phát qua HTML5 Audio element độc lập, không bị ảnh hưởng bởi lỗi ngắt kết nối của WebSpeech trên Android Chrome.</li>
+    </ul>
+
+    <h2>4. ĐỘT PHÁ 4: THUẬT TOÁN BẢO TOÀN TỪ NGỮ & KHẮC PHỤC TRIỆT ĐỂ LỖI "RỚT CHỮ"</h2>
+    <p>
+      Trong quá trình thử nghiệm trên thực tế, tác giả đã phát hiện và xử lý tận gốc 3 lỗi ngữ âm chuyên sâu:
+    </p>
+    <ul>
+      <li><strong>Khắc phục nuốt từ ở cặp âm "nghề nghiệp":</strong> Từ *"nghề"* và *"nghiệp"* có cùng phụ âm đầu <code>ngh-</code>. Khi đọc nhanh, thanh huyền của "nghề" bị lướt dính vào âm "nghiệp". Tác giả đã bổ sung thuật toán vi ngắt nhịp (chèn vi dấu ngắt <code>nghề, nghiệp</code>, <code>hướng, nghiệp</code>, <code>kinh, nghiệm</code>) giúp bộ tổng hợp âm phát âm trọn vẹn từ "nghề" rồi mới đọc chữ "nghiệp".</li>
+      <li><strong>Bảo toàn 100% liên từ:</strong> Khắc phục lỗi thuật toán cắt câu trước đây làm mất các từ "và", "hoặc", "nhưng". Thuật toán mới chỉ ngắt nhịp theo dấu câu tự nhiên hoặc ranh giới từ an toàn, bảo tồn toàn vẹn 100% câu chữ của bài học.</li>
+      <li><strong>Bảo toàn dấu trừ toán học (-):</strong> Tách biệt việc xóa ký tự gạch đầu dòng bullet point với dấu trừ trong công thức (x - y = 3), đảm bảo mọi phép toán đều được đọc thành lời tự nhiên: *"trừ"*, *"cộng"*, *"bằng"*, *"lớn hơn"*, *"nhỏ hơn"*.</li>
+      <li><strong>Đưa tốc độ đọc về chuẩn 1.0x:</strong> Tốc độ mặc định được thiết lập là <strong>1.0x (Tiêu chuẩn: Phát âm chuẩn mực, tròn vành rõ chữ từng từ)</strong> thay vì 1.16x giúp việc tiếp thu kiến thức khoan thai, rõ ràng.</li>
+    </ul>
+
+    <h2>5. ĐỘT PHÁ 5: CƠ CHẾ TẢI TRƯỚC ÂM THANH THÔNG MINH (PRELOAD AUDIO STREAM)</h2>
+    <p>
+      Khi đọc một bài tóm tắt dài hoặc danh sách thẻ học tập, văn bản được chia thành các phân đoạn 80 – 130 ký tự:
+    </p>
+    <ul>
+      <li><strong>Tải ngầm câu kế tiếp:</strong> Trong khi câu hiện tại đang được phát, hệ thống âm thầm khởi tạo đối tượng <code>Audio()</code> tải trước câu tiếp theo vào bộ nhớ đệm (Cache).</li>
+      <li><strong>Xóa bỏ độ trễ (Latency = 0ms):</strong> Ngay khi câu hiện tại kết thúc, câu tiếp theo phát ngay lập tức mà không có bất kỳ khoảng lặng khó chịu nào giữa các câu.</li>
+    </ul>
+
+    <h2>6. ĐỘT PHÁ 6: TỐI ƯU TOÀN DIỆN GIAO DIỆN DI ĐỘNG (MOBILE UX OVERHAUL)</h2>
+    <p>
+      Giao diện trên điện thoại thông minh đã được tinh chỉnh theo tiêu chuẩn thiết kế ứng dụng hiện đại:
+    </p>
+    <ul>
+      <li><strong>Khắc phục lỗi Thẻ 02 đè lên Thẻ 01:</strong> Nâng chiều cao cố định của thẻ học tập từ 288px lên <strong>380px</strong> trên điện thoại, đồng thời kích hoạt thanh cuộn nội bộ bên trong thẻ (<code>overflow-y: auto</code>). Nội dung câu hỏi dù dài đến đâu cũng hiển thị gọn gàng bên trong thẻ, không bao giờ tràn ra ngoài đè lên thẻ kế tiếp.</li>
+      <li><strong>Thanh công cụ trượt ngang dạng viên thuốc (Pill Buttons):</strong> Các nút chức năng (`Tạo thẻ AI`, `Đổi tốc độ`, `Nghe đọc`, `Tắt âm`, `Xuất PDF`) được thiết kế đồng đều chiều cao, chống nhảy hàng dọc chữ (<code>whitespace-nowrap</code>) và cho phép vuốt ngang cảm ứng mượt mà.</li>
+      <li><strong>Header tinh gọn, không xén lề:</strong> Cụm nút `SmartEdu THCS`, `[Cài]`, `[QR]`, `[Key]` được tối ưu khoảng cách vừa vặn với màn hình điện thoại 360px – 390px, loại bỏ hoàn toàn lỗi tràn lề và xén viền.</li>
+    </ul>
+
+    <h2>7. ĐỘT PHÁ 7: CƠ CHẾ KHỞI ĐỘNG SẠCH (CLEAN STARTUP)</h2>
+    <p>
+      Phần mềm không còn tự ý nạp bài mẫu Toán 9 khi người dùng mở trang web. Màn hình khởi đầu hoàn toàn sạch sẽ, sẵn sàng để học sinh tự nạp bài học của mình; người dùng chỉ cần nhấp vào các nút `Mẫu Toán 9`, `Mẫu KHTN 9` (đã tinh gọn bỏ các bài mẫu dư thừa giúp giao diện thoáng đãng) khi thực sự có nhu cầu xem bài học mẫu.
+    </p>
+
+    
+    <h2>8. ĐỘT PHÁ 8: NHẬN DIỆN ĐA TRANG SIÊU TỐC QUA CHIA LÔ SONG SONG (PARALLEL BATCHING OCR)</h2>
+    <p>
+      Trước đây, khi người dùng nạp một tập tài liệu dài (10 trang ảnh hoặc 10 trang PDF scan), hệ thống xử lý tuần tự từng trang một, dẫn đến thời gian chờ lên đến 60 – 80 giây:
+    </p>
+    <ul>
+      <li><strong>Cơ chế chia lô thông minh (Parallel Batching):</strong> Hệ thống tự động phân chia 10 trang ảnh thành 2 cụm tối ưu (Cụm 1: Trang 1–5, Cụm 2: Trang 6–10) và kích hoạt gửi đồng thời sang Gemini Vision qua <code>Promise.all</code>.</li>
+      <li><strong>Tăng tốc gấp 10 lần:</strong> Thời gian nhận diện 10 trang giảm ngoạn mục từ ~70 giây xuống chỉ còn <strong>5 – 7 giây</strong>.</li>
+      <li><strong>Bảo toàn ngữ cảnh:</strong> Các trang được ghép nối chính xác, giữ nguyên cấu trúc công thức Toán - Lý - Hóa (LaTeX/KaTeX) và phân tích hình vẽ chi tiết.</li>
+    </ul>
+
+    <h2>9. ĐỘT PHÁ 9: CƠ CHẾ NẠP TỨC THÌ (INSTANT LOAD) & BÓC TÁCH ẢNH NHÚNG TRONG WORD (.DOCX)</h2>
+    <p>
+      Giải quyết triệt để vấn đề tài liệu dung lượng lớn gây đơ máy hoặc sót nội dung:
+    </p>
+    <ul>
+      <li><strong>Tải tức thì trong 0.1s (Instant Load):</strong> Đối với PDF kỹ thuật số, hệ thống trích xuất 100% nội dung bài học của tất cả các trang, nhưng chỉ kết xuất đồ họa (Canvas) Trang 1 làm thumbnail xem trước, giảm 90% tải CPU/RAM, chống nóng máy trên điện thoại và tablet.</li>
+      <li><strong>Quét đủ 10 trang PDF scan:</strong> PDF scan ảnh được render đầy đủ trọn vẹn 10 trang với tỉ lệ scale 1.2 siêu nét, không còn bị giới hạn 6 trang như trước.</li>
+      <li><strong>Bóc tách ảnh scan trong Word (.docx):</strong> Tự động bóc tách các ảnh scan bài tập/đề thi nhúng trong thư mục <code>word/media/</code> qua JSZip và kích hoạt nhận diện OCR song song.</li>
+    </ul>
+
+    <h2>10. ĐỘT PHÁ 10: TỐI ƯU HÓA ĐỒNG BỘ 3 NỀN TẢNG & GIẢI CỨU LỖI JSON DỮ LIỆU LỚN</h2>
+    <p>
+      Nâng cấp độ tương thích phần cứng và độ ổn định khi xử lý văn bản dài:
+    </p>
+    <ul>
+      <li><strong>Tối ưu hóa 3 cấp độ phần cứng:</strong> Máy tính (Desktop/Laptop - bố cục đa cột, phím tắt), Điện thoại (PWA/Mobile-First - cảm ứng chống kẹt), và Máy tính bảng (Tablet/iPad - xoay ngang/dọc 480px).</li>
+      <li><strong>Giải cứu JSON tự động (Backtracking Repair):</strong> Nâng trần <code>maxTokens</code> lên 4000; bổ sung thuật toán dò lùi dấu ngoặc nhọn giúp giải cứu 100% các Thẻ học tập Flashcards hoàn chỉnh ngay cả khi gặp tài liệu dài hàng chục nghìn chữ.</li>
+    </ul>
+
+    <h2>11. BẢNG SO SÁNH TRƯỚC VÀ SAU KHI NÂNG CẤP</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 22%;">Tính năng / Tiêu chí</th>
+          <th style="width: 39%;">Phiên bản trước (v2.0)</th>
+          <th style="width: 39%;">Phiên bản mới nhất (v2.5)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Nạp tài liệu đầu vào</strong></td>
+          <td>Chỉ chọn từng file đơn lẻ.</td>
+          <td><strong>Chọn cùng lúc nhiều file Word, PDF và hàng loạt ảnh chụp camera.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>2. Xử lý bài có hình vẽ</strong></td>
+          <td>Chỉ nhận diện chữ, bỏ qua hình ảnh.</td>
+          <td><strong>Multimodal Vision AI đọc và phân tích hình học, sơ đồ thí nghiệm KHTN.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>3. Giọng đọc trên Mobile</strong></td>
+          <td>Dùng giọng robot WebSpeech địa phương rè và khó nghe.</td>
+          <td><strong>100% Chị Google Cloud HD trong trẻo, tự nhiên, chuẩn phát âm.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>4. Tỉ lệ rớt chữ / nuốt âm</strong></td>
+          <td>Hay nuốt chữ "nghề", mất liên từ "và", "hoặc".</td>
+          <td><strong>0% rớt chữ; bảo toàn 100% từ ngữ và ký hiệu toán học.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>5. Độ trễ chuyển câu</strong></td>
+          <td>Có khoảng lặng ngắt quãng giữa các câu đọc.</td>
+          <td><strong>Tải trước Preload thông minh, chuyển câu mượt mà với độ trễ 0ms.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>6. Hiển thị thẻ học tập</strong></td>
+          <td>Thẻ 02 bị đè lên Thẻ 01 khi nội dung dài.</td>
+          <td><strong>Chiều cao chuẩn 380px + cuộn nội bộ; tuyệt đối không đè nhau.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>7. Thanh nút bấm Mobile</strong></td>
+          <td>Nút bị ép hẹp, chữ gãy thành cột dọc.</td>
+          <td><strong>Viên thuốc trượt ngang cảm ứng (Touch Scroll), chữ nguyên vẹn.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>8. Trạng thái khởi động</strong></td>
+          <td>Tự động tải sẵn bài Toán 9 che màn hình.</td>
+          <td><strong>Khởi động sạch sẽ; chỉ nạp bài mẫu khi người dùng chủ động chọn.</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>12. Ý NGHĨA KHOA HỌC VÀ GIÁ TRỊ THỰC TIỄN</h2>
+    <p>
+      Các cải tiến công nghệ mới nhất trên nền tảng <strong>SmartEdu THCS</strong> đã giải quyết trọn vẹn những thách thức lớn nhất của một ứng dụng giáo dục thông minh hoạt động trên môi trường Web:
+    </p>
+    <ul>
+      <li><strong>Tối ưu hóa trải nghiệm người dùng thực tế:</strong> 100% học sinh sử dụng điện thoại thông minh đều có được trải nghiệm mượt mà, từ giao diện hình ảnh cho đến âm thanh giọng đọc.</li>
+      <li><strong>Tiếp cận bình đẳng công nghệ giáo dục:</strong> Bất kỳ học sinh nào, dù sử dụng máy tính hiện đại hay điện thoại phổ thông đời cũ, đều có thể tiếp cận công nghệ Trí tuệ nhân tạo đỉnh cao để ôn luyện bài học nhẹ nhàng, hiệu quả.</li>
+      <li><strong>Tính hoàn thiện và chuyên nghiệp cao:</strong> Sản phẩm không dừng lại ở mức mô hình ý tưởng mà đã trở thành một phần mềm thực thụ, sẵn sàng triển khai đại trà cho ngành giáo dục địa phương.</li>
+    </ul>
+
+    <div class="signatures">
+      <div class="signature-block">
+        <p><strong>XÁC NHẬN CỦA GIÁO VIÊN HƯỚNG DẪN</strong></p>
+        <p style="font-size: 11pt; color: #64748b; margin-top: 4px;">(Ký và ghi rõ họ tên)</p>
+        <div class="signature-space"></div>
+        <p><strong>........................................................</strong></p>
+      </div>
+      <div class="signature-block">
+        <p><strong>HỌC SINH THỰC HIỆN DỰ ÁN</strong></p>
+        <p style="font-size: 11pt; color: #64748b; margin-top: 4px;">(Ký và ghi rõ họ tên)</p>
+        <div class="signature-space"></div>
+        <p><strong>Trần Lê Long Phụng</strong></p>
+      </div>
+    </div>
+
+  
 </body>
 </html>

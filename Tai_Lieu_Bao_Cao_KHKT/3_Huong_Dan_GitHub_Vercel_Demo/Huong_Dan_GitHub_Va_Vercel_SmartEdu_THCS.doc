@@ -1,28 +1,23 @@
-﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
   <meta charset='utf-8'>
-  <title>Huong Dan GitHub Vercel Demo KHKT</title>
+  <title>Hướng Dẫn GitHub & Vercel Demo KHKT - SmartEdu THCS</title>
   <style>
-    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; margin: 20px; }
     h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
     h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
-    h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; }
+    h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: left; font-size: 12pt; }
     th { background-color: #f1f5f9; }
-    .header-box { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #cbd5e1; }
-    .super-title { font-size: 12pt; font-weight: bold; text-transform: uppercase; color: #64748b; }
-    .main-title { font-size: 20pt; font-weight: bold; color: #1e3a8a; margin: 10px 0; }
-    .sub-title { font-size: 13pt; font-weight: 600; color: #334155; }
-    .info-card { border: 1px solid #cbd5e1; padding: 12px; background: #f8fafc; margin-bottom: 20px; font-size: 12pt; }
-    .step-box { border-left: 3px solid #0284c7; background: #f0f9ff; padding: 10px; margin: 15px 0; }
-    .tip-box { border-left: 3px solid #16a34a; background: #f0fdf4; padding: 10px; margin: 15px 0; }
-    .dialogue-box { border-left: 3px solid #2563eb; background: #eff6ff; padding: 10px; margin: 15px 0; }
-    .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; font-size: 11pt; white-space: pre-wrap; }
+    .highlight-box { background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 10px; margin: 15px 0; }
+    .info-box { background-color: #f0f9ff; border-left: 4px solid #0284c7; padding: 10px; margin: 15px 0; }
+    .signatures { margin-top: 40px; }
+    p { text-align: justify; margin-bottom: 8px; }
   </style>
 </head>
 <body>
-
+  
     
     <div class="header-box">
       <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường & Cấp Tỉnh</div>

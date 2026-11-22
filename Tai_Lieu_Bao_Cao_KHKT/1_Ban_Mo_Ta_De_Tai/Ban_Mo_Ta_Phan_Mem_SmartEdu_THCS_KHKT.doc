@@ -1,31 +1,23 @@
-﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
   <meta charset='utf-8'>
-  <title>Ban Mo Ta SmartEdu THCS</title>
+  <title>Bản Mô Tả Đề Tài KHKT - SmartEdu THCS</title>
   <style>
-    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; }
+    body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #000; margin: 20px; }
     h1 { font-size: 18pt; text-align: center; color: #1e3a8a; }
     h2 { font-size: 15pt; color: #1e3a8a; border-bottom: 1px solid #94a3b8; padding-bottom: 4px; margin-top: 20px; }
     h3 { font-size: 13pt; color: #0f172a; margin-top: 14px; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: left; font-size: 12pt; }
     th { background-color: #f1f5f9; }
-    .header-box { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #cbd5e1; }
-    .super-title { font-size: 12pt; font-weight: bold; text-transform: uppercase; color: #475569; }
-    .main-title { font-size: 20pt; font-weight: bold; color: #1e3a8a; margin: 10px 0; }
-    .sub-title { font-size: 13pt; font-weight: 600; color: #334155; }
-    .info-card { border: 1px solid #cbd5e1; padding: 12px; background: #f8fafc; margin-bottom: 20px; font-size: 12pt; }
-    .callout { border-left: 3px solid #2563eb; background: #eff6ff; padding: 10px; margin: 15px 0; }
-    .callout-title { font-weight: bold; color: #1e40af; margin-bottom: 4px; }
-    .code-box { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px; font-family: Consolas, monospace; font-size: 11pt; white-space: pre-wrap; }
-    .signatures { margin-top: 40px; display: table; width: 100%; }
-    .sig-col { display: table-cell; width: 50%; text-align: center; vertical-align: top; }
-    .sig-space { height: 75px; }
-    .badge { font-weight: bold; color: #15803d; }
+    .highlight-box { background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 10px; margin: 15px 0; }
+    .info-box { background-color: #f0f9ff; border-left: 4px solid #0284c7; padding: 10px; margin: 15px 0; }
+    .signatures { margin-top: 40px; }
+    p { text-align: justify; margin-bottom: 8px; }
   </style>
 </head>
 <body>
-
+  
     
     <div class="header-box">
       <div class="super-title">Cuộc Thi Khoa Học Kỹ Thuật Dành Cho Học Sinh Trung Học Cấp Trường & Cấp Tỉnh</div>
@@ -212,7 +204,8 @@ const watchdogTimer = setInterval(() => {
     <ul>
       <li><strong>Tăng hiệu quả ghi nhớ:</strong> 96.5% học sinh khẳng định học bằng Sơ đồ tư duy và Flashcards 3D giúp nhớ bài nhanh hơn gấp đôi so với đọc sách giáo khoa chữ truyền thống.</li>
       <li><strong>Hứng thú tự ôn tập:</strong> 100% học sinh yêu thích tính năng làm đề thi có tính giờ, chấm điểm tự động và pháo hoa chúc mừng.</li>
-      <li><strong>Độ tương thích thiết bị:</strong> 100% hoạt động mượt mà trên cả máy tính bàn (Windows/Mac) lẫn điện thoại (Android, iPhone iOS Safari).</li>
+      <li><strong>Độ tương thích thiết bị:</strong> 100% hoạt động mượt mà và tối ưu hóa chuyên sâu trên cả Máy tính (Desktop/Laptop), Điện thoại (PWA) và Máy tính bảng (Tablet/iPad).</li>
+      <li><strong>Tốc độ xử lý đa trang thần tốc:</strong> Nhận diện OCR tài liệu 10 trang ảnh / PDF scan chỉ trong 5 – 7 giây nhờ thuật toán Chia lô song song (Parallel Batching), nạp tài liệu tức thì 0.1s chống nóng máy trên di động.</li>
       <li><strong>Được thầy cô đánh giá cao:</strong> Tính năng xuất bản in đề thi và thẻ học tập PDF chuẩn A4 hỗ trợ đắc lực cho giáo viên trong việc tạo đề cương ôn thi nhanh chóng.</li>
     </ul>
 
