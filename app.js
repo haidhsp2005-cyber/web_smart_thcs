@@ -5290,18 +5290,41 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     });
   }
 
-  // Đăng xuất tài khoản an toàn
+  // Đăng xuất tài khoản an toàn & đưa về ngay khung Đăng Nhập
   window.logoutUser = function() {
-    if (confirm('Bạn có chắc chắn muốn đăng xuất khỏi tài khoản này trên thiết bị này không?\n\n(Toàn bộ sơ đồ tư duy, điểm số, tóm tắt và thẻ lật của bạn đã được lưu an toàn. Sau khi đăng xuất, người khác sẽ không xem được.)')) {
-      localStorage.removeItem('smartedu_active_cloud_username');
-      resetUIForGuest();
-      if (modalUserAccount) modalUserAccount.classList.add('hidden');
-      if (modalAuthGate) {
-        modalAuthGate.classList.remove('hidden');
-        window.switchAuthTab('login');
-      }
-      showToast('Đã đăng xuất tài khoản an toàn!', 'info');
+    localStorage.removeItem('smartedu_active_cloud_username');
+    resetUIForGuest();
+
+    // 1. Đóng toàn bộ các modal tài khoản / quản trị
+    const mUser = document.getElementById('modal-user-account');
+    if (mUser) {
+      mUser.style.display = 'none';
+      mUser.classList.add('hidden');
+      mUser.classList.remove('flex');
     }
+    const mAdmin = document.getElementById('modal-super-admin');
+    if (mAdmin) {
+      mAdmin.style.display = 'none';
+      mAdmin.classList.add('hidden');
+      mAdmin.classList.remove('flex');
+    }
+
+    // 2. Mở lại ngay khung Đăng Nhập (bỏ display: none, set display: flex)
+    const authGate = document.getElementById('modal-auth-gate');
+    if (authGate) {
+      authGate.style.display = 'flex';
+      authGate.classList.remove('hidden');
+      authGate.classList.add('flex');
+    }
+
+    // 3. Reset form đăng nhập về tab Login
+    if (typeof window.switchAuthTab === 'function') {
+      window.switchAuthTab('login');
+    }
+    const pInp = document.getElementById('login-password');
+    if (pInp) pInp.value = '';
+
+    showToast('Đã đăng xuất tài khoản an toàn! Vui lòng đăng nhập để tiếp tục.', 'info');
   };
 
   // Cập nhật giao diện Header (Desktop + Mobile)
