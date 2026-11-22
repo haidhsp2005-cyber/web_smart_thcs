@@ -4892,6 +4892,14 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
   function applyUserSession(user) {
     if (!user) return;
     state.currentUser = user;
+
+    // Đóng Auth Gate NGAY LẬP TỨC ở đầu hàm
+    const authGate = document.getElementById('modal-auth-gate');
+    if (authGate) {
+      authGate.style.display = 'none';
+      authGate.classList.add('hidden');
+      authGate.classList.remove('flex');
+    }
     user.scores = user.scores || [];
     user.mindmaps = user.mindmaps || [];
     user.summaries = user.summaries || [];

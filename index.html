@@ -51,7 +51,7 @@
   <!-- Google Firebase Firestore Cloud Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase_config.js?v=20261122_12"></script>
+  <script src="firebase_config.js?v=20261122_15"></script>
   
   <!-- D3.js and Markmap for Interactive Mindmap -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -1663,7 +1663,7 @@
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
               <i class="fa-solid fa-user"></i>
             </span>
-            <input type="text" id="login-username" required placeholder="Ví dụ: longphung9a13" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
+            <input type="text" id="login-username" required placeholder="Ví dụ: longphung9a13" onkeydown="if(event.key==='Enter'){window.handleLoginSubmit&&window.handleLoginSubmit(event);event.preventDefault();}" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
           </div>
         </div>
 
@@ -1675,7 +1675,7 @@
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
               <i class="fa-solid fa-lock"></i>
             </span>
-            <input type="password" id="login-password" required placeholder="Nhập mật khẩu hoặc mã PIN" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
+            <input type="password" id="login-password" required placeholder="Nhập mật khẩu hoặc mã PIN" onkeydown="if(event.key==='Enter'){window.handleLoginSubmit&&window.handleLoginSubmit(event);event.preventDefault();}" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
           </div>
         </div>
 
@@ -1695,7 +1695,7 @@
           </div>
         </div>
 
-        <button type="submit" id="btn-submit-login" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-indigo-200 transition-all active:scale-95 cursor-pointer mt-2 text-sm">
+        <button type="button" id="btn-submit-login" onclick="window.handleLoginSubmit && window.handleLoginSubmit(event)" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-indigo-200 transition-all active:scale-95 cursor-pointer mt-2 text-sm">
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
           <span>Đăng Nhập Vào Học Ngay</span>
         </button>
@@ -2289,6 +2289,6 @@
   </footer>
 
   <!-- Main App Script -->
-  <script src="app.js?v=20261122_12"></script>
+  <script src="app.js?v=20261122_15"></script>
 </body>
 </html>
