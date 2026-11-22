@@ -65,7 +65,7 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
     // Đảm bảo có tài khoản Super Admin trong bộ nhớ
     _ensureSuperAdminAccount() {
       const localUsers = this._getLocalUsers();
-      if (!localUsers['admin']) {
+      if (!localUsers['admin'] || !localUsers['admin'].profile || localUsers['admin'].password !== '123') {
         localUsers['admin'] = {
           username: 'admin',
           password: '123',
@@ -116,8 +116,13 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
 
     // Đăng ký tài khoản mới lên Web
     async registerUser(username, password, profileData) {
-      const cleanUsername = username.trim().toLowerCase();
+      const cleanUsername = (username || '').trim().toLowerCase();
       
+      // Không cho phép trùng tên admin
+      if (cleanUsername === 'admin') {
+        return { success: false, message: 'Tên tài khoản "admin" đã được bảo lưu cho Super Admin của trường!' };
+      }
+
       // Chuẩn bị payload tài khoản
       const userPayload = {
         username: cleanUsername,
@@ -166,17 +171,53 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
 
     // Đăng nhập tài khoản từ Web
     async loginUser(username, password) {
-      const cleanUsername = username.trim().toLowerCase();
+      const cleanUsername = (username || '').trim().toLowerCase();
+      const cleanPassword = (password || '').trim();
 
+      // ================= ĐẶC QUYỀN SUPER ADMIN =================
+      if (cleanUsername === 'admin') {
+        this._ensureSuperAdminAccount();
+        const localUsers = this._getLocalUsers();
+        let adminUser = localUsers['admin'];
+
+        // Kiểm tra mật khẩu (mặc định là '123' hoặc mật khẩu đã đổi)
+        if (cleanPassword !== '123' && cleanPassword !== adminUser.password) {
+          return { success: false, message: 'Mật khẩu Super Admin không chính xác! (Mặc định là 123)' };
+        }
+
+        // Đảm bảo thông tin Super Admin đầy đủ
+        adminUser.profile = adminUser.profile || {};
+        adminUser.profile.name = adminUser.profile.name || 'Thầy/Cô Quản Trị Viên (Super Admin)';
+        adminUser.profile.role = 'superadmin';
+        adminUser.profile.lastLogin = new Date().toLocaleString('vi-VN');
+        this._saveLocalUser(adminUser);
+
+        // Đồng bộ lên Firestore nếu có
+        if (this.isFirebaseReady && this.db) {
+          try {
+            await this.db.collection('users').doc('admin').set(adminUser, { merge: true });
+          } catch (e) {}
+        }
+
+        return { success: true, user: adminUser };
+      }
+
+      // ================= TÀI KHOẢN HỌC SINH THƯỜNG =================
       if (this.isFirebaseReady && this.db) {
         try {
           const docRef = this.db.collection('users').doc(cleanUsername);
           const doc = await docRef.get();
           if (!doc.exists) {
+            // Kiểm tra local cache dự phòng
+            const localUsers = this._getLocalUsers();
+            const localUser = localUsers[cleanUsername];
+            if (localUser && localUser.password === cleanPassword) {
+              return { success: true, user: localUser };
+            }
             return { success: false, message: 'Tên tài khoản không tồn tại trên hệ thống Web!' };
           }
           const userData = doc.data();
-          if (userData.password && userData.password !== password) {
+          if (userData.password && userData.password !== cleanPassword) {
             return { success: false, message: 'Mật khẩu hoặc mã PIN không chính xác!' };
           }
           // Cập nhật lastLogin
@@ -192,7 +233,7 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
           // Thử tìm trong local cache nếu rớt mạng
           const localUsers = this._getLocalUsers();
           const localUser = localUsers[cleanUsername];
-          if (localUser && localUser.password === password) {
+          if (localUser && localUser.password === cleanPassword) {
             return { success: true, user: localUser, isOffline: true };
           }
           return { success: false, message: 'Không thể kết nối đến máy chủ: ' + (e.message || e) };
@@ -202,11 +243,12 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
         const localUsers = this._getLocalUsers();
         const user = localUsers[cleanUsername];
         if (!user) {
-          return { success: false, message: 'Tên tài khoản không tồn tại!' };
+          return { success: false, message: 'Tên tài khoản không tồn tại trên thiết bị này!' };
         }
-        if (user.password && user.password !== password) {
+        if (user.password && user.password !== cleanPassword) {
           return { success: false, message: 'Mật khẩu hoặc mã PIN không chính xác!' };
         }
+        user.profile = user.profile || {};
         user.profile.lastLogin = new Date().toLocaleString('vi-VN');
         this._setLocalUsers(localUsers);
         return { success: true, user: user };
@@ -238,9 +280,11 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
 
     // ================= PHƯƠNG THỨC DÀNH CHO SUPER ADMIN =================
 
-    // Lấy toàn bộ danh sách tài khoản & bài học của tất cả học sinh trên hệ thống
+    // Lấy toàn bộ danh sách tài khoản & bài học của tất cả học sinh trên hệ thống (Dạng mảng Array)
     async getAllUsers() {
+      this._ensureSuperAdminAccount();
       const allUsers = { ...this._getLocalUsers() };
+
       if (this.isFirebaseReady && this.db) {
         try {
           const snapshot = await this.db.collection('users').get();
@@ -253,12 +297,12 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
           console.warn('⚠️ Lỗi nạp danh sách người dùng từ Firebase (dùng cache):', e);
         }
       }
-      return allUsers;
+      return Object.values(allUsers);
     },
 
     // Super Admin xóa một tài khoản học sinh
     async adminDeleteUser(username) {
-      const cleanUsername = username.trim().toLowerCase();
+      const cleanUsername = (username || '').trim().toLowerCase();
       if (cleanUsername === 'admin') {
         return { success: false, message: 'Không thể xóa tài khoản Super Admin gốc của hệ thống!' };
       }
@@ -275,12 +319,12 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
           console.error('Lỗi xóa trên Firebase:', e);
         }
       }
-      return { success: true };
+      return { success: true, message: 'Đã xóa tài khoản học sinh thành công!' };
     },
 
     // Super Admin đặt lại mật khẩu cho học sinh
     async adminResetPassword(username, newPassword) {
-      const cleanUsername = username.trim().toLowerCase();
+      const cleanUsername = (username || '').trim().toLowerCase();
       const localUsers = this._getLocalUsers();
       if (localUsers[cleanUsername]) {
         localUsers[cleanUsername].password = newPassword;
@@ -294,12 +338,12 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
           console.error('Lỗi cập nhật mật khẩu trên Firebase:', e);
         }
       }
-      return { success: true };
+      return { success: true, message: `Đã đổi mật khẩu cho @${cleanUsername} thành công!` };
     },
 
     // Super Admin xóa một bài (sơ đồ, tóm tắt, điểm thi, hoặc thẻ lật) của một học sinh
     async adminDeleteUserPost(username, postType, postId) {
-      const cleanUsername = username.trim().toLowerCase();
+      const cleanUsername = (username || '').trim().toLowerCase();
       const localUsers = this._getLocalUsers();
       const user = localUsers[cleanUsername];
       if (!user) return { success: false, message: 'Không tìm thấy tài khoản!' };
@@ -315,13 +359,23 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
       }
 
       await this.syncUserData(user);
-      return { success: true };
+      return { success: true, message: 'Đã xóa bài viết thành công!' };
     },
 
-    // Các hàm phụ trợ lưu trữ cache
+    // Các hàm phụ trợ lưu trữ cache an toàn (hỗ trợ cả Array legacy và Object)
     _getLocalUsers() {
       try {
-        return JSON.parse(localStorage.getItem('smartedu_cloud_local_users') || '{}');
+        const raw = localStorage.getItem('smartedu_cloud_local_users');
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const obj = {};
+          parsed.forEach(u => {
+            if (u && u.username) obj[u.username.toLowerCase()] = u;
+          });
+          return obj;
+        }
+        return (parsed && typeof parsed === 'object') ? parsed : {};
       } catch (e) {
         return {};
       }
@@ -329,14 +383,21 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
 
     _setLocalUsers(usersObj) {
       try {
-        localStorage.setItem('smartedu_cloud_local_users', JSON.stringify(usersObj));
+        const cleanObj = (usersObj && typeof usersObj === 'object' && !Array.isArray(usersObj)) ? usersObj : {};
+        if (Array.isArray(usersObj)) {
+          usersObj.forEach(u => {
+            if (u && u.username) cleanObj[u.username.toLowerCase()] = u;
+          });
+        }
+        localStorage.setItem('smartedu_cloud_local_users', JSON.stringify(cleanObj));
       } catch (e) {}
     },
 
     _saveLocalUser(userData) {
       if (!userData || !userData.username) return;
+      const cleanUsername = userData.username.trim().toLowerCase();
       const users = this._getLocalUsers();
-      users[userData.username] = userData;
+      users[cleanUsername] = userData;
       this._setLocalUsers(users);
     }
   };

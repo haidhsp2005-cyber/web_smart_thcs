@@ -5010,7 +5010,11 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     const rememberedUsername = localStorage.getItem('smartedu_active_cloud_username');
     if (rememberedUsername && window.SmartEduCloud) {
       const localUsers = window.SmartEduCloud._getLocalUsers();
-      const existingUser = localUsers[rememberedUsername.toLowerCase()];
+      let existingUser = localUsers[rememberedUsername.toLowerCase()];
+      if (rememberedUsername.toLowerCase() === 'admin' && !existingUser) {
+        window.SmartEduCloud._ensureSuperAdminAccount();
+        existingUser = window.SmartEduCloud._getLocalUsers()['admin'];
+      }
       if (existingUser) {
         applyUserSession(existingUser);
         return;
@@ -5104,28 +5108,32 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     if (loginUsernameInput) loginUsernameInput.value = 'admin';
     if (loginPasswordInput) loginPasswordInput.value = '123';
 
-    if (window.SmartEduCloud) {
-      try {
+    try {
+      if (window.SmartEduCloud) {
         const res = await window.SmartEduCloud.loginUser('admin', '123');
         if (res.success && res.user) {
           localStorage.setItem('smartedu_active_cloud_username', 'admin');
           applyUserSession(res.user);
-          showToast('Đã đăng nhập thành công với quyền Quản trị viên Toàn trường (Super Admin)!', 'success');
+          showToast('Kính chào Thầy/Cô Quản Trị Viên (Super Admin) đã đăng nhập thành công!', 'success');
+          setTimeout(() => {
+            if (window.openSuperAdminModal) window.openSuperAdminModal('users');
+          }, 300);
           return;
         }
-      } catch (err) {
-        console.warn('Lỗi đăng nhập Super Admin:', err);
       }
+    } catch (err) {
+      console.warn('Lỗi đăng nhập Super Admin:', err);
     }
+
     const adminUser = {
       username: 'admin',
       password: '123',
       profile: {
         name: 'Thầy/Cô Quản Trị Viên (Super Admin)',
         role: 'superadmin',
-        grade: 'Tất cả',
-        className: 'BGH / Quản Trị',
-        school: 'THCS Long Cang',
+        grade: 'Quản Lý',
+        className: 'Ban Giám Hiệu / Quản Trị',
+        school: 'Hệ Thống Giáo Dục THCS',
         avatar: '👑',
         createdAt: '22/11/2026',
         lastLogin: new Date().toLocaleString('vi-VN')
@@ -5140,7 +5148,10 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     }
     localStorage.setItem('smartedu_active_cloud_username', 'admin');
     applyUserSession(adminUser);
-    showToast('Đã đăng nhập thành công với quyền Super Admin!', 'success');
+    showToast('Kính chào Thầy/Cô Quản Trị Viên (Super Admin) đã đăng nhập thành công!', 'success');
+    setTimeout(() => {
+      if (window.openSuperAdminModal) window.openSuperAdminModal('users');
+    }, 300);
   };
 
   // Xử lý gửi Form Đăng Nhập
@@ -5172,7 +5183,15 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
           }
 
           applyUserSession(res.user);
-          showToast(`Chào mừng em ${res.user.profile.name} đã đăng nhập thành công!`, 'success');
+          const isSuperAdmin = (res.user.username === 'admin' || res.user.profile?.role === 'superadmin');
+          const welcomePrefix = isSuperAdmin ? 'Kính chào Thầy/Cô' : 'Chào mừng em';
+          showToast(`${welcomePrefix} ${res.user.profile?.name || res.user.username} đã đăng nhập thành công!`, 'success');
+
+          if (isSuperAdmin) {
+            setTimeout(() => {
+              if (window.openSuperAdminModal) window.openSuperAdminModal('users');
+            }, 300);
+          }
         } else {
           showToast(res.message || 'Đăng nhập không thành công!', 'error');
         }
@@ -6413,7 +6432,14 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     }
 
     try {
-      cachedAllAdminUsers = await window.SmartEduCloud.getAllUsers();
+      const res = await window.SmartEduCloud.getAllUsers();
+      if (Array.isArray(res)) {
+        cachedAllAdminUsers = res;
+      } else if (res && typeof res === 'object') {
+        cachedAllAdminUsers = Object.values(res);
+      } else {
+        cachedAllAdminUsers = [];
+      }
       updateAdminStats();
       renderCurrentAdminTab();
     } catch (e) {
