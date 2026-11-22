@@ -5153,61 +5153,73 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     }, 200);
   };
 
-  // Xử lý gửi Form Đăng Nhập
-  if (formAuthLogin) {
-    formAuthLogin.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const u = (loginUsernameInput?.value || '').trim();
-      const p = (loginPasswordInput?.value || '').trim();
+  // Hàm xử lý Đăng Nhập an toàn toàn cục
+  window.handleLoginSubmit = async function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const uInput = document.getElementById('login-username');
+    const pInput = document.getElementById('login-password');
+    const remInput = document.getElementById('login-remember-me');
+    const u = (uInput?.value || '').trim();
+    const p = (pInput?.value || '').trim();
 
-      if (!u || !p) {
-        showToast('Vui lòng nhập tên tài khoản và mật khẩu!', 'warning');
-        return;
-      }
+    if (!u || !p) {
+      showToast('Vui lòng nhập tên tài khoản và mật khẩu!', 'warning');
+      return false;
+    }
 
-      // Xử lý tức thì cho Super Admin admin / 123
-      if (u.toLowerCase() === 'admin' && p === '123') {
-        window.fillSuperAdminAccount();
-        return;
-      }
+    // Xử lý tức thì cho Super Admin admin / 123
+    if (u.toLowerCase() === 'admin' && p === '123') {
+      window.fillSuperAdminAccount();
+      return false;
+    }
 
-      const submitBtn = document.getElementById('btn-submit-login');
-      const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Đang xác thực trên Web...</span>`;
-      }
+    const submitBtn = document.getElementById('btn-submit-login');
+    const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Đang xác thực trên Web...</span>`;
+    }
 
-      try {
-        const res = await window.SmartEduCloud.loginUser(u, p);
-        if (res.success && res.user) {
-          if (loginRememberMe && loginRememberMe.checked) {
-            localStorage.setItem('smartedu_active_cloud_username', res.user.username);
-          } else {
-            localStorage.removeItem('smartedu_active_cloud_username');
-          }
-
-          applyUserSession(res.user);
-          const isSuperAdmin = (res.user.username === 'admin' || res.user.profile?.role === 'superadmin');
-          const welcomePrefix = isSuperAdmin ? 'Kính chào Thầy/Cô' : 'Chào mừng em';
-          showToast(`${welcomePrefix} ${res.user.profile?.name || res.user.username} đã đăng nhập thành công!`, 'success');
-
-          if (isSuperAdmin) {
-            setTimeout(() => {
-              if (window.openSuperAdminModal) window.openSuperAdminModal('users');
-            }, 300);
-          }
+    try {
+      const res = await window.SmartEduCloud.loginUser(u, p);
+      if (res.success && res.user) {
+        if (remInput && remInput.checked) {
+          localStorage.setItem('smartedu_active_cloud_username', res.user.username);
         } else {
-          showToast(res.message || 'Đăng nhập không thành công!', 'error');
+          localStorage.removeItem('smartedu_active_cloud_username');
         }
-      } catch (err) {
-        showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalBtnText;
+
+        applyUserSession(res.user);
+        const isSuperAdmin = (res.user.username === 'admin' || res.user.profile?.role === 'superadmin');
+        const welcomePrefix = isSuperAdmin ? 'Kính chào Thầy/Cô' : 'Chào mừng em';
+        showToast(`${welcomePrefix} ${res.user.profile?.name || res.user.username} đã đăng nhập thành công!`, 'success');
+
+        if (isSuperAdmin) {
+          setTimeout(() => {
+            if (typeof window.openSuperAdminModal === 'function') {
+              window.openSuperAdminModal('users');
+            }
+          }, 200);
         }
+      } else {
+        showToast(res.message || 'Đăng nhập không thành công!', 'error');
       }
+    } catch (err) {
+      showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    }
+    return false;
+  };
+
+  // Gắn sự kiện submit cho form đăng nhập
+  if (formAuthLogin) {
+    formAuthLogin.addEventListener('submit', (e) => {
+      e.preventDefault();
+      window.handleLoginSubmit(e);
     });
   }
 

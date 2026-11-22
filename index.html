@@ -51,7 +51,7 @@
   <!-- Google Firebase Firestore Cloud Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase_config.js"></script>
+  <script src="firebase_config.js?v=20261122_12"></script>
   
   <!-- D3.js and Markmap for Interactive Mindmap -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -1654,7 +1654,7 @@
       </div>
 
       <!-- FORM 1: ĐĂNG NHẬP (LOGIN) -->
-      <form id="form-auth-login" class="space-y-3.5 text-xs">
+      <form id="form-auth-login" onsubmit="window.handleLoginSubmit && window.handleLoginSubmit(event); return false;" class="space-y-3.5 text-xs">
         <div>
           <label for="login-username" class="block font-bold text-slate-700 mb-1">
             Tên đăng nhập / Mã học sinh <span class="text-rose-500">*</span>
@@ -1709,7 +1709,7 @@
       </form>
 
       <!-- FORM 2: ĐĂNG KÝ (REGISTER) -->
-      <form id="form-auth-register" class="hidden space-y-3 text-xs max-h-[60vh] overflow-y-auto pr-1">
+      <form id="form-auth-register" onsubmit="event.preventDefault(); return false;" class="hidden space-y-3 text-xs max-h-[60vh] overflow-y-auto pr-1">
         <div>
           <label for="reg-fullname" class="block font-bold text-slate-700 mb-1">
             Họ và tên học sinh <span class="text-rose-500">*</span>
@@ -2289,6 +2289,6 @@
   </footer>
 
   <!-- Main App Script -->
-  <script src="app.js"></script>
+  <script src="app.js?v=20261122_12"></script>
 </body>
 </html>
