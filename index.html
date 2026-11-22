@@ -602,7 +602,7 @@
             </button>
             <button id="btn-open-summary-library" class="shrink-0 px-2.5 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 rounded-lg flex items-center gap-1.5 shadow-xs whitespace-nowrap active:scale-95 cursor-pointer" title="Mở danh sách các bài tóm tắt & gợi ý đã lưu trên Web">
               <i class="fa-solid fa-folder-open text-indigo-600"></i>
-              <span>Kho tóm tắt</span>
+              <span>Kho tóm tắt (<span id="saved-summaries-count">0</span>)</span>
             </button>
           </div>
         </div>
@@ -940,7 +940,7 @@
             </button>
             <button id="btn-open-beams-library" class="shrink-0 px-2.5 py-2 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg flex items-center gap-1.5 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95" title="Mở danh sách các bộ thẻ học tập đã lưu trên Web">
               <i class="fa-solid fa-folder-open text-amber-600 text-xs"></i>
-              <span>Bộ thẻ của tôi</span>
+              <span>Bộ thẻ của tôi (<span id="saved-beams-count">0</span>)</span>
             </button>
           </div>
 
@@ -1265,8 +1265,8 @@
           <span>Tiến Độ Học Tập & Bảng Điểm</span>
         </button>
         <button id="tab-btn-account-manage" class="account-tab-btn px-3 py-2 text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-1.5 cursor-pointer">
-          <i class="fa-solid fa-users-gear"></i>
-          <span>Quản Lý & Đổi Tài Khoản</span>
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Hồ Sơ & Bảo Mật Cá Nhân</span>
         </button>
       </div>
 
@@ -1375,36 +1375,17 @@
           </div>
         </div>
 
-        <!-- ================= PANE 2: QUẢN LÝ / ĐỔI TÀI KHOẢN ================= -->
+        <!-- ================= PANE 2: HỒ SƠ & BẢO MẬT CÁ NHÂN ================= -->
         <div id="pane-account-manage" class="hidden space-y-4">
           
-          <!-- Danh sách các tài khoản trên máy -->
-          <div class="bg-slate-50/80 border border-slate-200 rounded-xl p-3.5 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-users text-indigo-600"></i>
-                <span>Tài Khoản Học Sinh Trên Thiết Bị Này</span>
-              </h4>
-              <button id="btn-show-create-account-form" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-white hover:bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Thêm tài khoản mới</span>
-              </button>
-            </div>
-            <div id="acc-accounts-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <!-- Dynamically rendered account cards -->
-            </div>
-          </div>
-
-          <!-- Form Tạo / Chỉnh sửa tài khoản -->
+          <!-- Form Chỉnh sửa thông tin tài khoản của chính mình -->
           <div id="acc-form-container" class="bg-white border-2 border-indigo-100 rounded-xl p-4 shadow-sm space-y-3">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <h4 id="acc-form-title" class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-id-card text-indigo-600"></i>
-                <span>Tạo Tài Khoản Học Sinh Mới</span>
+                <span>Chỉnh Sửa Hồ Sơ Cá Nhân Của Bạn</span>
               </h4>
-              <button id="btn-cancel-edit-account" type="button" class="text-slate-400 hover:text-slate-600 text-xs hidden cursor-pointer">
-                Hủy bỏ
-              </button>
+              <span class="text-[11px] text-slate-400 font-mono" id="acc-form-username-display"></span>
             </div>
 
             <form id="form-user-account" class="space-y-3 text-xs">
@@ -1425,7 +1406,7 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label for="input-account-grade" class="block font-semibold text-slate-700 mb-1">
                     Khối lớp <span class="text-rose-500">*</span>
@@ -1445,6 +1426,15 @@
                 </div>
               </div>
 
+              <!-- Đổi mật khẩu / PIN -->
+              <div class="bg-slate-50/70 border border-slate-200/80 rounded-lg p-2.5">
+                <label for="input-account-new-password" class="block font-semibold text-slate-700 mb-1">
+                  <i class="fa-solid fa-key text-indigo-600 mr-1"></i> Đổi Mật khẩu / Mã PIN mới
+                </label>
+                <input type="password" id="input-account-new-password" placeholder="Để trống nếu không muốn đổi mật khẩu..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
+                <span class="text-[10px] text-slate-400 block mt-1">Giúp bảo mật tài khoản cá nhân khi sử dụng chung máy tính ở trường.</span>
+              </div>
+
               <!-- Avatar Selection -->
               <div>
                 <label class="block font-semibold text-slate-700 mb-1.5">
@@ -1459,29 +1449,46 @@
               <div class="pt-2 flex items-center justify-end gap-2">
                 <button type="submit" id="btn-save-account" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
                   <i class="fa-solid fa-floppy-disk"></i>
-                  <span>Lưu Hồ Sơ Tài Khoản</span>
+                  <span>Lưu Cập Nhật Hồ Sơ</span>
                 </button>
               </div>
             </form>
+          </div>
+
+          <!-- Đăng xuất an toàn khi đổi người dùng -->
+          <div class="bg-rose-50 border border-rose-200 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div>
+              <h5 class="text-xs font-bold text-rose-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Đăng Xuất Tài Khoản Khỏi Thiết Bị Này</span>
+              </h5>
+              <p class="text-[11px] text-rose-700 mt-0.5">
+                Bấm đăng xuất khi bạn học xong để bảo mật sơ đồ tư duy, điểm số, tóm tắt và thẻ lật của bạn.
+              </p>
+            </div>
+            <button type="button" onclick="window.logoutUser && window.logoutUser()" class="shrink-0 px-3.5 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg cursor-pointer shadow-xs active:scale-95 transition-all">
+              <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>
+              <span>Đăng xuất ngay</span>
+            </button>
           </div>
 
           <!-- Data Backup & Restore -->
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
             <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
               <i class="fa-solid fa-database text-slate-600"></i>
-              <span>Sao Lưu & Đồng Bộ Dữ Liệu Học Tập</span>
+              <span>Sao Lưu & Đồng Bộ Dữ Liệu Cá Nhân</span>
             </h4>
             <p class="text-[11px] text-slate-500">
-              Xuất dữ liệu hồ sơ và điểm số ra tệp tin JSON để lưu giữ hoặc chuyển sang máy tính/điện thoại khác.
+              Xuất dữ liệu sơ đồ, tóm tắt, điểm số và thẻ lật của tài khoản bạn ra tệp tin JSON để lưu trữ hoặc chuyển sang máy khác.
             </p>
             <div class="flex flex-wrap items-center gap-2 pt-1">
               <button id="btn-export-account-data" class="text-xs font-semibold px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs">
                 <i class="fa-solid fa-file-export text-indigo-600"></i>
-                <span>Xuất tệp sao lưu (.json)</span>
+                <span>Xuất tệp sao lưu của tôi (.json)</span>
               </button>
               <label class="text-xs font-semibold px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-2xs">
                 <i class="fa-solid fa-file-import text-emerald-600"></i>
-                <span>Nhập tệp dữ liệu</span>
+                <span>Khôi phục tệp dữ liệu</span>
                 <input type="file" id="input-import-account-data" accept=".json" class="hidden">
               </label>
             </div>
