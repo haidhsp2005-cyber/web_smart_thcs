@@ -3603,17 +3603,26 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     }
   });
 
-  dom.dropZone.addEventListener('click', () => dom.fileInput.click());
+  dom.dropZone.addEventListener('click', (e) => {
+    if (e.target.closest('#camera-input') || e.target.closest('label[for="camera-input"]')) {
+      return;
+    }
+    if (e.target === dom.fileInput) return;
+    dom.fileInput.click();
+  });
+
   dom.fileInput.addEventListener('change', (e) => {
     if (e.target.files && e.target.files.length > 0) {
       handleMultipleUploadedFiles(e.target.files);
     }
+    e.target.value = '';
   });
 
   dom.cameraInput.addEventListener('change', (e) => {
     if (e.target.files && e.target.files.length > 0) {
       handleMultipleUploadedFiles(e.target.files);
     }
+    e.target.value = '';
   });
 
   if (dom.btnAddMoreFiles) {
