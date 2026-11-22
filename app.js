@@ -4604,11 +4604,17 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       renderAllMath();
     }, 100);
 
-    // Đảm bảo trang web luôn hiển thị trọn vẹn từ đỉnh (Header, Bài mẫu, Upload, Tabs)
-    window.scrollTo(0, 0);
-    if (state.markmapInstance) {
-      setTimeout(() => state.markmapInstance.fit(), 350);
-    }
+    // Tự động chuyển sang Tab Sơ đồ tư duy và cuộn mượt xuống để học sinh thấy ngay kết quả
+    switchTab('mindmap');
+    setTimeout(() => {
+      const targetScroll = document.getElementById('tabs-nav') || dom.tabMindmap;
+      if (targetScroll) {
+        targetScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (state.markmapInstance && state.markmapInstance.fit) {
+        state.markmapInstance.fit();
+      }
+    }, 200);
 
     if (notify) {
       showToast(`Đã mở bài mẫu: ${demo.title}!`, 'success');
@@ -5029,6 +5035,11 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       state.mindmapMarkdown = latestMm.markdownContent;
       renderMindmap(latestMm.markdownContent);
       if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
+      setTimeout(() => {
+        if (state.markmapInstance && state.markmapInstance.fit) {
+          state.markmapInstance.fit();
+        }
+      }, 300);
     } else {
       state.mindmapMarkdown = '';
       if (dom.markmapSvg) dom.markmapSvg.innerHTML = '';
