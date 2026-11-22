@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || isIos;
   const isInAppBrowser = /FBAN|FBAV|Zalo|Line|Instagram|BytedanceWebview/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
 
   // ================= DOM ELEMENTS =================
   const dom = {
@@ -5045,28 +5045,34 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
 
   // Chuyển đổi giữa Đăng Nhập và Đăng Ký
   window.switchAuthTab = function(tab) {
+    const lBtn = document.getElementById('auth-tab-btn-login');
+    const rBtn = document.getElementById('auth-tab-btn-register');
+    const lForm = document.getElementById('form-auth-login');
+    const rForm = document.getElementById('form-auth-register');
+    const uInp = document.getElementById('login-username');
+    const fInp = document.getElementById('reg-fullname');
+
     if (tab === 'login') {
-      if (authTabBtnLogin) {
-        authTabBtnLogin.className = 'py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold transition-all';
-      }
-      if (authTabBtnRegister) {
-        authTabBtnRegister.className = 'py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all';
-      }
-      if (formAuthLogin) formAuthLogin.classList.remove('hidden');
-      if (formAuthRegister) formAuthRegister.classList.add('hidden');
-      if (loginUsernameInput) loginUsernameInput.focus();
+      if (lBtn) lBtn.className = 'py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold transition-all';
+      if (rBtn) rBtn.className = 'py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all';
+      if (lForm) lForm.classList.remove('hidden');
+      if (rForm) rForm.classList.add('hidden');
+      if (uInp) uInp.focus();
     } else {
-      if (authTabBtnRegister) {
-        authTabBtnRegister.className = 'py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold transition-all';
-      }
-      if (authTabBtnLogin) {
-        authTabBtnLogin.className = 'py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all';
-      }
-      if (formAuthRegister) formAuthRegister.classList.remove('hidden');
-      if (formAuthLogin) formAuthLogin.classList.add('hidden');
-      if (regFullname) regFullname.focus();
+      if (rBtn) rBtn.className = 'py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold transition-all';
+      if (lBtn) lBtn.className = 'py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all';
+      if (rForm) rForm.classList.remove('hidden');
+      if (lForm) lForm.classList.add('hidden');
+      if (fInp) fInp.focus();
     }
   };
+
+  if (authTabBtnLogin) {
+    authTabBtnLogin.addEventListener('click', () => window.switchAuthTab('login'));
+  }
+  if (authTabBtnRegister) {
+    authTabBtnRegister.addEventListener('click', () => window.switchAuthTab('register'));
+  }
 
   // Nạp tài khoản mẫu cho giám khảo/học sinh trải nghiệm nhanh 1 chạm
   window.fillDemoAccount = async function() {
@@ -5232,49 +5238,55 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
   }
 
   // Xử lý gửi Form Đăng Ký (tạo tài khoản mới hoàn toàn sạch sẽ, không chứa dữ liệu người khác)
-  if (formAuthRegister) {
-    formAuthRegister.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = (regFullname?.value || '').trim();
-      const grade = regGrade?.value || '9';
-      const className = (regClass?.value || '').trim();
-      const school = (regSchool?.value || '').trim();
-      const u = (regUsername?.value || '').trim();
-      const p = (regPassword?.value || '').trim();
-      const avatar = regAvatar?.value || '👨‍🎓';
+  window.handleRegisterSubmit = async function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const name = (document.getElementById('reg-fullname')?.value || '').trim();
+    const grade = document.getElementById('reg-grade')?.value || '9';
+    const className = (document.getElementById('reg-class')?.value || '').trim();
+    const school = (document.getElementById('reg-school')?.value || '').trim();
+    const u = (document.getElementById('reg-username')?.value || '').trim();
+    const p = (document.getElementById('reg-password')?.value || '').trim();
+    const avatar = document.getElementById('reg-avatar')?.value || '👨‍🎓';
 
-      if (!name || !u || !p) {
-        showToast('Vui lòng điền đầy đủ các thông tin có dấu sao (*)!', 'warning');
-        return;
+    if (!name || !u || !p) {
+      showToast('Vui lòng điền đầy đủ các thông tin có dấu sao (*)!', 'warning');
+      return false;
+    }
+
+    const submitBtn = document.getElementById('btn-submit-register');
+    const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Đang khởi tạo tài khoản Web...</span>`;
+    }
+
+    try {
+      const res = await window.SmartEduCloud.registerUser(u, p, {
+        name, grade, className, school, avatar
+      });
+
+      if (res.success && res.user) {
+        localStorage.setItem('smartedu_active_cloud_username', res.user.username);
+        applyUserSession(res.user);
+        showToast(`Chúc mừng em ${name} đã tạo tài khoản Web thành công!`, 'success');
+      } else {
+        showToast(res.message || 'Đăng ký không thành công!', 'error');
       }
-
-      const submitBtn = document.getElementById('btn-submit-register');
-      const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+    } catch (err) {
+      showToast('Lỗi đăng ký: ' + err.message, 'error');
+    } finally {
       if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Đang khởi tạo tài khoản Web...</span>`;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
       }
+    }
+    return false;
+  };
 
-      try {
-        const res = await window.SmartEduCloud.registerUser(u, p, {
-          name, grade, className, school, avatar
-        });
-
-        if (res.success && res.user) {
-          localStorage.setItem('smartedu_active_cloud_username', res.user.username);
-          applyUserSession(res.user);
-          showToast(`Chúc mừng em ${name} đã tạo tài khoản Web thành công!`, 'success');
-        } else {
-          showToast(res.message || 'Đăng ký không thành công!', 'error');
-        }
-      } catch (err) {
-        showToast('Lỗi đăng ký: ' + err.message, 'error');
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalBtnText;
-        }
-      }
+  if (formAuthRegister) {
+    formAuthRegister.addEventListener('submit', (e) => {
+      e.preventDefault();
+      window.handleRegisterSubmit(e);
     });
   }
 
@@ -6945,8 +6957,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       return;
     }
 
-    let csvContent = '﻿STT,Họ và tên,Lớp,Trường THCS,Bài Khảo Thí,Môn học,Điểm số (Thang 10),Số câu đúng,Tổng số câu,Tỉ lệ (%),Thời gian thi
-';
+    let csvContent = '\uFEFFSTT,Họ và tên,Lớp,Trường THCS,Bài Khảo Thí,Môn học,Điểm số (Thang 10),Số câu đúng,Tổng số câu,Tỉ lệ (%),Thời gian thi\n';
     allScores.forEach((sc, idx) => {
       const cleanTitle = (sc.title || '').replace(/"/g, '""');
       const cleanName = (sc.studentName || '').replace(/"/g, '""');

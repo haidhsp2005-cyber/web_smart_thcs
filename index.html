@@ -51,7 +51,43 @@
   <!-- Google Firebase Firestore Cloud Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase_config.js?v=20261122_15"></script>
+  <script src="firebase_config.js?v=20261122_16"></script>
+  
+  <!-- Early Safety Handlers: đảm bảo 100% các nút auth/admin hoạt động tức thì từ mili-giây đầu tiên -->
+  <script>
+    window.switchAuthTab = window.switchAuthTab || function(tab) {
+      var lBtn = document.getElementById('auth-tab-btn-login');
+      var rBtn = document.getElementById('auth-tab-btn-register');
+      var lForm = document.getElementById('form-auth-login');
+      var rForm = document.getElementById('form-auth-register');
+      if (tab === 'login') {
+        if (lBtn) lBtn.className = 'py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold transition-all';
+        if (rBtn) rBtn.className = 'py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all';
+        if (lForm) lForm.classList.remove('hidden');
+        if (rForm) rForm.classList.add('hidden');
+      } else {
+        if (rBtn) rBtn.className = 'py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold transition-all';
+        if (lBtn) lBtn.className = 'py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all';
+        if (rForm) rForm.classList.remove('hidden');
+        if (lForm) lForm.classList.add('hidden');
+      }
+    };
+    window.fillSuperAdminAccount = window.fillSuperAdminAccount || function() {
+      var u = document.getElementById('login-username');
+      var p = document.getElementById('login-password');
+      if (u) u.value = 'admin';
+      if (p) p.value = '123';
+      if (typeof window.handleLoginSubmit === 'function') {
+        window.handleLoginSubmit();
+      }
+    };
+    window.fillDemoAccount = window.fillDemoAccount || function() {
+      var u = document.getElementById('login-username');
+      var p = document.getElementById('login-password');
+      if (u) u.value = 'longphung9a13';
+      if (p) p.value = '123';
+    };
+  </script>
   
   <!-- D3.js and Markmap for Interactive Mindmap -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -1643,18 +1679,18 @@
 
       <!-- Auth Switch Tabs -->
       <div class="grid grid-cols-2 p-1 bg-slate-100 rounded-xl text-xs font-bold text-slate-600">
-        <button id="auth-tab-btn-login" type="button" class="py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+        <button id="auth-tab-btn-login" type="button" onclick="window.switchAuthTab && window.switchAuthTab('login')" class="py-2 rounded-lg bg-white text-indigo-600 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all">
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
           <span>Đăng Nhập</span>
         </button>
-        <button id="auth-tab-btn-register" type="button" class="py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+        <button id="auth-tab-btn-register" type="button" onclick="window.switchAuthTab && window.switchAuthTab('register')" class="py-2 rounded-lg text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 cursor-pointer transition-all">
           <i class="fa-solid fa-user-plus"></i>
           <span>Tạo Tài Khoản Mới</span>
         </button>
       </div>
 
       <!-- FORM 1: ĐĂNG NHẬP (LOGIN) -->
-      <form id="form-auth-login" onsubmit="window.handleLoginSubmit && window.handleLoginSubmit(event); return false;" class="space-y-3.5 text-xs">
+      <form id="form-auth-login" action="javascript:void(0);" onsubmit="event.preventDefault(); window.handleLoginSubmit && window.handleLoginSubmit(event); return false;" class="space-y-3.5 text-xs">
         <div>
           <label for="login-username" class="block font-bold text-slate-700 mb-1">
             Tên đăng nhập / Mã học sinh <span class="text-rose-500">*</span>
@@ -1709,7 +1745,7 @@
       </form>
 
       <!-- FORM 2: ĐĂNG KÝ (REGISTER) -->
-      <form id="form-auth-register" onsubmit="event.preventDefault(); return false;" class="hidden space-y-3 text-xs max-h-[60vh] overflow-y-auto pr-1">
+      <form id="form-auth-register" action="javascript:void(0);" onsubmit="event.preventDefault(); window.handleRegisterSubmit && window.handleRegisterSubmit(event); return false;" class="hidden space-y-3 text-xs max-h-[60vh] overflow-y-auto pr-1">
         <div>
           <label for="reg-fullname" class="block font-bold text-slate-700 mb-1">
             Họ và tên học sinh <span class="text-rose-500">*</span>
@@ -1768,7 +1804,7 @@
           <input type="hidden" id="reg-avatar" value="👨‍🎓">
         </div>
 
-        <button type="submit" id="btn-submit-register" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-200 transition-all active:scale-95 cursor-pointer mt-1 text-sm">
+        <button type="button" id="btn-submit-register" onclick="window.handleRegisterSubmit && window.handleRegisterSubmit(event)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-200 transition-all active:scale-95 cursor-pointer mt-1 text-sm">
           <i class="fa-solid fa-user-check"></i>
           <span>Tạo Tài Khoản & Bắt Đầu Học</span>
         </button>
@@ -2289,6 +2325,6 @@
   </footer>
 
   <!-- Main App Script -->
-  <script src="app.js?v=20261122_15"></script>
+  <script src="app.js?v=20261122_16"></script>
 </body>
 </html>
