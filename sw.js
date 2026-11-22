@@ -1,5 +1,5 @@
 // sw.js - Service Worker cho SmartEdu THCS (Hỗ trợ PWA & Bộ nhớ đệm Ngoại tuyến)
-const CACHE_NAME = 'smartedu-thcs-v11-autoscroll';
+const CACHE_NAME = 'smartedu-thcs-v12-login-button';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
