@@ -9,12 +9,13 @@
  *   4. Trong menu bên trái, vào "Build" -> "Firestore Database" -> "Create Database" (chọn test mode để bắt đầu ngay).
  */
 window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyB-WjusIzantRlncU2cKoCPrKOfBdWmvMk",
+  authDomain: "phanmemhoctap-24dd1.firebaseapp.com",
+  projectId: "phanmemhoctap-24dd1",
+  storageBucket: "phanmemhoctap-24dd1.firebasestorage.app",
+  messagingSenderId: "1050032415597",
+  appId: "1:1050032415597:web:a4fc18db2929e10e443064",
+  measurementId: "G-46J7CJJHKC"
 };
 
 // ================= SMARTEDU CLOUD SYNC MODULE =================
