@@ -138,6 +138,10 @@
             <span id="user-avatar-mobile" class="text-xs">👨‍🎓</span>
             <span id="user-name-mobile" class="text-[11px] font-bold max-w-[64px] truncate">Hồ sơ</span>
           </button>
+          <button id="btn-super-admin-mobile" onclick="window.openSuperAdminModal && window.openSuperAdminModal()" class="hidden px-2 py-1 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-lg items-center gap-1 shadow-xs shrink-0 cursor-pointer active:scale-95 whitespace-nowrap" title="Bảng điều khiển Quản trị Toàn trường">
+            <span class="text-xs">👑</span>
+            <span class="text-[11px] font-bold">Admin</span>
+          </button>
           <button id="btn-logout-mobile" onclick="window.logoutUser && window.logoutUser()" class="px-1.5 py-1 text-xs font-bold text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-lg flex items-center justify-center shadow-xs shrink-0 cursor-pointer active:scale-95" title="Đăng xuất tài khoản">
             <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
           </button>
@@ -195,6 +199,12 @@
             <span id="user-subtext-desktop" class="text-[10px] text-indigo-600 font-medium">Đồng bộ Web</span>
           </div>
           <span id="user-badge-count-desktop" class="hidden text-[10px] bg-indigo-600 text-white font-extrabold px-1.5 py-0.2 rounded-full">0 bài</span>
+        </button>
+
+        <!-- Super Admin Button (Desktop >= lg, only visible when role === 'superadmin') -->
+        <button id="btn-super-admin-desktop" onclick="window.openSuperAdminModal && window.openSuperAdminModal()" class="hidden lg:flex px-2.5 sm:px-3 py-1.5 text-xs font-bold text-amber-900 bg-gradient-to-r from-amber-100 via-amber-50 to-yellow-100 hover:from-amber-200 hover:to-yellow-200 border border-amber-300 rounded-lg items-center gap-1.5 transition-all shadow-xs shrink-0 cursor-pointer active:scale-95 whitespace-nowrap" title="Bảng điều khiển Quản trị Toàn trường">
+          <span class="text-sm">👑</span>
+          <span class="font-bold text-amber-900">Quản Trị Toàn Trường</span>
         </button>
 
         <!-- Logout button on desktop -->
@@ -1674,9 +1684,15 @@
             <input type="checkbox" id="login-remember-me" checked class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
             <span>Ghi nhớ trên máy này</span>
           </label>
-          <button type="button" onclick="window.fillDemoAccount && window.fillDemoAccount()" class="text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer">
-            Dùng tài khoản mẫu
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="window.fillDemoAccount && window.fillDemoAccount()" class="text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer">
+              Tài khoản mẫu
+            </button>
+            <span class="text-slate-300">|</span>
+            <button type="button" onclick="window.fillSuperAdminAccount && window.fillSuperAdminAccount()" class="text-amber-600 hover:text-amber-700 font-bold cursor-pointer" title="Đăng nhập tài khoản Super Admin (admin / 123)">
+              👑 Super Admin
+            </button>
+          </div>
         </div>
 
         <button type="submit" id="btn-submit-login" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-md shadow-indigo-200 transition-all active:scale-95 cursor-pointer mt-2 text-sm">
@@ -1896,6 +1912,224 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ================= SUPER ADMIN DASHBOARD MODAL ================= -->
+  <div id="modal-super-admin" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-5xl w-full max-h-[92vh] flex flex-col gap-4 shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-white flex items-center justify-center text-xl shadow-md shadow-amber-200">
+            👑
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base sm:text-lg font-black text-slate-900">BẢNG ĐIỀU KHIỂN QUẢN TRỊ TOÀN TRƯỜNG</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                Super Admin
+              </span>
+            </div>
+            <p class="text-xs text-slate-500">Quản lý toàn bộ học sinh, sơ đồ tư duy, bài tóm tắt, bảng điểm và bộ thẻ lật</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-refresh-super-admin" onclick="window.refreshSuperAdminData && window.refreshSuperAdminData()" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 rounded-xl transition-all cursor-pointer" title="Làm mới dữ liệu từ Đám mây">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+          <button id="btn-close-super-admin" onclick="window.closeSuperAdminModal && window.closeSuperAdminModal()" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats Cards Row -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 shrink-0 text-xs">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex flex-col">
+          <span class="text-[11px] font-medium text-slate-500 flex items-center gap-1">
+            <i class="fa-solid fa-users text-indigo-500"></i> Học sinh
+          </span>
+          <span id="admin-stat-users" class="text-lg font-black text-slate-800 mt-0.5">0</span>
+        </div>
+        <div class="bg-indigo-50/60 border border-indigo-100 rounded-xl p-2.5 flex flex-col">
+          <span class="text-[11px] font-medium text-indigo-600 flex items-center gap-1">
+            <i class="fa-solid fa-sitemap"></i> Sơ đồ tư duy
+          </span>
+          <span id="admin-stat-mindmaps" class="text-lg font-black text-indigo-900 mt-0.5">0</span>
+        </div>
+        <div class="bg-purple-50/60 border border-purple-100 rounded-xl p-2.5 flex flex-col">
+          <span class="text-[11px] font-medium text-purple-600 flex items-center gap-1">
+            <i class="fa-solid fa-book-bookmark"></i> Bài tóm tắt
+          </span>
+          <span id="admin-stat-summaries" class="text-lg font-black text-purple-900 mt-0.5">0</span>
+        </div>
+        <div class="bg-emerald-50/60 border border-emerald-100 rounded-xl p-2.5 flex flex-col">
+          <span class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+            <i class="fa-solid fa-award"></i> Lượt khảo thí
+          </span>
+          <span id="admin-stat-quizzes" class="text-lg font-black text-emerald-900 mt-0.5">0</span>
+        </div>
+        <div class="bg-amber-50/60 border border-amber-100 rounded-xl p-2.5 flex flex-col">
+          <span class="text-[11px] font-medium text-amber-600 flex items-center gap-1">
+            <i class="fa-solid fa-clone"></i> Bộ thẻ lật
+          </span>
+          <span id="admin-stat-flashcards" class="text-lg font-black text-amber-900 mt-0.5">0</span>
+        </div>
+        <div class="bg-cyan-50/60 border border-cyan-100 rounded-xl p-2.5 flex flex-col">
+          <span class="text-[11px] font-medium text-cyan-700 flex items-center gap-1">
+            <i class="fa-solid fa-cloud"></i> Lưu trữ Web
+          </span>
+          <span id="admin-stat-cloud" class="text-[11px] font-bold text-cyan-900 mt-1 truncate" title="Trạng thái lưu trữ đám mây">Online</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-1 sm:gap-2 border-b border-slate-200 overflow-x-auto no-scrollbar pb-1 text-xs font-bold text-slate-500 shrink-0">
+        <button id="admin-tab-btn-users" onclick="window.switchAdminTab && window.switchAdminTab('users')" class="admin-tab-btn active px-3 py-2 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Quản Lý Học Sinh</span>
+        </button>
+        <button id="admin-tab-btn-mindmaps" onclick="window.switchAdminTab && window.switchAdminTab('mindmaps')" class="admin-tab-btn px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all">
+          <i class="fa-solid fa-sitemap"></i>
+          <span>Tất Cả Sơ Đồ Tư Duy</span>
+        </button>
+        <button id="admin-tab-btn-summaries" onclick="window.switchAdminTab && window.switchAdminTab('summaries')" class="admin-tab-btn px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>Tất Cả Bài Tóm Tắt</span>
+        </button>
+        <button id="admin-tab-btn-scores" onclick="window.switchAdminTab && window.switchAdminTab('scores')" class="admin-tab-btn px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all">
+          <i class="fa-solid fa-chart-column"></i>
+          <span>Bảng Điểm Khảo Thí Toàn Trường</span>
+        </button>
+        <button id="admin-tab-btn-flashcards" onclick="window.switchAdminTab && window.switchAdminTab('flashcards')" class="admin-tab-btn px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all">
+          <i class="fa-solid fa-clone"></i>
+          <span>Tất Cả Bộ Thẻ Lật</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area (Scrollable) -->
+      <div class="flex-1 overflow-y-auto pr-1 min-h-[300px] text-xs">
+        
+        <!-- PANE 1: QUẢN LÝ HỌC SINH -->
+        <div id="admin-pane-users" class="space-y-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+            <div class="relative flex-1 max-w-sm">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="admin-search-users" placeholder="Tìm kiếm theo họ tên, mã học sinh, lớp..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-xs outline-none focus:bg-white focus:border-indigo-500">
+            </div>
+            <span id="admin-users-counter" class="text-xs text-slate-500 self-center">Hiển thị 0 học sinh</span>
+          </div>
+          <div id="admin-users-list" class="space-y-2">
+            <!-- Dynamic Users List -->
+          </div>
+        </div>
+
+        <!-- PANE 2: TẤT CẢ SƠ ĐỒ TƯ DUY -->
+        <div id="admin-pane-mindmaps" class="hidden space-y-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+            <div class="relative flex-1 max-w-sm">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="admin-search-mindmaps" placeholder="Tìm kiếm theo tiêu đề sơ đồ, môn học, tác giả..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-xs outline-none focus:bg-white focus:border-indigo-500">
+            </div>
+            <span id="admin-mindmaps-counter" class="text-xs text-slate-500 self-center">Hiển thị 0 sơ đồ</span>
+          </div>
+          <div id="admin-mindmaps-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            <!-- Dynamic Mindmaps List -->
+          </div>
+        </div>
+
+        <!-- PANE 3: TẤT CẢ BÀI TÓM TẮT -->
+        <div id="admin-pane-summaries" class="hidden space-y-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+            <div class="relative flex-1 max-w-sm">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="admin-search-summaries" placeholder="Tìm kiếm theo tiêu đề tóm tắt, môn học, tác giả..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-xs outline-none focus:bg-white focus:border-indigo-500">
+            </div>
+            <span id="admin-summaries-counter" class="text-xs text-slate-500 self-center">Hiển thị 0 bài tóm tắt</span>
+          </div>
+          <div id="admin-summaries-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            <!-- Dynamic Summaries List -->
+          </div>
+        </div>
+
+        <!-- PANE 4: BẢNG ĐIỂM KHẢO THÍ TOÀN TRƯỜNG -->
+        <div id="admin-pane-scores" class="hidden space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+              <div class="relative flex-1 max-w-xs">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="admin-search-scores" placeholder="Tìm học sinh, lớp, bài thi..." class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-xs outline-none focus:bg-white focus:border-indigo-500">
+              </div>
+              <select id="admin-filter-subject-scores" class="px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-700 text-xs outline-none">
+                <option value="all">Tất cả môn học</option>
+                <option value="Toán">Toán học</option>
+                <option value="KHTN">KHTN</option>
+                <option value="Ngữ văn">Ngữ văn</option>
+                <option value="Lịch sử">Lịch sử & Địa lí</option>
+                <option value="Tiếng Anh">Tiếng Anh</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="window.exportAdminScoresCSV && window.exportAdminScoresCSV()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Xuất File CSV / Excel</span>
+              </button>
+              <button onclick="window.printAdminScoresReport && window.printAdminScoresReport()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95">
+                <i class="fa-solid fa-print"></i>
+                <span>In Báo Cáo</span>
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">#</th>
+                  <th class="py-2.5 px-3">Học sinh</th>
+                  <th class="py-2.5 px-3">Lớp / Khối</th>
+                  <th class="py-2.5 px-3">Bài Khảo Thí</th>
+                  <th class="py-2.5 px-3">Môn</th>
+                  <th class="py-2.5 px-3 text-center">Điểm số</th>
+                  <th class="py-2.5 px-3 text-center">Đúng / Tổng</th>
+                  <th class="py-2.5 px-3 text-center">Đánh giá</th>
+                  <th class="py-2.5 px-3">Thời gian</th>
+                </tr>
+              </thead>
+              <tbody id="admin-scores-table-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANE 5: TẤT CẢ BỘ THẺ LẬT -->
+        <div id="admin-pane-flashcards" class="hidden space-y-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+            <div class="relative flex-1 max-w-sm">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="admin-search-flashcards" placeholder="Tìm kiếm bộ thẻ, môn học, tác giả..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-xs outline-none focus:bg-white focus:border-indigo-500">
+            </div>
+            <span id="admin-flashcards-counter" class="text-xs text-slate-500 self-center">Hiển thị 0 bộ thẻ</span>
+          </div>
+          <div id="admin-flashcards-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            <!-- Dynamic Flashcards List -->
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 

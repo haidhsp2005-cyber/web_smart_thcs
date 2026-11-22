@@ -37,7 +37,10 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
         }
       } catch (e) {}
 
-      // 2. Thử khởi tạo Firebase nếu có projectId
+      // 2. Đảm bảo tài khoản Super Admin mặc định luôn sẵn sàng
+      this._ensureSuperAdminAccount();
+
+      // 3. Thử khởi tạo Firebase nếu có projectId
       if (window.firebase && window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId && window.FIREBASE_CONFIG.projectId.trim() !== '') {
         try {
           if (!firebase.apps.length) {
@@ -46,6 +49,9 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
           this.db = firebase.firestore();
           this.isFirebaseReady = true;
           console.log('✅ Google Firebase Firestore đã kết nối thành công:', window.FIREBASE_CONFIG.projectId);
+          
+          // Đồng bộ tài khoản Super Admin lên Firestore nếu chưa có
+          this._syncSuperAdminToCloud();
         } catch (err) {
           console.warn('⚠️ Lỗi khởi tạo Firebase, chuyển sang chế độ Đồng bộ Cục bộ:', err);
           this.isFirebaseReady = false;
@@ -53,6 +59,49 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
       } else {
         console.log('ℹ️ Firebase chưa có cấu hình; sử dụng Cloud Local Storage Cache.');
         this.isFirebaseReady = false;
+      }
+    },
+
+    // Đảm bảo có tài khoản Super Admin trong bộ nhớ
+    _ensureSuperAdminAccount() {
+      const localUsers = this._getLocalUsers();
+      if (!localUsers['admin']) {
+        localUsers['admin'] = {
+          username: 'admin',
+          password: '123',
+          profile: {
+            name: 'Thầy/Cô Quản Trị Viên (Super Admin)',
+            grade: 'Quản Lý',
+            className: 'Ban Giám Hiệu / Quản Trị',
+            school: 'Hệ Thống Giáo Dục THCS',
+            avatar: '👑',
+            role: 'superadmin',
+            createdAt: '22/11/2026',
+            lastLogin: new Date().toLocaleString('vi-VN')
+          },
+          scores: [],
+          mindmaps: [],
+          summaries: [],
+          flashcards: []
+        };
+        this._setLocalUsers(localUsers);
+      }
+    },
+
+    // Đẩy Super Admin lên Firestore nếu chưa có
+    async _syncSuperAdminToCloud() {
+      if (this.isFirebaseReady && this.db) {
+        try {
+          const docRef = this.db.collection('users').doc('admin');
+          const doc = await docRef.get();
+          if (!doc.exists) {
+            const localUsers = this._getLocalUsers();
+            if (localUsers['admin']) {
+              await docRef.set(localUsers['admin']);
+              console.log('👑 Đã khởi tạo Super Admin trên Google Firebase Cloud!');
+            }
+          }
+        } catch (e) {}
       }
     },
 
@@ -185,6 +234,88 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
         }
       }
       return true;
+    },
+
+    // ================= PHƯƠNG THỨC DÀNH CHO SUPER ADMIN =================
+
+    // Lấy toàn bộ danh sách tài khoản & bài học của tất cả học sinh trên hệ thống
+    async getAllUsers() {
+      const allUsers = { ...this._getLocalUsers() };
+      if (this.isFirebaseReady && this.db) {
+        try {
+          const snapshot = await this.db.collection('users').get();
+          snapshot.forEach(doc => {
+            allUsers[doc.id] = doc.data();
+          });
+          // Đồng bộ lại local cache
+          this._setLocalUsers(allUsers);
+        } catch (e) {
+          console.warn('⚠️ Lỗi nạp danh sách người dùng từ Firebase (dùng cache):', e);
+        }
+      }
+      return allUsers;
+    },
+
+    // Super Admin xóa một tài khoản học sinh
+    async adminDeleteUser(username) {
+      const cleanUsername = username.trim().toLowerCase();
+      if (cleanUsername === 'admin') {
+        return { success: false, message: 'Không thể xóa tài khoản Super Admin gốc của hệ thống!' };
+      }
+
+      const localUsers = this._getLocalUsers();
+      delete localUsers[cleanUsername];
+      this._setLocalUsers(localUsers);
+
+      if (this.isFirebaseReady && this.db) {
+        try {
+          await this.db.collection('users').doc(cleanUsername).delete();
+          console.log('🗑️ Super Admin đã xóa tài khoản trên Firebase:', cleanUsername);
+        } catch (e) {
+          console.error('Lỗi xóa trên Firebase:', e);
+        }
+      }
+      return { success: true };
+    },
+
+    // Super Admin đặt lại mật khẩu cho học sinh
+    async adminResetPassword(username, newPassword) {
+      const cleanUsername = username.trim().toLowerCase();
+      const localUsers = this._getLocalUsers();
+      if (localUsers[cleanUsername]) {
+        localUsers[cleanUsername].password = newPassword;
+        this._setLocalUsers(localUsers);
+      }
+
+      if (this.isFirebaseReady && this.db) {
+        try {
+          await this.db.collection('users').doc(cleanUsername).update({ password: newPassword });
+        } catch (e) {
+          console.error('Lỗi cập nhật mật khẩu trên Firebase:', e);
+        }
+      }
+      return { success: true };
+    },
+
+    // Super Admin xóa một bài (sơ đồ, tóm tắt, điểm thi, hoặc thẻ lật) của một học sinh
+    async adminDeleteUserPost(username, postType, postId) {
+      const cleanUsername = username.trim().toLowerCase();
+      const localUsers = this._getLocalUsers();
+      const user = localUsers[cleanUsername];
+      if (!user) return { success: false, message: 'Không tìm thấy tài khoản!' };
+
+      if (postType === 'mindmap' && user.mindmaps) {
+        user.mindmaps = user.mindmaps.filter(m => m.id !== postId);
+      } else if (postType === 'summary' && user.summaries) {
+        user.summaries = user.summaries.filter(s => s.id !== postId);
+      } else if (postType === 'score' && user.scores) {
+        user.scores = user.scores.filter(sc => sc.id != postId);
+      } else if (postType === 'flashcard' && user.flashcards) {
+        user.flashcards = user.flashcards.filter(f => f.id !== postId);
+      }
+
+      await this.syncUserData(user);
+      return { success: true };
     },
 
     // Các hàm phụ trợ lưu trữ cache

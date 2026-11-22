@@ -4910,7 +4910,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     if (user.mindmaps.length > 0) {
       const latestMm = user.mindmaps[0];
       state.mindmapMarkdown = latestMm.markdownContent;
-      renderMarkmap(latestMm.markdownContent);
+      renderMindmap(latestMm.markdownContent);
       if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.add('hidden');
     } else {
       state.mindmapMarkdown = '';
@@ -5099,6 +5099,50 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     showToast('Đã đăng nhập bằng tài khoản mẫu: Trần Lê Long Phụng (9A13)!', 'success');
   };
 
+  // Nạp tài khoản Super Admin 1 chạm (admin / 123)
+  window.fillSuperAdminAccount = async function() {
+    if (loginUsernameInput) loginUsernameInput.value = 'admin';
+    if (loginPasswordInput) loginPasswordInput.value = '123';
+
+    if (window.SmartEduCloud) {
+      try {
+        const res = await window.SmartEduCloud.loginUser('admin', '123');
+        if (res.success && res.user) {
+          localStorage.setItem('smartedu_active_cloud_username', 'admin');
+          applyUserSession(res.user);
+          showToast('Đã đăng nhập thành công với quyền Quản trị viên Toàn trường (Super Admin)!', 'success');
+          return;
+        }
+      } catch (err) {
+        console.warn('Lỗi đăng nhập Super Admin:', err);
+      }
+    }
+    const adminUser = {
+      username: 'admin',
+      password: '123',
+      profile: {
+        name: 'Thầy/Cô Quản Trị Viên (Super Admin)',
+        role: 'superadmin',
+        grade: 'Tất cả',
+        className: 'BGH / Quản Trị',
+        school: 'THCS Long Cang',
+        avatar: '👑',
+        createdAt: '22/11/2026',
+        lastLogin: new Date().toLocaleString('vi-VN')
+      },
+      scores: [],
+      mindmaps: [],
+      summaries: [],
+      flashcards: []
+    };
+    if (window.SmartEduCloud) {
+      window.SmartEduCloud._saveLocalUser(adminUser);
+    }
+    localStorage.setItem('smartedu_active_cloud_username', 'admin');
+    applyUserSession(adminUser);
+    showToast('Đã đăng nhập thành công với quyền Super Admin!', 'success');
+  };
+
   // Xử lý gửi Form Đăng Nhập
   if (formAuthLogin) {
     formAuthLogin.addEventListener('submit', async (e) => {
@@ -5215,6 +5259,10 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       if (userBadgeCountDesktop) userBadgeCountDesktop.classList.add('hidden');
       if (btnLogoutHeader) btnLogoutHeader.classList.add('hidden');
       if (btnLogoutMobile) btnLogoutMobile.classList.add('hidden');
+      const btnSuperAdminMobile = document.getElementById('btn-super-admin-mobile');
+      const btnSuperAdminDesktop = document.getElementById('btn-super-admin-desktop');
+      if (btnSuperAdminMobile) btnSuperAdminMobile.classList.add('hidden');
+      if (btnSuperAdminDesktop) btnSuperAdminDesktop.classList.add('hidden');
       return;
     }
 
@@ -5241,6 +5289,22 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       userBadgeCountDesktop.classList.remove('hidden');
     }
     if (btnLogoutHeader) btnLogoutHeader.classList.remove('hidden');
+
+    // Hiển thị nút Super Admin nếu là admin
+    const isSuperAdmin = (user.username === 'admin' || (user.profile && user.profile.role === 'superadmin'));
+    const btnSuperAdminMobile = document.getElementById('btn-super-admin-mobile');
+    const btnSuperAdminDesktop = document.getElementById('btn-super-admin-desktop');
+    if (btnSuperAdminMobile) {
+      if (isSuperAdmin) btnSuperAdminMobile.classList.remove('hidden');
+      else btnSuperAdminMobile.classList.add('hidden');
+    }
+    if (btnSuperAdminDesktop) {
+      if (isSuperAdmin) btnSuperAdminDesktop.classList.remove('hidden');
+      else btnSuperAdminDesktop.classList.add('hidden');
+    }
+    if (isSuperAdmin && userSubtextDesktop) {
+      userSubtextDesktop.textContent = '👑 Super Admin';
+    }
   }
 
   // Render Avatar Picker cho Modal Hồ sơ
@@ -5362,7 +5426,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     const item = state.currentUser.mindmaps.find(m => m.id === id);
     if (item && item.markdownContent) {
       state.mindmapMarkdown = item.markdownContent;
-      renderMarkmap(item.markdownContent);
+      renderMindmap(item.markdownContent);
       if (modalMindmapLibrary) modalMindmapLibrary.classList.add('hidden');
       switchTab('tab-mindmap');
       showToast(`Đã mở sơ đồ: "${item.title}"!`, 'info');
@@ -5473,7 +5537,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     const item = state.currentUser.summaries.find(s => s.id === id);
     if (item && item.summaryData) {
       state.summaryData = item.summaryData;
-      renderSummaryUI(item.summaryData);
+      renderSummary(item.summaryData);
       if (modalSummaryLibrary) modalSummaryLibrary.classList.add('hidden');
       switchTab('tab-summary');
       showToast(`Đã mở bài tóm tắt: "${item.title}"!`, 'info');
@@ -6249,9 +6313,799 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     });
   }
 
-  // Expose các hàm ra window
+  // Expose các hàm ra window & aliases an toàn
   window.openUserAccountModal = openUserAccountModal;
   window.recordQuizScoreToAccount = recordQuizScoreToAccount;
+  window.renderMindmap = renderMindmap;
+  window.renderMarkmap = renderMindmap;
+  window.renderSummary = renderSummary;
+  window.renderSummaryUI = renderSummary;
+
+  // ==============================================================
+  // QUẢN LÝ SUPER ADMIN (BẢNG ĐIỀU KHIỂN TOÀN TRƯỜNG)
+  // ==============================================================
+  const modalSuperAdmin = document.getElementById('modal-super-admin');
+  const btnCloseSuperAdmin = document.getElementById('btn-close-super-admin');
+  const btnRefreshSuperAdmin = document.getElementById('btn-refresh-super-admin');
+  const btnSuperAdminMobile = document.getElementById('btn-super-admin-mobile');
+  const btnSuperAdminDesktop = document.getElementById('btn-super-admin-desktop');
+
+  // Stats
+  const adminStatUsers = document.getElementById('admin-stat-users');
+  const adminStatMindmaps = document.getElementById('admin-stat-mindmaps');
+  const adminStatSummaries = document.getElementById('admin-stat-summaries');
+  const adminStatQuizzes = document.getElementById('admin-stat-quizzes');
+  const adminStatFlashcards = document.getElementById('admin-stat-flashcards');
+  const adminStatCloud = document.getElementById('admin-stat-cloud');
+
+  // Panes & Tabs
+  const adminTabBtns = {
+    users: document.getElementById('admin-tab-btn-users'),
+    mindmaps: document.getElementById('admin-tab-btn-mindmaps'),
+    summaries: document.getElementById('admin-tab-btn-summaries'),
+    scores: document.getElementById('admin-tab-btn-scores'),
+    flashcards: document.getElementById('admin-tab-btn-flashcards')
+  };
+  const adminPanes = {
+    users: document.getElementById('admin-pane-users'),
+    mindmaps: document.getElementById('admin-pane-mindmaps'),
+    summaries: document.getElementById('admin-pane-summaries'),
+    scores: document.getElementById('admin-pane-scores'),
+    flashcards: document.getElementById('admin-pane-flashcards')
+  };
+
+  // Search Inputs & Lists
+  const adminSearchUsers = document.getElementById('admin-search-users');
+  const adminUsersList = document.getElementById('admin-users-list');
+  const adminUsersCounter = document.getElementById('admin-users-counter');
+
+  const adminSearchMindmaps = document.getElementById('admin-search-mindmaps');
+  const adminMindmapsList = document.getElementById('admin-mindmaps-list');
+  const adminMindmapsCounter = document.getElementById('admin-mindmaps-counter');
+
+  const adminSearchSummaries = document.getElementById('admin-search-summaries');
+  const adminSummariesList = document.getElementById('admin-summaries-list');
+  const adminSummariesCounter = document.getElementById('admin-summaries-counter');
+
+  const adminSearchScores = document.getElementById('admin-search-scores');
+  const adminFilterSubjectScores = document.getElementById('admin-filter-subject-scores');
+  const adminScoresTableBody = document.getElementById('admin-scores-table-body');
+
+  const adminSearchFlashcards = document.getElementById('admin-search-flashcards');
+  const adminFlashcardsList = document.getElementById('admin-flashcards-list');
+  const adminFlashcardsCounter = document.getElementById('admin-flashcards-counter');
+
+  let cachedAllAdminUsers = [];
+  let currentAdminTab = 'users';
+
+  // Mở Bảng điều khiển Super Admin
+  async function openSuperAdminModal(tab = 'users') {
+    const user = state.currentUser;
+    const isSuperAdmin = user && (user.username === 'admin' || user.profile?.role === 'superadmin');
+    if (!isSuperAdmin) {
+      showToast('Chỉ Quản trị viên (Super Admin) mới có quyền truy cập khu vực này!', 'warning');
+      return;
+    }
+
+    if (modalSuperAdmin) modalSuperAdmin.classList.remove('hidden');
+    await loadSuperAdminData();
+    switchAdminTab(tab);
+  }
+
+  // Đóng Modal Super Admin
+  function closeSuperAdminModal() {
+    if (modalSuperAdmin) modalSuperAdmin.classList.add('hidden');
+  }
+
+  // Nạp toàn bộ dữ liệu từ Cloud / Local
+  async function loadSuperAdminData() {
+    if (!window.SmartEduCloud) return;
+    
+    // Hiển thị trạng thái cloud
+    if (adminStatCloud) {
+      if (window.SmartEduCloud.isFirebaseReady) {
+        adminStatCloud.textContent = 'Google Cloud Online';
+        adminStatCloud.className = 'text-[11px] font-bold text-emerald-700 mt-1 truncate';
+      } else {
+        adminStatCloud.textContent = 'Bộ nhớ Máy này';
+        adminStatCloud.className = 'text-[11px] font-bold text-amber-700 mt-1 truncate';
+      }
+    }
+
+    try {
+      cachedAllAdminUsers = await window.SmartEduCloud.getAllUsers();
+      updateAdminStats();
+      renderCurrentAdminTab();
+    } catch (e) {
+      console.warn('Lỗi nạp dữ liệu Super Admin:', e);
+      showToast('Lỗi khi tải dữ liệu từ máy chủ: ' + e.message, 'error');
+    }
+  }
+
+  // Cập nhật thẻ số liệu thống kê
+  function updateAdminStats() {
+    const students = cachedAllAdminUsers.filter(u => u.username !== 'admin');
+    let totalMindmaps = 0;
+    let totalSummaries = 0;
+    let totalScores = 0;
+    let totalFlashcards = 0;
+
+    cachedAllAdminUsers.forEach(u => {
+      totalMindmaps += (u.mindmaps?.length || 0);
+      totalSummaries += (u.summaries?.length || 0);
+      totalScores += (u.scores?.length || 0);
+      totalFlashcards += (u.flashcards?.length || 0);
+    });
+
+    if (adminStatUsers) adminStatUsers.textContent = students.length;
+    if (adminStatMindmaps) adminStatMindmaps.textContent = totalMindmaps;
+    if (adminStatSummaries) adminStatSummaries.textContent = totalSummaries;
+    if (adminStatQuizzes) adminStatQuizzes.textContent = totalScores;
+    if (adminStatFlashcards) adminStatFlashcards.textContent = totalFlashcards;
+  }
+
+  // Chuyển Tab
+  function switchAdminTab(tabName) {
+    currentAdminTab = tabName;
+    Object.keys(adminTabBtns).forEach(k => {
+      const btn = adminTabBtns[k];
+      const pane = adminPanes[k];
+      if (k === tabName) {
+        if (btn) btn.className = 'admin-tab-btn active px-3 py-2 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all';
+        if (pane) pane.classList.remove('hidden');
+      } else {
+        if (btn) btn.className = 'admin-tab-btn px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all';
+        if (pane) pane.classList.add('hidden');
+      }
+    });
+    renderCurrentAdminTab();
+  }
+
+  // Render tab hiện tại
+  function renderCurrentAdminTab() {
+    switch (currentAdminTab) {
+      case 'users':
+        renderAdminUsersTab();
+        break;
+      case 'mindmaps':
+        renderAdminMindmapsTab();
+        break;
+      case 'summaries':
+        renderAdminSummariesTab();
+        break;
+      case 'scores':
+        renderAdminScoresTab();
+        break;
+      case 'flashcards':
+        renderAdminFlashcardsTab();
+        break;
+    }
+  }
+
+  // TAB 1: Render Danh sách Học sinh
+  function renderAdminUsersTab() {
+    if (!adminUsersList) return;
+    const query = (adminSearchUsers?.value || '').trim().toLowerCase();
+    const students = cachedAllAdminUsers.filter(u => {
+      if (u.username === 'admin') return false;
+      if (!query) return true;
+      const name = (u.profile?.name || '').toLowerCase();
+      const uname = (u.username || '').toLowerCase();
+      const cls = (u.profile?.className || '').toLowerCase();
+      const school = (u.profile?.school || '').toLowerCase();
+      return name.includes(query) || uname.includes(query) || cls.includes(query) || school.includes(query);
+    });
+
+    if (adminUsersCounter) {
+      adminUsersCounter.textContent = `Hiển thị ${students.length} học sinh`;
+    }
+
+    if (students.length === 0) {
+      adminUsersList.innerHTML = `
+        <div class="p-8 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+          <i class="fa-solid fa-user-slash text-2xl mb-2 text-slate-300"></i>
+          <p class="font-bold">Chưa tìm thấy học sinh nào phù hợp!</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">Khi học sinh đăng ký trên web, tài khoản sẽ tự động xuất hiện tại đây.</p>
+        </div>
+      `;
+      return;
+    }
+
+    adminUsersList.innerHTML = students.map((u, idx) => {
+      const p = u.profile || {};
+      const mmCount = u.mindmaps?.length || 0;
+      const smCount = u.summaries?.length || 0;
+      const scCount = u.scores?.length || 0;
+      const fcCount = u.flashcards?.length || 0;
+      return `
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-200 hover:shadow-xs transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xl shrink-0 shadow-2xs">
+              ${p.avatar || '👨‍🎓'}
+            </span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">${p.name || u.username}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                  ${p.className ? 'Lớp ' + p.className : 'Khối ' + (p.grade || 9)}
+                </span>
+                <span class="text-[11px] text-slate-400 font-mono">@${u.username}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5 truncate">
+                ${p.school || 'THCS Long Cang'} • Tham gia: ${p.createdAt || 'Mới'} • Đăng nhập: ${p.lastLogin || 'Chưa rõ'}
+              </p>
+              <div class="flex items-center gap-2 mt-1.5 flex-wrap text-[10px] font-bold text-slate-600">
+                <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md">🧠 ${mmCount} sơ đồ</span>
+                <span class="px-2 py-0.5 bg-purple-50 text-purple-700 rounded-md">📝 ${smCount} tóm tắt</span>
+                <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">🎯 ${scCount} bài thi</span>
+                <span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-md">🃏 ${fcCount} bộ thẻ</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+            <button onclick="window.adminResetStudentPassword && window.adminResetStudentPassword('${u.username}')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition-all active:scale-95" title="Đặt lại mật khẩu cho học sinh này">
+              <i class="fa-solid fa-key text-[11px]"></i>
+              <span>Đổi MK</span>
+            </button>
+            <button onclick="window.adminDeleteStudent && window.adminDeleteStudent('${u.username}', '${p.name || u.username}')" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95" title="Xóa tài khoản học sinh">
+              <i class="fa-solid fa-trash text-[11px]"></i>
+              <span>Xóa</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // TAB 2: Render Tất Cả Sơ Đồ Tư Duy
+  function renderAdminMindmapsTab() {
+    if (!adminMindmapsList) return;
+    const query = (adminSearchMindmaps?.value || '').trim().toLowerCase();
+    
+    let allMindmaps = [];
+    cachedAllAdminUsers.forEach(u => {
+      if (u.mindmaps && Array.isArray(u.mindmaps)) {
+        u.mindmaps.forEach(mm => {
+          allMindmaps.push({
+            ...mm,
+            authorUsername: u.username,
+            authorName: u.profile?.name || u.username,
+            authorClass: u.profile?.className || `Khối ${u.profile?.grade || 9}`
+          });
+        });
+      }
+    });
+
+    if (query) {
+      allMindmaps = allMindmaps.filter(mm => {
+        const title = (mm.title || '').toLowerCase();
+        const sub = (mm.subject || '').toLowerCase();
+        const author = (mm.authorName || '').toLowerCase();
+        return title.includes(query) || sub.includes(query) || author.includes(query);
+      });
+    }
+
+    if (adminMindmapsCounter) {
+      adminMindmapsCounter.textContent = `Hiển thị ${allMindmaps.length} sơ đồ tư duy toàn trường`;
+    }
+
+    if (allMindmaps.length === 0) {
+      adminMindmapsList.innerHTML = `
+        <div class="col-span-2 p-8 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+          <i class="fa-solid fa-sitemap text-2xl mb-2 text-slate-300"></i>
+          <p class="font-bold">Chưa có sơ đồ tư duy nào!</p>
+        </div>
+      `;
+      return;
+    }
+
+    adminMindmapsList.innerHTML = allMindmaps.map(mm => `
+      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-200 hover:shadow-xs transition-all flex flex-col justify-between gap-3">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              ${mm.subject || 'Tổng hợp'}
+            </span>
+            <span class="text-[11px] text-slate-400 font-mono">${mm.createdAt || 'Mới'}</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2">${mm.title || 'Sơ đồ tư duy'}</h4>
+          <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+            <i class="fa-solid fa-user-pen text-indigo-500"></i>
+            Tác giả: <span class="font-bold text-slate-700">${mm.authorName}</span> (${mm.authorClass})
+          </p>
+        </div>
+        <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="window.adminOpenMindmap && window.adminOpenMindmap('${mm.authorUsername}', ${mm.id})" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all">
+            <i class="fa-solid fa-eye text-[11px]"></i>
+            <span>Mở xem</span>
+          </button>
+          <button onclick="window.adminDeletePost && window.adminDeletePost('${mm.authorUsername}', 'mindmap', ${mm.id})" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all">
+            <i class="fa-solid fa-trash text-[11px]"></i>
+            <span>Xóa</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // TAB 3: Render Tất Cả Bài Tóm Tắt
+  function renderAdminSummariesTab() {
+    if (!adminSummariesList) return;
+    const query = (adminSearchSummaries?.value || '').trim().toLowerCase();
+
+    let allSummaries = [];
+    cachedAllAdminUsers.forEach(u => {
+      if (u.summaries && Array.isArray(u.summaries)) {
+        u.summaries.forEach(sm => {
+          allSummaries.push({
+            ...sm,
+            authorUsername: u.username,
+            authorName: u.profile?.name || u.username,
+            authorClass: u.profile?.className || `Khối ${u.profile?.grade || 9}`
+          });
+        });
+      }
+    });
+
+    if (query) {
+      allSummaries = allSummaries.filter(sm => {
+        const title = (sm.title || '').toLowerCase();
+        const sub = (sm.subject || '').toLowerCase();
+        const author = (sm.authorName || '').toLowerCase();
+        return title.includes(query) || sub.includes(query) || author.includes(query);
+      });
+    }
+
+    if (adminSummariesCounter) {
+      adminSummariesCounter.textContent = `Hiển thị ${allSummaries.length} bài tóm tắt toàn trường`;
+    }
+
+    if (allSummaries.length === 0) {
+      adminSummariesList.innerHTML = `
+        <div class="col-span-2 p-8 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+          <i class="fa-solid fa-book-bookmark text-2xl mb-2 text-slate-300"></i>
+          <p class="font-bold">Chưa có bài tóm tắt nào!</p>
+        </div>
+      `;
+      return;
+    }
+
+    adminSummariesList.innerHTML = allSummaries.map(sm => `
+      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 hover:border-purple-200 hover:shadow-xs transition-all flex flex-col justify-between gap-3">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-50 text-purple-700 border border-purple-200">
+              ${sm.subject || 'Tổng hợp'}
+            </span>
+            <span class="text-[11px] text-slate-400 font-mono">${sm.createdAt || 'Mới'}</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2">${sm.title || 'Bài tóm tắt kiến thức'}</h4>
+          <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+            <i class="fa-solid fa-user-pen text-purple-500"></i>
+            Tác giả: <span class="font-bold text-slate-700">${sm.authorName}</span> (${sm.authorClass})
+          </p>
+        </div>
+        <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="window.adminOpenSummary && window.adminOpenSummary('${sm.authorUsername}', ${sm.id})" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all">
+            <i class="fa-solid fa-eye text-[11px]"></i>
+            <span>Xem lại</span>
+          </button>
+          <button onclick="window.adminDeletePost && window.adminDeletePost('${sm.authorUsername}', 'summary', ${sm.id})" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all">
+            <i class="fa-solid fa-trash text-[11px]"></i>
+            <span>Xóa</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // TAB 4: Render Bảng Điểm Khảo Thí Toàn Trường
+  function renderAdminScoresTab() {
+    if (!adminScoresTableBody) return;
+    const query = (adminSearchScores?.value || '').trim().toLowerCase();
+    const filterSub = adminFilterSubjectScores?.value || 'all';
+
+    let allScores = [];
+    cachedAllAdminUsers.forEach(u => {
+      if (u.scores && Array.isArray(u.scores)) {
+        u.scores.forEach(sc => {
+          allScores.push({
+            ...sc,
+            studentUsername: u.username,
+            studentName: u.profile?.name || u.username,
+            studentClass: u.profile?.className || `Khối ${u.profile?.grade || 9}`,
+            studentSchool: u.profile?.school || 'THCS Long Cang'
+          });
+        });
+      }
+    });
+
+    if (filterSub !== 'all') {
+      allScores = allScores.filter(sc => (sc.subject || '').toLowerCase().includes(filterSub.toLowerCase()));
+    }
+
+    if (query) {
+      allScores = allScores.filter(sc => {
+        const sName = (sc.studentName || '').toLowerCase();
+        const sClass = (sc.studentClass || '').toLowerCase();
+        const sTitle = (sc.title || '').toLowerCase();
+        return sName.includes(query) || sClass.includes(query) || sTitle.includes(query);
+      });
+    }
+
+    // Sắp xếp bài mới nhất lên đầu
+    allScores.sort((a, b) => (b.id || 0) - (a.id || 0));
+
+    if (allScores.length === 0) {
+      adminScoresTableBody.innerHTML = `
+        <tr>
+          <td colspan="9" class="p-8 text-center text-slate-400 bg-slate-50">
+            <i class="fa-solid fa-award text-2xl mb-1 text-slate-300"></i>
+            <p class="font-bold">Chưa có kết quả khảo thí nào!</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    adminScoresTableBody.innerHTML = allScores.map((sc, idx) => {
+      const scoreVal = typeof sc.score === 'number' ? sc.score : parseFloat(sc.score) || 0;
+      let badgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+      let evalText = 'Cần cố gắng';
+      if (scoreVal >= 8.0) {
+        badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200 font-extrabold';
+        evalText = 'Giỏi / Xuất sắc';
+      } else if (scoreVal >= 6.5) {
+        badgeClass = 'bg-blue-50 text-blue-700 border-blue-200 font-bold';
+        evalText = 'Khá';
+      } else if (scoreVal >= 5.0) {
+        badgeClass = 'bg-amber-50 text-amber-700 border-amber-200 font-semibold';
+        evalText = 'Đạt';
+      }
+
+      return `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="py-2.5 px-3 text-slate-400 font-mono text-[11px]">${idx + 1}</td>
+          <td class="py-2.5 px-3 font-bold text-slate-900">${sc.studentName}</td>
+          <td class="py-2.5 px-3 text-slate-600 font-medium">${sc.studentClass}</td>
+          <td class="py-2.5 px-3 text-slate-800 font-medium max-w-[200px] truncate" title="${sc.title || ''}">${sc.title || 'Bài kiểm tra'}</td>
+          <td class="py-2.5 px-3">
+            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+              ${sc.subject || 'Tổng hợp'}
+            </span>
+          </td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="text-sm font-black text-indigo-700">${scoreVal.toFixed(1)}</span>
+          </td>
+          <td class="py-2.5 px-3 text-center font-mono text-[11px]">
+            ${sc.correctTotal || 0}/${sc.totalQ || 10}
+          </td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="px-2 py-0.5 rounded-full text-[10px] border ${badgeClass}">
+              ${evalText}
+            </span>
+          </td>
+          <td class="py-2.5 px-3 text-slate-400 font-mono text-[11px] whitespace-nowrap">
+            ${sc.date || ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // TAB 5: Render Tất Cả Bộ Thẻ Lật
+  function renderAdminFlashcardsTab() {
+    if (!adminFlashcardsList) return;
+    const query = (adminSearchFlashcards?.value || '').trim().toLowerCase();
+
+    let allFlashcards = [];
+    cachedAllAdminUsers.forEach(u => {
+      if (u.flashcards && Array.isArray(u.flashcards)) {
+        u.flashcards.forEach(fc => {
+          allFlashcards.push({
+            ...fc,
+            authorUsername: u.username,
+            authorName: u.profile?.name || u.username,
+            authorClass: u.profile?.className || `Khối ${u.profile?.grade || 9}`
+          });
+        });
+      }
+    });
+
+    if (query) {
+      allFlashcards = allFlashcards.filter(fc => {
+        const title = (fc.title || '').toLowerCase();
+        const sub = (fc.subject || '').toLowerCase();
+        const author = (fc.authorName || '').toLowerCase();
+        return title.includes(query) || sub.includes(query) || author.includes(query);
+      });
+    }
+
+    if (adminFlashcardsCounter) {
+      adminFlashcardsCounter.textContent = `Hiển thị ${allFlashcards.length} bộ thẻ lật toàn trường`;
+    }
+
+    if (allFlashcards.length === 0) {
+      adminFlashcardsList.innerHTML = `
+        <div class="col-span-2 p-8 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+          <i class="fa-solid fa-clone text-2xl mb-2 text-slate-300"></i>
+          <p class="font-bold">Chưa có bộ thẻ lật nào!</p>
+        </div>
+      `;
+      return;
+    }
+
+    adminFlashcardsList.innerHTML = allFlashcards.map(fc => `
+      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 hover:border-amber-200 hover:shadow-xs transition-all flex flex-col justify-between gap-3">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+              ${fc.subject || 'Tổng hợp'} • ${fc.cards?.length || 0} thẻ
+            </span>
+            <span class="text-[11px] text-slate-400 font-mono">${fc.createdAt || 'Mới'}</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2">${fc.title || 'Bộ thẻ ôn tập'}</h4>
+          <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+            <i class="fa-solid fa-user-pen text-amber-500"></i>
+            Tác giả: <span class="font-bold text-slate-700">${fc.authorName}</span> (${fc.authorClass})
+          </p>
+        </div>
+        <div class="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="window.adminOpenFlashcard && window.adminOpenFlashcard('${fc.authorUsername}', ${fc.id})" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all">
+            <i class="fa-solid fa-play text-[11px]"></i>
+            <span>Luyện tập</span>
+          </button>
+          <button onclick="window.adminDeletePost && window.adminDeletePost('${fc.authorUsername}', 'flashcard', ${fc.id})" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all">
+            <i class="fa-solid fa-trash text-[11px]"></i>
+            <span>Xóa</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Xuất file CSV / Excel Bảng điểm toàn trường
+  window.exportAdminScoresCSV = function() {
+    let allScores = [];
+    cachedAllAdminUsers.forEach(u => {
+      if (u.scores && Array.isArray(u.scores)) {
+        u.scores.forEach(sc => {
+          allScores.push({
+            ...sc,
+            studentUsername: u.username,
+            studentName: u.profile?.name || u.username,
+            studentClass: u.profile?.className || `Khối ${u.profile?.grade || 9}`,
+            studentSchool: u.profile?.school || 'THCS Long Cang'
+          });
+        });
+      }
+    });
+
+    if (allScores.length === 0) {
+      showToast('Chưa có dữ liệu bài khảo thí nào để xuất file!', 'warning');
+      return;
+    }
+
+    let csvContent = '﻿STT,Họ và tên,Lớp,Trường THCS,Bài Khảo Thí,Môn học,Điểm số (Thang 10),Số câu đúng,Tổng số câu,Tỉ lệ (%),Thời gian thi
+';
+    allScores.forEach((sc, idx) => {
+      const cleanTitle = (sc.title || '').replace(/"/g, '""');
+      const cleanName = (sc.studentName || '').replace(/"/g, '""');
+      const cleanSchool = (sc.studentSchool || '').replace(/"/g, '""');
+      csvContent += `${idx + 1},"${cleanName}","${sc.studentClass}","${cleanSchool}","${cleanTitle}","${sc.subject || ''}",${sc.score || 0},${sc.correctTotal || 0},${sc.totalQ || 10},${sc.percentage || 0}%,"${sc.date || ''}"
+`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Bang_Diem_SmartEdu_THCS_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Đã xuất file bảng điểm CSV / Excel thành công!', 'success');
+  };
+
+  // In Báo Cáo Bảng Điểm Toàn Trường
+  window.printAdminScoresReport = function() {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      showToast('Trình duyệt đã chặn popup in, vui lòng cho phép!', 'warning');
+      return;
+    }
+
+    let allScores = [];
+    cachedAllAdminUsers.forEach(u => {
+      if (u.scores && Array.isArray(u.scores)) {
+        u.scores.forEach(sc => {
+          allScores.push({
+            ...sc,
+            studentName: u.profile?.name || u.username,
+            studentClass: u.profile?.className || `Khối ${u.profile?.grade || 9}`
+          });
+        });
+      }
+    });
+
+    const rowsHtml = allScores.map((sc, i) => `
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 6px; text-align: center;">${i + 1}</td>
+        <td style="border: 1px solid #ddd; padding: 6px;"><b>${sc.studentName}</b></td>
+        <td style="border: 1px solid #ddd; padding: 6px;">${sc.studentClass}</td>
+        <td style="border: 1px solid #ddd; padding: 6px;">${sc.title || ''}</td>
+        <td style="border: 1px solid #ddd; padding: 6px;">${sc.subject || ''}</td>
+        <td style="border: 1px solid #ddd; padding: 6px; text-align: center; font-weight: bold; color: #4338ca;">${sc.score}</td>
+        <td style="border: 1px solid #ddd; padding: 6px; text-align: center;">${sc.correctTotal}/${sc.totalQ}</td>
+        <td style="border: 1px solid #ddd; padding: 6px; text-align: center;">${sc.date || ''}</td>
+      </tr>
+    `).join('');
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Bảng Điểm Khảo Thí SmartEdu THCS</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 30px; font-size: 13px; color: #1e293b; }
+            h2, h3 { text-align: center; margin-bottom: 5px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+          </style>
+        </head>
+        <body>
+          <h2>BÁO CÁO KẾT QUẢ KHẢO THÍ TOÀN TRƯỜNG</h2>
+          <h3>HỆ THỐNG SMARTEDU THCS (GDPT 2018)</h3>
+          <p style="text-align: center; font-size: 12px; color: #64748b;">Thời gian xuất báo cáo: ${new Date().toLocaleString('vi-VN')}</p>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">STT</th>
+                <th>Họ và tên</th>
+                <th>Lớp</th>
+                <th>Bài Khảo Thí</th>
+                <th>Môn</th>
+                <th style="text-align: center;">Điểm</th>
+                <th style="text-align: center;">Đúng/Tổng</th>
+                <th style="text-align: center;">Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); }, 500);
+  };
+
+  // Hành động Admin: Đổi mật khẩu học sinh
+  window.adminResetStudentPassword = async function(username) {
+    const newPass = prompt(`Nhập mật khẩu mới cho tài khoản @${username}:`, '123');
+    if (!newPass || !newPass.trim()) return;
+
+    if (window.SmartEduCloud) {
+      const res = await window.SmartEduCloud.adminResetPassword(username, newPass.trim());
+      if (res.success) {
+        showToast(res.message, 'success');
+        await loadSuperAdminData();
+      } else {
+        showToast(res.message, 'error');
+      }
+    }
+  };
+
+  // Hành động Admin: Xóa tài khoản học sinh
+  window.adminDeleteStudent = async function(username, fullname) {
+    const confirmDel = confirm(`⚠️ CẢNH BÁO QUẢN TRỊ VIÊN:
+Thầy cô có chắc chắn muốn xóa tài khoản học sinh "${fullname}" (@${username}) cùng toàn bộ sơ đồ, bài tóm tắt và điểm số của em này?`);
+    if (!confirmDel) return;
+
+    if (window.SmartEduCloud) {
+      const res = await window.SmartEduCloud.adminDeleteUser(username);
+      if (res.success) {
+        showToast(res.message, 'success');
+        await loadSuperAdminData();
+      } else {
+        showToast(res.message, 'error');
+      }
+    }
+  };
+
+  // Hành động Admin: Xóa bài viết cụ thể (mindmap, summary, flashcard)
+  window.adminDeletePost = async function(username, postType, postId) {
+    const typeLabel = postType === 'mindmap' ? 'sơ đồ tư duy' : postType === 'summary' ? 'bài tóm tắt' : 'bộ thẻ lật';
+    const confirmDel = confirm(`Thầy cô có chắc chắn muốn xóa ${typeLabel} này?`);
+    if (!confirmDel) return;
+
+    if (window.SmartEduCloud) {
+      const res = await window.SmartEduCloud.adminDeleteUserPost(username, postType, postId);
+      if (res.success) {
+        showToast(res.message, 'success');
+        await loadSuperAdminData();
+      } else {
+        showToast(res.message, 'error');
+      }
+    }
+  };
+
+  // Hành động Admin: Mở xem sơ đồ tư duy của học sinh
+  window.adminOpenMindmap = function(authorUsername, mindmapId) {
+    const user = cachedAllAdminUsers.find(u => u.username === authorUsername);
+    if (!user || !user.mindmaps) return;
+    const mm = user.mindmaps.find(m => m.id === mindmapId);
+    if (!mm) return;
+
+    closeSuperAdminModal();
+    const tabBtn = document.getElementById('tab-btn-mindmap');
+    if (tabBtn) tabBtn.click();
+    setTimeout(() => {
+      renderMindmap(mm.content, mm.title);
+      showToast(`Đang xem sơ đồ tư duy của học sinh: ${user.profile?.name || authorUsername}`, 'info');
+    }, 200);
+  };
+
+  // Hành động Admin: Mở xem bài tóm tắt của học sinh
+  window.adminOpenSummary = function(authorUsername, summaryId) {
+    const user = cachedAllAdminUsers.find(u => u.username === authorUsername);
+    if (!user || !user.summaries) return;
+    const sm = user.summaries.find(s => s.id === summaryId);
+    if (!sm) return;
+
+    closeSuperAdminModal();
+    const tabBtn = document.getElementById('tab-btn-summary');
+    if (tabBtn) tabBtn.click();
+    setTimeout(() => {
+      renderSummary(sm.content);
+      showToast(`Đang xem bài tóm tắt của học sinh: ${user.profile?.name || authorUsername}`, 'info');
+    }, 200);
+  };
+
+  // Hành động Admin: Mở xem bộ thẻ lật của học sinh
+  window.adminOpenFlashcard = function(authorUsername, flashcardId) {
+    const user = cachedAllAdminUsers.find(u => u.username === authorUsername);
+    if (!user || !user.flashcards) return;
+    const fc = user.flashcards.find(f => f.id === flashcardId);
+    if (!fc) return;
+
+    closeSuperAdminModal();
+    const tabBtn = document.getElementById('tab-btn-flashcards');
+    if (tabBtn) tabBtn.click();
+    setTimeout(() => {
+      if (typeof window.loadBeamsCardsIntoPlayer === 'function') {
+        window.loadBeamsCardsIntoPlayer(fc.cards, fc.title);
+      }
+      showToast(`Đang mở bộ thẻ lật của học sinh: ${user.profile?.name || authorUsername}`, 'info');
+    }, 200);
+  };
+
+  // Gắn sự kiện Admin
+  if (btnCloseSuperAdmin) btnCloseSuperAdmin.addEventListener('click', closeSuperAdminModal);
+  if (btnRefreshSuperAdmin) btnRefreshSuperAdmin.addEventListener('click', loadSuperAdminData);
+  if (btnSuperAdminMobile) btnSuperAdminMobile.addEventListener('click', () => openSuperAdminModal('users'));
+  if (btnSuperAdminDesktop) btnSuperAdminDesktop.addEventListener('click', () => openSuperAdminModal('users'));
+  if (modalSuperAdmin) {
+    modalSuperAdmin.addEventListener('click', (e) => {
+      if (e.target === modalSuperAdmin) closeSuperAdminModal();
+    });
+  }
+
+  // Tìm kiếm live trong các tab Admin
+  if (adminSearchUsers) adminSearchUsers.addEventListener('input', () => renderAdminUsersTab());
+  if (adminSearchMindmaps) adminSearchMindmaps.addEventListener('input', () => renderAdminMindmapsTab());
+  if (adminSearchSummaries) adminSearchSummaries.addEventListener('input', () => renderAdminSummariesTab());
+  if (adminSearchScores) adminSearchScores.addEventListener('input', () => renderAdminScoresTab());
+  if (adminFilterSubjectScores) adminFilterSubjectScores.addEventListener('change', () => renderAdminScoresTab());
+  if (adminSearchFlashcards) adminSearchFlashcards.addEventListener('input', () => renderAdminFlashcardsTab());
+
+  // Window exposures
+  window.openSuperAdminModal = openSuperAdminModal;
+  window.closeSuperAdminModal = closeSuperAdminModal;
+  window.switchAdminTab = switchAdminTab;
+  window.refreshSuperAdminData = loadSuperAdminData;
 
   // Initialize
   initUserAccounts();
