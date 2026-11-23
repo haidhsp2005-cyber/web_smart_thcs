@@ -1,5 +1,5 @@
 // sw.js - Service Worker cho SmartEdu THCS (Hỗ trợ PWA & Bộ nhớ đệm Ngoại tuyến)
-const CACHE_NAME = 'smartedu-thcs-v25-restore-2-models-and-admin-delete-score';
+const CACHE_NAME = 'smartedu-thcs-v27-realtime-firebase-sync';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

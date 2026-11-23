@@ -5196,6 +5196,29 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     updateSavedSummariesCount();
     updateSavedBeamsCount();
 
+    // Kích hoạt lắng nghe thời gian thực (Real-time onSnapshot) cho tài khoản này từ Firebase Cloud
+    if (state.activeUserUnsubscribe) {
+      try { state.activeUserUnsubscribe(); } catch (e) {}
+      state.activeUserUnsubscribe = null;
+    }
+    if (window.SmartEduCloud && window.SmartEduCloud.subscribeUser && user.username !== 'admin') {
+      state.activeUserUnsubscribe = window.SmartEduCloud.subscribeUser(user.username, (freshUser) => {
+        if (!freshUser || !state.currentUser || state.currentUser.username !== freshUser.username) return;
+        state.currentUser.scores = freshUser.scores || [];
+        state.currentUser.mindmaps = freshUser.mindmaps || [];
+        state.currentUser.summaries = freshUser.summaries || [];
+        state.currentUser.flashcards = freshUser.flashcards || [];
+        updateHeaderAccountUI();
+        updateSavedMindmapsCount();
+        updateSavedSummariesCount();
+        updateSavedBeamsCount();
+        renderMindmapLibrary();
+        renderSummaryLibrary();
+        renderBeamsLibrary();
+        renderAccountProgressUI();
+      });
+    }
+
     // 3. Khởi tạo/Hiển thị dữ liệu CỦA RIÊNG HỌC SINH NÀY lên các Tab:
     // Tab 1: Sơ đồ tư duy
     if (user.mindmaps.length > 0) {
@@ -5404,18 +5427,20 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       }
       if (existingUser) {
         applyUserSession(existingUser);
-
-        // ĐỒNG BỘ TỰ ĐỘNG VỚI FIREBASE CLOUD: Kéo dữ liệu mới nhất (sơ đồ mới lưu từ điện thoại/máy tính khác)
-        if (window.SmartEduCloud.isFirebaseReady && window.SmartEduCloud.getUserData) {
-          window.SmartEduCloud.getUserData(cleanUsername).then(freshUser => {
-            if (freshUser && state.currentUser && state.currentUser.username === cleanUsername) {
-              applyUserSession(freshUser);
-              console.log('☁️ Đã đồng bộ bài học & sơ đồ mới nhất từ Firebase cho:', cleanUsername);
-            }
-          }).catch(() => {});
-        }
-        return;
       }
+
+      // Kéo dữ liệu thời gian thực từ Firebase Cloud ngay lập tức
+      if (window.SmartEduCloud.getUserData) {
+        try {
+          const freshUser = await window.SmartEduCloud.getUserData(cleanUsername);
+          if (freshUser) {
+            applyUserSession(freshUser);
+            console.log('☁️ Đã đồng bộ bài học & sơ đồ mới nhất từ Firebase cho:', cleanUsername);
+            return;
+          }
+        } catch (e) {}
+      }
+      if (existingUser) return;
     }
 
     // Nếu chưa có phiên đăng nhập -> Xóa dữ liệu tạm và hiển thị Khung Đăng Nhập
@@ -6968,12 +6993,24 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     // Hiển thị trạng thái cloud
     if (adminStatCloud) {
       if (window.SmartEduCloud.isFirebaseReady) {
-        adminStatCloud.textContent = 'Google Cloud Online';
+        adminStatCloud.textContent = 'Google Cloud Online (Thời gian thực)';
         adminStatCloud.className = 'text-[11px] font-bold text-emerald-700 mt-1 truncate';
       } else {
         adminStatCloud.textContent = 'Bộ nhớ Máy này';
         adminStatCloud.className = 'text-[11px] font-bold text-amber-700 mt-1 truncate';
       }
+    }
+
+    // Kích hoạt Real-Time Listener thời gian thực cho Super Admin (nếu chưa gắn)
+    if (!state.adminRealtimeSubscribed && window.SmartEduCloud.subscribeAllUsers) {
+      state.adminRealtimeSubscribed = true;
+      window.SmartEduCloud.subscribeAllUsers((allUsersList) => {
+        if (Array.isArray(allUsersList)) {
+          cachedAllAdminUsers = allUsersList;
+          updateAdminStats();
+          renderCurrentAdminTab();
+        }
+      });
     }
 
     try {
@@ -6993,25 +7030,17 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     }
   }
 
-  // Lọc bỏ tài khoản mẫu / dữ liệu bài mẫu (Toán 9, KHTN 9, longphung9a13...) để Super Admin chỉ thấy dữ liệu thực tế
+  // Chỉ loại bỏ tài khoản 'admin' khỏi danh sách học sinh (để hiển thị 100% tất cả học sinh thực tế trên Firebase)
   function isAdminSampleUser(u) {
     if (!u) return true;
     const uname = (u.username || '').trim().toLowerCase();
-    const name = (u.profile?.name || '').toLowerCase();
-    if (uname === 'admin' || uname === 'longphung9a13' || uname.startsWith('demo') || uname.startsWith('test')) return true;
-    if (name.includes('bài mẫu') || name.includes('mẫu') || name.includes('demo') || name.includes('long phụng')) return true;
+    if (uname === 'admin') return true;
     return false;
   }
 
   function isAdminSampleItem(item) {
     if (!item) return true;
-    const author = (item.authorUsername || item.studentUsername || '').trim().toLowerCase();
-    if (author === 'longphung9a13' || author === 'admin' || author.startsWith('demo') || author.startsWith('test')) return true;
-    const title = (item.title || '').toLowerCase();
-    if (title.includes('bài mẫu') || title.includes('mẫu toán') || title.includes('mẫu khtn') || 
-        title.includes('hệ hai phương trình') || title.includes('định luật ôm') || title.includes('demo')) {
-      return true;
-    }
+    if (item.isSample === true) return true;
     return false;
   }
 
