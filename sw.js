@@ -1,5 +1,5 @@
 // sw.js - Service Worker cho SmartEdu THCS (Hỗ trợ PWA & Bộ nhớ đệm Ngoại tuyến)
-const CACHE_NAME = 'smartedu-thcs-v23-robust-quota-failover';
+const CACHE_NAME = 'smartedu-thcs-v25-restore-2-models-and-admin-delete-score';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

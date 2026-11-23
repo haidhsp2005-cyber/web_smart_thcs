@@ -296,24 +296,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= API KEY ROTATION POOL LOGIC =================
-  // Đa tầng mô hình Flash thông minh (Multi-Model Cascade): Mỗi model có hạn ngạch (quota) riêng biệt.
-  // Khi 1 model chạm 429, hệ thống tự động nhảy sang các model khác trước khi đổi key, triệt tiêu 100% lỗi cạn ngạch!
+  // Đưa Gemini 3.5 Flash Lite lên số 1: Tối ưu thông lượng cao nhất, tạo đề thi & trích xuất siêu nhanh
   const CASCADE_MODELS = [
-    'gemini-2.5-flash-lite',   // Ưu tiên 1: Phản hồi cực nhanh, độ trễ thấp, hạn ngạch rộng
-    'gemini-2.0-flash',        // Dự phòng 1: Năng lực mạnh mẽ, ổn định cao
-    'gemini-2.0-flash-lite',   // Dự phòng 2: Siêu tốc độ
-    'gemini-1.5-flash',        // Dự phòng 3: Model kinh điển, ổn định 100%
-    'gemini-3.5-flash-lite',   // Thế hệ mới
-    'gemini-flash-lite-latest' // Alias mới nhất
+    'gemini-3.5-flash-lite',    // Ưu tiên số 1: Tạo đề nhanh nhất, chuẩn xác nhất, thông lượng cao
+    'gemini-flash-lite-latest' // Dự phòng cấp 1: Bản cập nhật flash-lite mới nhất
   ];
 
   function getModelCandidates(preferred) {
-    let list = [];
-    if (preferred && preferred !== 'auto' && CASCADE_MODELS.includes(preferred)) {
-      list.push(preferred);
+    if (!preferred || preferred === 'auto' || !CASCADE_MODELS.includes(preferred)) {
+      return [...CASCADE_MODELS];
     }
+    const list = [preferred];
     CASCADE_MODELS.forEach(m => {
-      if (!list.includes(m)) list.push(m);
+      if (m !== preferred && !list.includes(m)) list.push(m);
     });
     return list;
   }
@@ -447,14 +442,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (storedModel && (storedModel === 'auto' || CASCADE_MODELS.includes(storedModel))) {
         state.selectedModel = storedModel;
       } else {
-        state.selectedModel = 'gemini-2.5-flash-lite';
-        localStorage.setItem('smartedu_selected_model', 'gemini-2.5-flash-lite');
+        state.selectedModel = 'gemini-3.5-flash-lite';
+        localStorage.setItem('smartedu_selected_model', 'gemini-3.5-flash-lite');
       }
       if (dom.selectGeminiModel) {
         dom.selectGeminiModel.value = state.selectedModel;
       }
 
-      // Tự động khôi phục key về trạng thái sẵn sàng (nếu đã qua thời gian hạ nhiệt)
+      // Tự động khôi phục key về trạng thái sẵn sàng
       const now = Date.now();
       state.apiKeys.forEach(k => {
         if (k.status === 'rate_limited') {
@@ -467,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
           k.errorDetail = '';
         }
         if (!k.workingModel || !CASCADE_MODELS.includes(k.workingModel)) {
-          k.workingModel = 'gemini-2.5-flash-lite';
+          k.workingModel = 'gemini-3.5-flash-lite';
         }
       });
       localStorage.setItem('smartedu_api_keys', JSON.stringify(state.apiKeys));
@@ -829,8 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           // 💡 ĐẶC BIỆT KHI GẶP RATE LIMIT 429:
-          // Mỗi dòng model (2.5-flash-lite, 2.0-flash, 1.5-flash, 3.5-flash-lite) có một hạn ngạch (quota) RIÊNG BIỆT.
-          // Khi một model chạm ngạch, KHÔNG BỎ KEY NGAY mà thử các model khác trong danh sách trước!
+          // Nếu model hiện tại chạm ngạch 429, thử model còn lại trong 2 model (gemini-3.5-flash-lite & gemini-flash-lite-latest)
           if (response.status === 429) {
             console.warn(`Model ${activeModel} chạm ngạch 429 trên Key #${keyIndex + 1}. Thử model dự phòng kế tiếp...`);
             continue;
@@ -876,7 +870,7 @@ document.addEventListener('DOMContentLoaded', () => {
         keyItem.rateLimitedAt = Date.now();
         saveApiKeysToStorage();
         consecutive429Count++;
-        showToast(`Key #${keyIndex + 1} chạm giới hạn ngạch các model. Đang chuyển sang key tiếp theo...`, 'warning');
+        showToast(`Key #${keyIndex + 1} chạm giới hạn ngạch 429. Đang chuyển sang key tiếp theo...`, 'warning');
 
         // Nghỉ nhẹ 300ms - 800ms để tránh việc gửi 9 request dồn dập trong vài mili-giây
         const backoffMs = Math.min(300 * consecutive429Count, 1200);
@@ -7350,7 +7344,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     if (allScores.length === 0) {
       adminScoresTableBody.innerHTML = `
         <tr>
-          <td colspan="9" class="p-8 text-center text-slate-400 bg-slate-50">
+          <td colspan="10" class="p-8 text-center text-slate-400 bg-slate-50">
             <i class="fa-solid fa-award text-2xl mb-1 text-slate-300"></i>
             <p class="font-bold">Chưa có kết quả khảo thí nào!</p>
           </td>
@@ -7398,6 +7392,12 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
           </td>
           <td class="py-2.5 px-3 text-slate-400 font-mono text-[11px] whitespace-nowrap">
             ${sc.date || ''}
+          </td>
+          <td class="py-2.5 px-3 text-center whitespace-nowrap">
+            <button onclick="window.adminDeletePost && window.adminDeletePost('${sc.studentUsername}', 'score', '${sc.id}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold inline-flex items-center gap-1 cursor-pointer transition-all active:scale-95" title="Xóa điểm số bài kiểm tra này">
+              <i class="fa-solid fa-trash text-[11px]"></i>
+              <span>Xóa</span>
+            </button>
           </td>
         </tr>
       `;
@@ -7631,9 +7631,9 @@ Thầy cô có chắc chắn muốn xóa tài khoản học sinh "${fullname}" (
     }
   };
 
-  // Hành động Admin: Xóa bài viết cụ thể (mindmap, summary, flashcard)
+  // Hành động Admin: Xóa bài viết / điểm số cụ thể (mindmap, summary, score, flashcard)
   window.adminDeletePost = async function(username, postType, postId) {
-    const typeLabel = postType === 'mindmap' ? 'sơ đồ tư duy' : postType === 'summary' ? 'bài tóm tắt' : 'bộ thẻ lật';
+    const typeLabel = postType === 'mindmap' ? 'sơ đồ tư duy' : postType === 'summary' ? 'bài tóm tắt' : postType === 'score' ? 'kết quả bài kiểm tra' : 'bộ thẻ lật';
     const confirmDel = confirm(`Thầy cô có chắc chắn muốn xóa ${typeLabel} này?`);
     if (!confirmDel) return;
 
@@ -7641,6 +7641,19 @@ Thầy cô có chắc chắn muốn xóa tài khoản học sinh "${fullname}" (
       const res = await window.SmartEduCloud.adminDeleteUserPost(username, postType, postId);
       if (res.success) {
         showToast(res.message, 'success');
+        if (state.currentUser && state.currentUser.username === username) {
+          if (postType === 'score' && state.currentUser.scores) {
+            state.currentUser.scores = state.currentUser.scores.filter(sc => String(sc.id) !== String(postId));
+          } else if (postType === 'mindmap' && state.currentUser.mindmaps) {
+            state.currentUser.mindmaps = state.currentUser.mindmaps.filter(m => String(m.id) !== String(postId));
+          } else if (postType === 'summary' && state.currentUser.summaries) {
+            state.currentUser.summaries = state.currentUser.summaries.filter(s => String(s.id) !== String(postId));
+          } else if (postType === 'flashcard' && state.currentUser.flashcards) {
+            state.currentUser.flashcards = state.currentUser.flashcards.filter(f => String(f.id) !== String(postId));
+          }
+          updateHeaderAccountUI();
+          renderAccountProgressUI();
+        }
         await loadSuperAdminData();
       } else {
         showToast(res.message, 'error');

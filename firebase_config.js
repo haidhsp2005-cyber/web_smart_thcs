@@ -463,18 +463,20 @@ window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
       const user = localUsers[cleanUsername];
       if (!user) return { success: false, message: 'Không tìm thấy tài khoản!' };
 
+      const strId = String(postId);
       if (postType === 'mindmap' && user.mindmaps) {
-        user.mindmaps = user.mindmaps.filter(m => m.id !== postId);
+        user.mindmaps = user.mindmaps.filter(m => String(m.id) !== strId);
       } else if (postType === 'summary' && user.summaries) {
-        user.summaries = user.summaries.filter(s => s.id !== postId);
+        user.summaries = user.summaries.filter(s => String(s.id) !== strId);
       } else if (postType === 'score' && user.scores) {
-        user.scores = user.scores.filter(sc => sc.id != postId);
+        user.scores = user.scores.filter(sc => String(sc.id) !== strId);
       } else if (postType === 'flashcard' && user.flashcards) {
-        user.flashcards = user.flashcards.filter(f => f.id !== postId);
+        user.flashcards = user.flashcards.filter(f => String(f.id) !== strId);
       }
 
       await this.syncUserData(user);
-      return { success: true, message: 'Đã xóa bài viết thành công!' };
+      const label = postType === 'score' ? 'điểm số bài kiểm tra' : postType === 'mindmap' ? 'sơ đồ tư duy' : postType === 'summary' ? 'bài tóm tắt' : 'bộ thẻ lật';
+      return { success: true, message: `Đã xóa ${label} thành công!` };
     },
 
     // Các hàm phụ trợ lưu trữ cache an toàn (hỗ trợ cả Array legacy và Object)
