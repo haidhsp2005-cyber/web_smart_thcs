@@ -296,19 +296,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= API KEY ROTATION POOL LOGIC =================
-  // Đưa Gemini 3.5 Flash Lite lên số 1: Tối ưu thông lượng cao nhất, tạo đề thi & trích xuất siêu nhanh
+  // Đa tầng mô hình Flash thông minh (Multi-Model Cascade): Mỗi model có hạn ngạch (quota) riêng biệt.
+  // Khi 1 model chạm 429, hệ thống tự động nhảy sang các model khác trước khi đổi key, triệt tiêu 100% lỗi cạn ngạch!
   const CASCADE_MODELS = [
-    'gemini-3.5-flash-lite',    // Ưu tiên số 1: Tạo đề nhanh nhất, chuẩn xác nhất, thông lượng cao
-    'gemini-flash-lite-latest' // Dự phòng cấp 1: Bản cập nhật flash-lite mới nhất
+    'gemini-2.5-flash-lite',   // Ưu tiên 1: Phản hồi cực nhanh, độ trễ thấp, hạn ngạch rộng
+    'gemini-2.0-flash',        // Dự phòng 1: Năng lực mạnh mẽ, ổn định cao
+    'gemini-2.0-flash-lite',   // Dự phòng 2: Siêu tốc độ
+    'gemini-1.5-flash',        // Dự phòng 3: Model kinh điển, ổn định 100%
+    'gemini-3.5-flash-lite',   // Thế hệ mới
+    'gemini-flash-lite-latest' // Alias mới nhất
   ];
 
   function getModelCandidates(preferred) {
-    if (!preferred || preferred === 'auto' || !CASCADE_MODELS.includes(preferred)) {
-      return [...CASCADE_MODELS];
+    let list = [];
+    if (preferred && preferred !== 'auto' && CASCADE_MODELS.includes(preferred)) {
+      list.push(preferred);
     }
-    const list = [preferred];
     CASCADE_MODELS.forEach(m => {
-      if (m !== preferred && !list.includes(m)) list.push(m);
+      if (!list.includes(m)) list.push(m);
     });
     return list;
   }
@@ -442,18 +447,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (storedModel && (storedModel === 'auto' || CASCADE_MODELS.includes(storedModel))) {
         state.selectedModel = storedModel;
       } else {
-        state.selectedModel = 'gemini-flash-lite-latest';
-        localStorage.setItem('smartedu_selected_model', 'gemini-flash-lite-latest');
+        state.selectedModel = 'gemini-2.5-flash-lite';
+        localStorage.setItem('smartedu_selected_model', 'gemini-2.5-flash-lite');
       }
       if (dom.selectGeminiModel) {
         dom.selectGeminiModel.value = state.selectedModel;
       }
 
-      // Tự động khôi phục key về trạng thái sẵn sàng với mô hình Flash Lite Siêu Tốc
+      // Tự động khôi phục key về trạng thái sẵn sàng (nếu đã qua thời gian hạ nhiệt)
+      const now = Date.now();
       state.apiKeys.forEach(k => {
-        k.status = 'ready';
-        k.workingModel = 'gemini-flash-lite-latest';
-        k.errorDetail = '';
+        if (k.status === 'rate_limited') {
+          if (!k.rateLimitedAt || (now - k.rateLimitedAt > 40000)) {
+            k.status = 'ready';
+            k.errorDetail = '';
+          }
+        } else if (k.status !== 'error') {
+          k.status = 'ready';
+          k.errorDetail = '';
+        }
+        if (!k.workingModel || !CASCADE_MODELS.includes(k.workingModel)) {
+          k.workingModel = 'gemini-2.5-flash-lite';
+        }
       });
       localStorage.setItem('smartedu_api_keys', JSON.stringify(state.apiKeys));
     } catch (e) {
@@ -568,10 +583,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const candidates = getModelCandidates(state.selectedModel);
-    showLoading('Đang kiểm tra kết nối API Key...', `Thử nghiệm Key #${index + 1} qua bộ lọc tự động nhận diện model...`);
+    showLoading('Đang kiểm tra kết nối API Key...', `Thử nghiệm Key #${index + 1} qua bộ lọc đa tầng mô hình AI...`);
 
     let isSuccess = false;
     let finalError = '';
+    let isRateLimited = false;
 
     for (const modelCandidate of candidates) {
       const controller = new AbortController();
@@ -608,19 +624,16 @@ document.addEventListener('DOMContentLoaded', () => {
         finalError = `[HTTP ${res.status}] ${rawErrMsg}`;
 
         // 💡 Cơ chế Failover tự động: Nếu model gặp 404, 503, 500
-        // Tự động chuyển ngay sang model kế tiếp trong 0.1 giây mà không gián đoạn
         if (res.status === 404 || res.status === 503 || res.status === 500) {
-          console.info(`Model ${modelCandidate} mã ${res.status}. Tự động Failover sang model kế tiếp trong 0.1s...`);
+          console.info(`Model ${modelCandidate} mã ${res.status}. Tự động Failover sang model kế tiếp...`);
           continue;
         }
 
-        // Nếu lỗi 429 (Hết ngạch)
+        // Nếu lỗi 429 trên model này, thử ngay model kế tiếp thay vì dừng kiểm tra
         if (res.status === 429) {
-          item.status = 'rate_limited';
-          item.errorDetail = 'Hết hạn ngạch 429 (Too Many Requests)';
-          saveApiKeysToStorage();
-          showToast(`Key #${index + 1} chạm giới hạn ngạch 429.`, 'warning');
-          break;
+          console.info(`Model ${modelCandidate} chạm 429. Thử tiếp model khác cho key này...`);
+          isRateLimited = true;
+          continue;
         }
 
         // Nếu lỗi 400, 401 hoặc 403 (Sai mã key hoặc chưa cấp quyền)
@@ -636,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(timeoutId);
         state.activeAbortController = null;
         if (err.name === 'AbortError' || err === 'TIMEOUT' || err.message === 'TIMEOUT') {
-          continue; // Timeout trên model này, thử ngay model tiếp theo
+          continue;
         } else {
           finalError = `Lỗi mạng: ${err.message}`;
         }
@@ -645,15 +658,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     hideLoading();
 
-    if (!isSuccess && item.status !== 'rate_limited') {
-      item.status = 'error';
-      item.errorDetail = finalError || 'Không kết nối được với Google';
-      saveApiKeysToStorage();
-      showToast(`Key #${index + 1}: ${item.errorDetail}`, 'error');
+    if (!isSuccess && item.status !== 'error') {
+      if (isRateLimited) {
+        item.status = 'rate_limited';
+        item.rateLimitedAt = Date.now();
+        item.errorDetail = 'Hết hạn ngạch tạm thời trên tất cả model (429). Sẽ tự phục hồi sau 40s.';
+        saveApiKeysToStorage();
+        showToast(`Key #${index + 1}: Hết ngạch tạm thời (429). Hệ thống sẽ tự khôi phục sau 40s!`, 'warning');
+      } else {
+        item.status = 'error';
+        item.errorDetail = finalError || 'Không kết nối được với Google';
+        saveApiKeysToStorage();
+        showToast(`Key #${index + 1}: ${item.errorDetail}`, 'error');
+      }
     }
   }
 
-  // CORE CALL FUNCTION WITH AUTOMATIC KEY ROTATION & HIGH-SPEED FAILOVER (0.1S)
+  // CORE CALL FUNCTION WITH AUTOMATIC MULTI-MODEL FAILOVER & SMART KEY ROTATION
   async function callGeminiWithRotation(prompt, inlineImageBase64 = null, options = {}) {
     if (state.apiKeys.length === 0) {
       dom.keyModal.classList.remove('hidden');
@@ -665,13 +686,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const { isJson = false, maxTokens = 4000, taskName = 'Đang xử lý bằng AI...', timeoutMs = 25000 } = options;
-    const maxAttempts = state.apiKeys.length;
-    let attempts = 0;
-    let lastErrorMessage = '';
     state.userAbortedOperation = false;
+
+    // Tự động khôi phục các key đã hết thời gian hạ nhiệt cooldown (sau 40 giây kể từ khi 429)
+    const now = Date.now();
+    state.apiKeys.forEach(k => {
+      if (k.status === 'rate_limited' && (!k.rateLimitedAt || (now - k.rateLimitedAt > 40000))) {
+        k.status = 'ready';
+        k.errorDetail = '';
+      }
+    });
 
     // Lấy danh sách mô hình ưu tiên theo tầng bảo hiểm (Cascade list)
     const baseCandidates = getModelCandidates(state.selectedModel);
+    const totalKeys = state.apiKeys.length;
+    // Cho phép xoay tối đa 2 vòng qua toàn bộ key để vượt qua tình huống quá tải đột xuất (Spike/Burst)
+    const maxAttempts = totalKeys * 2;
+    let attempts = 0;
+    let lastErrorMessage = '';
+    let consecutive429Count = 0;
 
     while (attempts < maxAttempts) {
       if (state.userAbortedOperation) {
@@ -679,16 +712,34 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error("Thao tác đã bị dừng theo yêu cầu của bạn.");
       }
 
-      const keyIndex = state.currentKeyIndex;
+      // Ưu tiên tìm key có trạng thái 'ready'
+      let keyIndex = -1;
+      for (let i = 0; i < totalKeys; i++) {
+        const checkIdx = (state.currentKeyIndex + i) % totalKeys;
+        if (state.apiKeys[checkIdx].status === 'ready') {
+          keyIndex = checkIdx;
+          break;
+        }
+      }
+      // Nếu không có key nào 'ready' (tất cả đều bị rate_limited tạm thời), chọn key hiện tại và tự động cấp quyền lại
+      if (keyIndex === -1) {
+        keyIndex = state.currentKeyIndex;
+        if (state.apiKeys[keyIndex].status !== 'error') {
+          state.apiKeys[keyIndex].status = 'ready';
+        }
+      }
+
+      state.currentKeyIndex = (keyIndex + 1) % totalKeys;
       const keyItem = state.apiKeys[keyIndex];
-      state.currentKeyIndex = (state.currentKeyIndex + 1) % state.apiKeys.length;
 
       // Nếu key này đã từng chạy thành công với một model cụ thể, ưu tiên model đó lên đầu
       const keyCandidates = keyItem.workingModel
         ? [keyItem.workingModel, ...baseCandidates.filter(m => m !== keyItem.workingModel)]
         : baseCandidates;
 
-      // Thử tuần tự các model theo thứ tự ưu tiên (Failover 0.1s không làm gián đoạn)
+      let allModels429OnThisKey = true;
+
+      // Thử tuần tự các model theo thứ tự ưu tiên trên CÙNG 1 KEY này
       for (const activeModel of keyCandidates) {
         if (state.userAbortedOperation) break;
 
@@ -769,19 +820,20 @@ document.addEventListener('DOMContentLoaded', () => {
           const rawErrMsg = errJson.error?.message || `Lỗi HTTP ${response.status}`;
           lastErrorMessage = rawErrMsg;
 
-          // 💡 Cơ chế Failover tự động: Quá tải cục bộ (503), lỗi máy chủ (500) hoặc Model 404
-          // Hệ thống tự động chuyển sang model kế tiếp trong 0.1s mà không làm gián đoạn hay báo lỗi ra màn hình
+          // 💡 Failover tự động nếu Model 404 (chưa hỗ trợ ở vùng này) hoặc 503, 500 (máy chủ Google bận):
+          // Chuyển sang model kế tiếp trong danh sách ngay trên key này
           if (response.status === 404 || response.status === 503 || response.status === 500) {
-            console.info(`Model ${activeModel} gặp mã ${response.status}. Failover sang model kế tiếp trong 0.1s...`);
+            console.info(`Model ${activeModel} gặp mã ${response.status}. Chuyển sang model dự phòng kế tiếp...`);
+            allModels429OnThisKey = false;
             continue;
           }
 
-          // Rate Limit (429): Key này hết ngạch -> xoay sang Key kế tiếp
+          // 💡 ĐẶC BIỆT KHI GẶP RATE LIMIT 429:
+          // Mỗi dòng model (2.5-flash-lite, 2.0-flash, 1.5-flash, 3.5-flash-lite) có một hạn ngạch (quota) RIÊNG BIỆT.
+          // Khi một model chạm ngạch, KHÔNG BỎ KEY NGAY mà thử các model khác trong danh sách trước!
           if (response.status === 429) {
-            keyItem.status = 'rate_limited';
-            saveApiKeysToStorage();
-            showToast(`Key #${keyIndex + 1} chạm giới hạn ngạch 429. Đang chuyển sang key tiếp theo...`, 'warning');
-            break; // sang key tiếp theo trong bể xoay vòng
+            console.warn(`Model ${activeModel} chạm ngạch 429 trên Key #${keyIndex + 1}. Thử model dự phòng kế tiếp...`);
+            continue;
           }
 
           // Sai mã key hoặc bị cấm quyền (400, 401, 403)
@@ -790,9 +842,11 @@ document.addEventListener('DOMContentLoaded', () => {
             keyItem.errorDetail = `Lỗi ${response.status}: ${rawErrMsg}`;
             saveApiKeysToStorage();
             showToast(`Key #${keyIndex + 1}: ${rawErrMsg}. Đang chuyển key tiếp theo...`, 'warning');
+            allModels429OnThisKey = false;
             break; // sang key tiếp theo trong bể xoay vòng
           }
 
+          allModels429OnThisKey = false;
           continue;
 
         } catch (err) {
@@ -805,16 +859,45 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (err.name === 'AbortError' || err === 'TIMEOUT' || err.message === 'TIMEOUT') {
-            console.warn(`Model ${activeModel} timeout ${Math.round(timeoutMs/1000)}s. Failover sang model kế tiếp...`);
+            console.warn(`Model ${activeModel} timeout. Thử model kế tiếp...`);
+            allModels429OnThisKey = false;
             continue;
           }
 
           console.warn(`Model ${activeModel} error:`, err);
+          allModels429OnThisKey = false;
           continue;
         }
       }
 
+      // Nếu tất cả các model trên key này đều chạm ngạch 429:
+      if (allModels429OnThisKey) {
+        keyItem.status = 'rate_limited';
+        keyItem.rateLimitedAt = Date.now();
+        saveApiKeysToStorage();
+        consecutive429Count++;
+        showToast(`Key #${keyIndex + 1} chạm giới hạn ngạch các model. Đang chuyển sang key tiếp theo...`, 'warning');
+
+        // Nghỉ nhẹ 300ms - 800ms để tránh việc gửi 9 request dồn dập trong vài mili-giây
+        const backoffMs = Math.min(300 * consecutive429Count, 1200);
+        await new Promise(r => setTimeout(r, backoffMs));
+      } else {
+        consecutive429Count = 0;
+      }
+
       attempts++;
+
+      // Nếu đã quay hết 1 vòng (attempts === totalKeys) mà vẫn chưa thành công:
+      // Nghỉ 1.5 giây cho cửa sổ RPM của Google hạ nhiệt và thử tiếp vòng 2
+      if (attempts === totalKeys && attempts < maxAttempts) {
+        showLoading(taskName, 'Đang chờ Google hạ nhiệt hạn ngạch (1.5s)...');
+        await new Promise(r => setTimeout(r, 1500));
+        state.apiKeys.forEach(k => {
+          if (k.status === 'rate_limited') {
+            k.status = 'ready';
+          }
+        });
+      }
     }
 
     hideLoading();
