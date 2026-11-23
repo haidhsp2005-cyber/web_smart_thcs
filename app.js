@@ -898,9 +898,9 @@ document.addEventListener('DOMContentLoaded', () => {
     throw new Error(`Không thể hoàn thành yêu cầu: ${lastErrorMessage || 'Tất cả các API Key hoặc Model trong bể xoay vòng đều bận'}`);
   }
 
-  // ================= THUẬT TOÁN TỐI ƯU HÓA NGỮ CẢNH VĂN BẢN DÀI (SMART SEMANTIC TRUNCATION) =================
-  // Giúp AI phản hồi siêu tốc sau 2-3s kể cả với tài liệu dài 5.000 - 15.000 từ
-  function optimizeTextForAi(rawText, maxChars = 7500) {
+  // ================= THUẬT TOÁN TỐI ƯU HÓA NGỮ CẢNH VĂN BẢN DÀI (HỖ TRỢ TÀI LIỆU TRÊN 10-40 TRANG) =================
+  // Gemini 3.5 Flash Lite hỗ trợ context khủng (1 triệu tokens), hệ thống mở rộng xử lý tới 75.000 ký tự (30+ trang)
+  function optimizeTextForAi(rawText, maxChars = 75000) {
     if (!rawText || typeof rawText !== 'string') return '';
     if (rawText.length <= maxChars) return rawText;
 
@@ -921,7 +921,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isMathOrFormula = /[$=+\-*/\\^_√ΔΩ△∠⟂∥]/.test(trimmed);
       const isKeyConcept = /ghi nhớ|tóm tắt|định lý|định luật|khái niệm|công thức|kết luận|chú ý|ví dụ|takeaway/i.test(trimmed);
 
-      if (isHeading || isMathOrFormula || isKeyConcept || priorityLines.length < 30) {
+      if (isHeading || isMathOrFormula || isKeyConcept || priorityLines.length < 50) {
         priorityLines.push(line);
         currentLength += line.length + 1;
         if (currentLength >= maxChars) break;
@@ -931,12 +931,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (priorityLines.length >= 20 && currentLength >= 2000) {
+    if (priorityLines.length >= 20 && currentLength >= 5000) {
       return priorityLines.join('\n');
     }
 
     // 3. Fallback: Cắt giữ đầu và đuôi cân đối (tránh mất phần tóm tắt ở cuối sách)
-    const headLen = Math.floor(maxChars * 0.7);
+    const headLen = Math.floor(maxChars * 0.75);
     const tailLen = maxChars - headLen - 120;
     return text.slice(0, headLen) + '\n\n[... Trích lược nội dung bài học ...]\n\n' + text.slice(-tailLen);
   }
@@ -1158,7 +1158,7 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             const zip = await window.JSZip.loadAsync(arrayBuffer);
             const imageEntries = Object.keys(zip.files).filter(k => /^word\/media\/.+\.(png|jpeg|jpg|webp)$/i.test(k));
-            const imagesToExtract = imageEntries.slice(0, 10); // Hỗ trợ tối đa 10 trang ảnh scan nhúng trong Word
+            const imagesToExtract = imageEntries.slice(0, 30); // Mở rộng hỗ trợ tối đa tới 30 trang ảnh scan nhúng trong Word
             for (const imgPath of imagesToExtract) {
               const fileData = await zip.files[imgPath].async("base64");
               const ext = imgPath.split('.').pop().toLowerCase();
@@ -1257,9 +1257,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render ảnh các trang thông minh:
         // - PDF kỹ thuật số (đã có text): Chỉ render duy nhất Trang 1 làm thumbnail xem trước (siêu tốc, chỉ mất 0.1s)
-        // - PDF scan ảnh: Render tối đa 10 trang để hỗ trợ AI Multimodal Vision đọc chi tiết toàn bộ công thức & hình vẽ
+        // - PDF scan ảnh: Render tối đa tới 30 trang để hỗ trợ AI Multimodal Vision đọc chi tiết toàn bộ tài liệu dài
         let pageImages = [];
-        const pagesToRender = isScannedPdf ? Math.min(totalPages, 10) : 1;
+        const pagesToRender = isScannedPdf ? Math.min(totalPages, 30) : 1;
 
         for (let i = 1; i <= pagesToRender; i++) {
           try {
@@ -1288,6 +1288,7 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'pdf_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
             name: name,
             type: 'pdf',
+            pageCount: totalPages,
             text: scanNotice,
             wordCount: totalRealWords > 15 ? totalRealWords : 0,
             size: file.size,
@@ -1303,6 +1304,7 @@ document.addEventListener('DOMContentLoaded', () => {
           id: 'pdf_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           name: name,
           type: 'pdf',
+          pageCount: totalPages,
           text: fullText || `[File PDF: ${name} (Không tìm thấy văn bản trích xuất)]`,
           wordCount: totalRealWords,
           size: file.size,
@@ -1398,10 +1400,12 @@ document.addEventListener('DOMContentLoaded', () => {
       dom.docBadgeType.textContent = totalFiles > 1 ? `GỘP ${totalFiles} FILE` : state.currentDoc.type.toUpperCase();
     }
 
+    const totalPagesCount = state.uploadedFiles.reduce((acc, f) => acc + (f.pageCount || 0), 0);
+    const pagesInfo = totalPagesCount > 0 ? `${totalPagesCount} trang • ` : '';
     const imageCount = allImages.length;
-    const imageInfo = imageCount > 0 ? ` • ${imageCount} ảnh bài học` : '';
+    const imageInfo = imageCount > 0 ? ` • ${imageCount} ảnh` : '';
     if (dom.docStats) {
-      dom.docStats.textContent = `${state.currentDoc.wordCount} từ${imageInfo} • Sẵn sàng phân tích & khảo thí`;
+      dom.docStats.textContent = `${pagesInfo}${state.currentDoc.wordCount} từ${imageInfo} • Sẵn sàng phân tích toàn diện`;
     }
 
     // Biểu tượng loại tài liệu
@@ -2284,16 +2288,17 @@ QUY TẮC THIẾT KẾ SƠ ĐỒ TƯ DUY HIỆN ĐẠI (CHỐNG DÀI DÒNG, TĂN
 3. Tỏa nhánh hình cây: Nếu có nhiều ý con, hãy tách thành các dấu gạch đầu dòng con lùi vào trong để sơ đồ bung rộng tỏa nhánh cân xứng, đẹp mắt.
 4. Viết công thức Toán/KHTN dưới dạng LaTeX kẹp giữa $ (Ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$).
 5. ĐẶC BIỆT LƯU Ý HÌNH VẼ & SƠ ĐỒ MINH HỌA: Nếu bài học có hình vẽ hình học, sơ đồ mạch điện, thí nghiệm hóa học hoặc đồ thị, hãy trích xuất và đưa các dữ kiện then chốt từ hình vẽ vào các nhánh kiến thức tương ứng.
-6. CHỈ TRẢ VỀ DUY NHẤT ĐOẠN MÃ MARKDOWN CỦA SƠ ĐỒ TƯ DUY, KHÔNG CÓ BẤT KỲ LỜI DẪN NÀO KHÁC.
+6. ĐỐI VỚI TÀI LIỆU DÀI NHIỀU TRANG (TRÊN 10 TRANG): Hãy phân bổ các nhánh cấp 1 (##) và nhánh cấp 2 (###) bao quát toàn bộ tài liệu từ trang 1 đến trang cuối, không bỏ sót các phần kiến thức trọng tâm.
+7. CHỈ TRẢ VỀ DUY NHẤT ĐOẠN MÃ MARKDOWN CỦA SƠ ĐỒ TƯ DUY, KHÔNG CÓ BẤT KỲ LỜI DẪN NÀO KHÁC.
 
-NỘI DUNG BÀI HỌC CẤP 2:
-${optimizeTextForAi(state.currentDoc.text, 6500)}`;
+NỘI DUNG BÀI HỌC CẤP 2 (TOÀN BỘ CÁC TRANG TÀI LIỆU):
+${optimizeTextForAi(state.currentDoc.text, 65000)}`;
 
     try {
       const imgToSend = getImagesToSend();
       const aiResponse = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: false,
-        maxTokens: 1500,
+        maxTokens: 3500,
         taskName: 'Đang tạo Sơ đồ tư duy AI...'
       });
       // Clean up markdown block quotes if present
@@ -2397,14 +2402,14 @@ Trả về dữ liệu dưới dạng JSON thuần túy (không bọc text ngoà
   }
 }
 
-NỘI DUNG BÀI HỌC CẤP 2:
-${optimizeTextForAi(state.currentDoc.text, 6500)}`;
+NỘI DUNG BÀI HỌC CẤP 2 (BAO QUÁT TOÀN BỘ CÁC TRANG CỦA TÀI LIỆU):
+${optimizeTextForAi(state.currentDoc.text, 65000)}`;
 
     try {
       const imgToSend = getImagesToSend();
       const rawRes = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: true,
-        maxTokens: 1500,
+        maxTokens: 3500,
         taskName: 'Đang tạo Tóm tắt & Gợi ý học tập AI...'
       });
       const parsed = safeParseJson(rawRes);
@@ -2707,6 +2712,7 @@ Dựa trên tài liệu bài học cấp 2 sau, hãy tạo một bộ đề thi 
 QUAN TRỌNG VỀ CÔNG THỨC TOÁN & KHOA HỌC: Bắt buộc viết các công thức toán, lý, hóa trong câu hỏi, đáp án và giải thích dưới dạng LaTeX kẹp giữa dấu $ (ví dụ: $ax^2 + bx + c = 0$, $\\Delta = b^2 - 4ac$, $I = \\frac{U}{R}$, $P = U \\cdot I$, $Q = I^2 R t$).
 LƯU Ý KỸ THUẬT VỀ ĐỊNH DẠNG JSON: Mọi công thức LaTeX trong chuỗi JSON PHẢI dùng 2 dấu gạch chéo ngược \\\\ (ví dụ \\\\frac{U}{R}, \\\\sqrt{x}, \\\\Delta, \\\\cdot, \\\\Omega, \\\\pm) để đảm bảo chuỗi JSON hợp lệ 100%.
 ĐẶC BIỆT LƯU Ý HÌNH VẼ & SƠ ĐỒ MINH HỌA: Nếu bài học có hình vẽ hình học, sơ đồ mạch điện, thí nghiệm hóa học hoặc đồ thị, hãy sáng tạo ít nhất 2-3 câu hỏi khai thác trực tiếp từ các dữ kiện trên hình vẽ (ví dụ: "Dựa vào hình vẽ/sơ đồ mạch điện, hãy tính...", "Hiện tượng quan sát được trong thí nghiệm là...").
+ĐỐI VỚI TÀI LIỆU DÀI NHIỀU TRANG (TRÊN 10 TRANG): Hãy phân bổ đều các câu hỏi từ trang đầu đến trang cuối của tài liệu để đánh giá toàn diện năng lực học sinh.
 Mỗi câu hỏi có 4 đáp án (A, B, C, D) với đúng 1 đáp án chính xác.
 Trả về dữ liệu dưới dạng JSON thuần túy (KHÔNG có văn bản nào ngoài JSON) theo cấu trúc mảng sau:
 [
@@ -2726,8 +2732,8 @@ Trả về dữ liệu dưới dạng JSON thuần túy (KHÔNG có văn bản n
   }
 ]
 
-NỘI DUNG BÀI HỌC CẤP 2:
-${optimizeTextForAi(state.currentDoc.text, 7500)}`;
+NỘI DUNG BÀI HỌC CẤP 2 (TOÀN BỘ CÁC TRANG CỦA TÀI LIỆU):
+${optimizeTextForAi(state.currentDoc.text, 75000)}`;
 
     try {
       const imgToSend = getImagesToSend();
@@ -3671,14 +3677,14 @@ Trả về mảng JSON thuần túy theo cấu trúc:
   }
 ]
 
-NỘI DUNG BÀI HỌC CẤP 2:
-${optimizeTextForAi(state.currentDoc.text, 6500)}`;
+NỘI DUNG BÀI HỌC CẤP 2 (TOÀN BỘ CÁC TRANG CỦA TÀI LIỆU):
+${optimizeTextForAi(state.currentDoc.text, 65000)}`;
 
     try {
       const imgToSend = getImagesToSend();
       const rawRes = await callGeminiWithRotation(prompt, imgToSend, {
         isJson: true,
-        maxTokens: 4000,
+        maxTokens: 5000,
         taskName: 'Đang tạo bộ Thẻ học tập Flashcards AI...'
       });
       const parsed = safeParseJson(rawRes);
