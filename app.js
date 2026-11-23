@@ -5089,10 +5089,19 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
 
   // ================= CÔ LẬP VÀ ĐỒNG BỘ DỮ LIỆU RIÊNG TỪNG TÀI KHOẢN =================
 
-  // Nạp toàn bộ dữ liệu CỦA RIÊNG HỌC SINH ĐANG ĐĂNG NHẬP lên giao diện (không lẫn lộn người khác)
+  // Nạp toàn bộ dữ liệu CỦA RIÊNG HỌC SINH ĐANG ĐĂNG NHẬP lên giao diện (cô lập 100%, không lẫn lộn tài khoản khác)
   function applyUserSession(user) {
     if (!user) return;
+
+    // BƯỚC 1: Xóa trắng toàn bộ giao diện và bộ nhớ tạm của phiên trước đó
+    resetUIForGuest();
+
+    // BƯỚC 2: Gán người dùng hiện tại và chuẩn hóa các mảng dữ liệu riêng biệt
     state.currentUser = user;
+    user.scores = Array.isArray(user.scores) ? user.scores : [];
+    user.mindmaps = Array.isArray(user.mindmaps) ? user.mindmaps : [];
+    user.summaries = Array.isArray(user.summaries) ? user.summaries : [];
+    user.flashcards = Array.isArray(user.flashcards) ? user.flashcards : [];
 
     // Đóng Auth Gate NGAY LẬP TỨC ở đầu hàm
     const authGate = document.getElementById('modal-auth-gate');
@@ -5101,10 +5110,6 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       authGate.classList.add('hidden');
       authGate.classList.remove('flex');
     }
-    user.scores = user.scores || [];
-    user.mindmaps = user.mindmaps || [];
-    user.summaries = user.summaries || [];
-    user.flashcards = user.flashcards || [];
 
     // 1. Cập nhật thanh tiêu đề Header
     updateHeaderAccountUI();
@@ -5133,6 +5138,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       state.mindmapMarkdown = '';
       state.markmapInstance = null;
       if (dom.markmapSvg) dom.markmapSvg.innerHTML = '';
+      if (dom.markdownInput) dom.markdownInput.value = '';
       if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.remove('hidden');
     }
 
@@ -5142,6 +5148,11 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       renderSummary(latestSum.summaryData || latestSum.content || latestSum);
     } else {
       state.summaryData = null;
+      if (dom.listTakeaways) dom.listTakeaways.innerHTML = '';
+      if (dom.tableTermsBody) dom.tableTermsBody.innerHTML = '';
+      if (dom.feynmanText) dom.feynmanText.textContent = '';
+      if (dom.mnemonicsText) dom.mnemonicsText.textContent = '';
+      if (dom.spacedList) dom.spacedList.innerHTML = '';
       if (dom.summaryEmptyState) dom.summaryEmptyState.classList.remove('hidden');
       if (dom.sectionTakeaways) dom.sectionTakeaways.classList.add('hidden');
       if (dom.sectionTerms) dom.sectionTerms.classList.add('hidden');
@@ -5150,6 +5161,10 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
 
     // Tab 3: Khảo thí & Chấm điểm (Xóa trắng kết quả phiên trước, sẵn sàng cho bài thi mới)
     state.quizData = [];
+    state.quizUserAnswers = {};
+    state.quizSubmitted = false;
+    if (dom.quizQuestionsContainer) dom.quizQuestionsContainer.innerHTML = '';
+    if (dom.quizResultSummary) dom.quizResultSummary.innerHTML = '';
     if (dom.interactiveQuizContainer) dom.interactiveQuizContainer.classList.add('hidden');
     if (dom.quizResultCard) dom.quizResultCard.classList.add('hidden');
     if (dom.quizSubmitBar) dom.quizSubmitBar.classList.add('hidden');
@@ -5161,12 +5176,25 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
       renderBeams(latestBm.cards || latestBm.flashcards || latestBm);
     } else {
       state.beamData = [];
-      if (dom.beamCardsGrid) dom.beamCardsGrid.classList.add('hidden');
+      if (dom.beamCardsGrid) {
+        dom.beamCardsGrid.innerHTML = '';
+        dom.beamCardsGrid.classList.add('hidden');
+      }
+      if (dom.printableBeamsGrid) dom.printableBeamsGrid.innerHTML = '';
+      if (dom.printableBeamsContainer) dom.printableBeamsContainer.classList.add('hidden');
+      if (dom.beamMasteryCount) dom.beamMasteryCount.textContent = '0/0';
+      if (dom.beamMasteryBar) dom.beamMasteryBar.style.width = '0%';
       if (dom.beamEmptyState) dom.beamEmptyState.classList.remove('hidden');
     }
 
     // Reset tài liệu tải lên tạm thời
-    state.currentDoc = { title: '', text: '', type: 'text', imageBase64: null, images: [] };
+    state.currentDoc = { title: '', text: '', type: 'text', imageBase64: null, images: [], wordCount: 0 };
+    state.uploadedFiles = [];
+    if (dom.docPreviewCard) dom.docPreviewCard.classList.add('hidden');
+    if (dom.docTitle) dom.docTitle.textContent = '';
+    if (dom.docMeta) dom.docMeta.textContent = '';
+    if (dom.rawTextInput) dom.rawTextInput.value = '';
+    if (dom.fileInput) dom.fileInput.value = '';
 
     // Cập nhật lại danh sách Thư viện trong DOM chuẩn xác theo tài khoản này
     renderMindmapLibrary();
@@ -5181,44 +5209,91 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
     }
   }
 
-  // Xóa trắng toàn bộ giao diện và dữ liệu trên màn hình khi khách chưa đăng nhập / khi đăng xuất
+  // Xóa trắng toàn bộ giao diện và dữ liệu trên màn hình khi khách chưa đăng nhập / khi chuyển đổi tài khoản
   function resetUIForGuest() {
     state.currentUser = null;
     state.mindmapMarkdown = '';
+    state.markmapInstance = null;
     state.summaryData = null;
     state.quizData = [];
+    state.quizUserAnswers = {};
+    state.quizSubmitted = false;
     state.beamData = [];
-    state.currentDoc = { title: '', text: '', type: 'text', imageBase64: null, images: [] };
+    state.focusBeamIndex = 0;
+    state.currentDoc = { title: '', text: '', type: 'text', imageBase64: null, images: [], wordCount: 0 };
+    state.uploadedFiles = [];
 
     // Tab 1: Sơ đồ tư duy
-    state.markmapInstance = null;
     if (dom.markmapSvg) dom.markmapSvg.innerHTML = '';
+    if (dom.markdownInput) dom.markdownInput.value = '';
     if (dom.mindmapEmptyState) dom.mindmapEmptyState.classList.remove('hidden');
     if (mindmapLibraryList) mindmapLibraryList.innerHTML = '';
     if (mindmapLibraryEmpty) mindmapLibraryEmpty.classList.remove('hidden');
-    updateSavedMindmapsCount();
+    const mmCountEl = document.getElementById('saved-mindmaps-count');
+    if (mmCountEl) mmCountEl.textContent = '0';
+    if (dom.savedMindmapsCount) dom.savedMindmapsCount.textContent = '0';
+    if (mindmapLibraryStatus) mindmapLibraryStatus.textContent = 'Đã lưu 0 sơ đồ';
 
     // Tab 2: Tóm tắt
-    if (dom.summaryEmptyState) dom.summaryEmptyState.classList.remove('hidden');
+    if (dom.listTakeaways) dom.listTakeaways.innerHTML = '';
+    if (dom.tableTermsBody) dom.tableTermsBody.innerHTML = '';
+    if (dom.feynmanText) dom.feynmanText.textContent = '';
+    if (dom.mnemonicsText) dom.mnemonicsText.textContent = '';
+    if (dom.spacedList) dom.spacedList.innerHTML = '';
     if (dom.sectionTakeaways) dom.sectionTakeaways.classList.add('hidden');
     if (dom.sectionTerms) dom.sectionTerms.classList.add('hidden');
     if (dom.sectionStrategies) dom.sectionStrategies.classList.add('hidden');
+    if (dom.summaryEmptyState) dom.summaryEmptyState.classList.remove('hidden');
     if (summaryLibraryList) summaryLibraryList.innerHTML = '';
     if (summaryLibraryEmpty) summaryLibraryEmpty.classList.remove('hidden');
-    updateSavedSummariesCount();
+    const sumCountEl = document.getElementById('saved-summaries-count');
+    if (sumCountEl) sumCountEl.textContent = '0';
+    if (summaryLibraryStatus) summaryLibraryStatus.textContent = 'Đã lưu 0 bài tóm tắt';
 
     // Tab 3: Khảo thí
+    if (dom.quizQuestionsContainer) dom.quizQuestionsContainer.innerHTML = '';
+    if (dom.quizResultSummary) dom.quizResultSummary.innerHTML = '';
     if (dom.interactiveQuizContainer) dom.interactiveQuizContainer.classList.add('hidden');
     if (dom.quizResultCard) dom.quizResultCard.classList.add('hidden');
     if (dom.quizSubmitBar) dom.quizSubmitBar.classList.add('hidden');
     if (dom.quizEmptyState) dom.quizEmptyState.classList.remove('hidden');
 
     // Tab 4: Thẻ lật
-    if (dom.beamCardsGrid) dom.beamCardsGrid.classList.add('hidden');
+    if (dom.beamCardsGrid) {
+      dom.beamCardsGrid.innerHTML = '';
+      dom.beamCardsGrid.classList.add('hidden');
+    }
+    if (dom.printableBeamsGrid) dom.printableBeamsGrid.innerHTML = '';
+    if (dom.printableBeamsContainer) dom.printableBeamsContainer.classList.add('hidden');
+    if (dom.beamMasteryCount) dom.beamMasteryCount.textContent = '0/0';
+    if (dom.beamMasteryBar) dom.beamMasteryBar.style.width = '0%';
     if (dom.beamEmptyState) dom.beamEmptyState.classList.remove('hidden');
     if (beamsLibraryList) beamsLibraryList.innerHTML = '';
     if (beamsLibraryEmpty) beamsLibraryEmpty.classList.remove('hidden');
-    updateSavedBeamsCount();
+    const bmCountEl = document.getElementById('saved-beams-count');
+    if (bmCountEl) bmCountEl.textContent = '0';
+    if (beamsLibraryStatus) beamsLibraryStatus.textContent = 'Đã lưu 0 bộ thẻ';
+
+    // Scratchpad tải file / text
+    if (dom.docPreviewCard) dom.docPreviewCard.classList.add('hidden');
+    if (dom.docTitle) dom.docTitle.textContent = '';
+    if (dom.docMeta) dom.docMeta.textContent = '';
+    if (dom.rawTextInput) dom.rawTextInput.value = '';
+    if (dom.fileInput) dom.fileInput.value = '';
+    const ocrStatus = document.getElementById('ocr-status-text');
+    if (ocrStatus) ocrStatus.textContent = '';
+
+    // Modal Hồ sơ cá nhân
+    if (accHistoryTableBody) accHistoryTableBody.innerHTML = '';
+    if (accHistoryEmpty) accHistoryEmpty.classList.remove('hidden');
+    if (accStatTotalTests) accStatTotalTests.textContent = '0';
+    if (accStatMaxScore) accStatMaxScore.textContent = '0.0';
+    if (accStatAvgScore) accStatAvgScore.textContent = '0.0';
+    if (accStatTotalCorrect) accStatTotalCorrect.textContent = '0';
+    if (accBadgesList) accBadgesList.innerHTML = '';
+    if (inputAccountId) inputAccountId.value = '';
+    if (accFormUsernameDisplay) accFormUsernameDisplay.textContent = '@...';
+    if (inputAccountName) inputAccountName.value = '';
 
     // Header
     updateHeaderAccountUI();
@@ -6041,6 +6116,7 @@ ${optimizeTextForAi(state.currentDoc.text, 6500)}`;
 
       await window.SmartEduCloud.syncUserData(state.currentUser);
       updateSavedBeamsCount();
+      renderBeamsLibrary();
       showToast('Đã lưu bộ thẻ học tập vào tài khoản Web thành công!', 'success');
     });
   }
